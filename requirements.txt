@@ -1,0 +1,6 @@
+Django==5.0
+psycopg2-binary==2.9.9
+channels==4.0.0 
+daphne==4.0.0      
+ccxt==4.3.48            
+pandas==2.2.2           
