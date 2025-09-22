@@ -76,17 +76,25 @@ WSGI_APPLICATION = 'prj.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# načti .env soubor
+load_dotenv()
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.getenv('POSTGRES_DB', 'test_n_bet'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('POSTGRES_HOST', '127.0.0.1'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
+
 
 
 
@@ -130,3 +138,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+print("DB NAME:", os.getenv("POSTGRES_DB"))
+print("DB USER:", os.getenv("POSTGRES_USER"))
+print("DB PASSWORD:", os.getenv("POSTGRES_PASSWORD"))
