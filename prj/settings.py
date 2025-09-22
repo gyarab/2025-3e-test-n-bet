@@ -76,25 +76,19 @@ WSGI_APPLICATION = 'prj.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 import os
-from pathlib import Path
 from dotenv import load_dotenv
-
-# načti .env soubor
-load_dotenv()
-
-BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv()  # načte .env
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'test_n_bet'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
-        'HOST': os.getenv('POSTGRES_HOST', '127.0.0.1'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        'NAME': os.environ.get('POSTGRES_DB', 'test_n_bet'),
+        'USER': os.environ.get('POSTGRES_USER', 'team_user'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'tajneheslo'),
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
-
 
 
 

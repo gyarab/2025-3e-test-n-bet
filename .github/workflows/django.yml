@@ -37,12 +37,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U team_user; do sleep 1; done
+
       - name: Run migrations
         env:
-          DATABASE_URL: postgres://team_user:tajneheslo@localhost:5432/test_n_bet_team
+          POSTGRES_DB: test_n_bet
+          POSTGRES_USER: team_user
+          POSTGRES_PASSWORD: tajneheslo
         run: python manage.py migrate
 
       - name: Run tests
         env:
-          DATABASE_URL: postgres://team_user:tajneheslo@localhost:5432/test_n_bet_team
+          POSTGRES_DB: test_n_bet
+          POSTGRES_USER: team_user
+          POSTGRES_PASSWORD: tajneheslo
         run: python manage.py test
