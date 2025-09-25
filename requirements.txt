@@ -4,6 +4,8 @@ channels==4.0.0
 daphne==4.0.0      
 ccxt==4.3.48            
 pandas>=2.2.0
-psycopg2-binary
 python-dotenv
-          
+python-binance
+django
+daphne
+websockets

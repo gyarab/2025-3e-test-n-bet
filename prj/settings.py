@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.strategies',
     'apps.market',
+     "channels",
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'prj.wsgi.application'
+ASGI_APPLICATION = 'prj.asgi.application'
 
 
 # Database
@@ -135,3 +137,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 print("DB NAME:", os.getenv("POSTGRES_DB"))
 print("DB USER:", os.getenv("POSTGRES_USER"))
 print("DB PASSWORD:", os.getenv("POSTGRES_PASSWORD"))
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
