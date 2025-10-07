@@ -9,3 +9,4 @@ python-binance
 django
 daphne
 websockets
+matplotlib
