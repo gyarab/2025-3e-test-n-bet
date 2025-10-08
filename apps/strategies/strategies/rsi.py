@@ -75,7 +75,7 @@ def get_rsi_list(coin: str, interval: str, candle_amount: int = 20, period: int 
         candle_amount (int): Number of candles to fetch, default is 20
         period (int): Period for RSI (default 14)
     Returns:
-        list[float]: List of SMA values, with None for initial periods without enough data
+        list[float]: List of RSI values, with None for initial periods without enough data
     """
     candles = get_binance_ohlcv(coin, interval, candle_amount)
     return get_rsi_list(candles, period)  
@@ -112,20 +112,20 @@ def get_rsi_crossover_signal(candles, period: int = 14, oversold: int = 30, over
     else:
         return 'HOLD'
     
-def get_sma_crossover_signal(coin: str, interval: str, short_window: int = 10, long_window: int = 30):
+def get_rsi_crossover_signal(coin: str, interval: str, period: int = 14, oversold: int = 30, overbought: int = 70):
     """
-    Calculate SMA crossover signals from a list of OHLCV candles with timestamps.
+    Calculate RSI signal from a list of OHLCV candles with timestamps.
 
     Args:
         coin (str): Symbol, e.g., 'BTC/USDT'
         interval (str): Time interval, e.g., '1h', '1d'
-        short_window (int): Period for short SMA (default 10)
-        long_window (int): Period for long SMA (default 30)
+        period (int): Period for short RSI (default 14)
+        oversold (int): RSI value below which we buy (default 30)
+        overbought (int): RSI value above which we sell (default 70)
         
     Returns:
-        str: 'BUY', 'SELL', or 'HOLD' based on the latest crossover signal. Return 'NOT ENOUGH DATA' if not enough data.
+        str: 'BUY', 'SELL', or 'HOLD' based on the latest rsi signal. Return 'NOT ENOUGH DATA' if not enough data.
     """
 
     candles = get_binance_ohlcv(coin, interval, candle_amount=long_window)
-    return get_sma_crossover_signal(candles, short_window, long_window)
-
+    return get_rsi_crossover_signal(candles, period, oversold, overbought)

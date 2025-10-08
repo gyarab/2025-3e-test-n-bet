@@ -125,3 +125,6 @@ def get_sma_crossover_signal(coin: str, interval: str, short_window: int = 10, l
     candles = get_binance_ohlcv(coin, interval, candle_amount=long_window)
     return get_sma_crossover_signal(candles, short_window, long_window)
 
+import math
+
+math.sqrt(4)
