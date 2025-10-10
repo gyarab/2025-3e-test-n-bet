@@ -1,0 +1,1 @@
+if (RSA > 30) & (SMA < 20) then LONG else if (ARIMA = LONG) then LONG

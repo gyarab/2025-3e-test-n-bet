@@ -1,0 +1,2 @@
+Why does abstract does not work (python not complaining)
+finish framework & strategy
