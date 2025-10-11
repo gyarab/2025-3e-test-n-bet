@@ -1,10 +1,12 @@
-import ccxt
+# apps/strategies/strategies/rsi.py
 import pandas as pd
-from apps.strategies.strategies.base import BaseStrategy
+
+from apps.strategies.strategies.base_strategy import BaseStrategy
+from apps.strategies.strategies.base_indicator import BaseIndicator
 
 from apps.market.services import get_binance_ohlcv
 
-class RSIStrategy(BaseStrategy):
+class RSIStrategy(BaseStrategy, BaseIndicator):
     def __init__(self, period: int = 14, oversold: int = 30, overbought: int = 70):
         """
         Args:
@@ -27,8 +29,10 @@ class RSIStrategy(BaseStrategy):
         """
         if not candles or len(candles) < self.period:
             return -1
+        
+        df = pd.DataFrame(candles)
 
-        delta = candles['Close'].diff()
+        delta = df['close'].diff()
         gain = delta.where(delta > 0, 0)
         loss = -delta.where(delta < 0, 0)
 
@@ -40,7 +44,7 @@ class RSIStrategy(BaseStrategy):
 
         return round(float(rsi),3) if pd.notna(rsi) else -1
 
-    def get_list(self, candles):
+    def get_list_from_candles(self, candles):
         """
         Calculate Relative Strength Index (RSI) list from a list of OHLCV candles.
 
@@ -51,11 +55,11 @@ class RSIStrategy(BaseStrategy):
         """
         if not candles or len(candles) < self.period:
             return []
-
-        for candle in candles:
-            if not all(k in candle for k in ('open', 'high', 'low', 'close', 'volume')):
-                return []
         
+        for candle in candles:
+            if 'close' not in candle:
+                return []
+
         temp_candles = candles.copy()
         rsi_list = []
 
@@ -63,12 +67,12 @@ class RSIStrategy(BaseStrategy):
             if not temp_candles or len(temp_candles) < self.period:
                 rsi_list.append(None)
             else:
-                rsi_list.append(self.calculate_rsi(temp_candles, self.period))
+                rsi_list.append(self.calculate_rsi(temp_candles))
             temp_candles = temp_candles[:-1]
 
         return rsi_list[::-1]  # Reverzní seznam, aby odpovídal původnímu pořadí   
 
-    def get_list(self, coin: str, interval: str, candle_amount: int = 20):
+    def get_list_from_coin(self, coin: str, interval: str, candle_amount: int = 20):
         """
         Calculate Relative Strength Index (RSI) list from a list of OHLCV candles.
 
@@ -80,9 +84,9 @@ class RSIStrategy(BaseStrategy):
             list[float]: List of RSI values, with None for initial periods without enough data
         """
         candles = get_binance_ohlcv(coin, interval, candle_amount)
-        return self.get_list(candles, self.period)  
+        return self.get_list_from_candles(candles)  
 
-    def get_signal(self, candles):
+    def get_signal_from_candles(self, candles):
         """
         Calculate RSI signals from a list of OHLCV candles with timestamps.
 
@@ -95,7 +99,7 @@ class RSIStrategy(BaseStrategy):
         if not candles or len(candles) < self.period:
             return 'NOT ENOUGH DATA'
 
-        RSI = self.calculate_rsi(candles, self.period)
+        RSI = self.calculate_rsi(candles)
         
         if RSI is None:
             return 'NOT ENOUGH DATA'
@@ -110,7 +114,7 @@ class RSIStrategy(BaseStrategy):
         else:
             return 'HOLD'
         
-    def get_rsi_crossover_signal(self, coin: str, interval: str):
+    def get_signal_from_coin(self, coin: str, interval: str):
         """
         Calculate RSI signal from a list of OHLCV candles with timestamps.
 
@@ -123,12 +127,11 @@ class RSIStrategy(BaseStrategy):
         """
 
         candles = get_binance_ohlcv(coin, interval, candle_amount=self.period)
-        return self.get_signal(candles, self.period, self.oversold, self.overbought)
-
+        return self.get_signal_from_candles(candles)
 
     def get_json(self) -> dict:
         return {
-            "RSI": {
+            "RSIStrategy": {
                 "period": self.period,
                 "oversold": self.oversold,
                 "overbought": self.overbought

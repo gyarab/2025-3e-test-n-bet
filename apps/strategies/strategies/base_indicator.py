@@ -1,21 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Union
 import ccxt
 import pandas as pd
 
-class BaseStrategy(ABC):
+class BaseIndicator(ABC):
     """
-    Abstract base class for all trading strategies.
-    Each strategy should inherit from this class and implement its methods.
+    Abstract base class for all indicators
+    Each indicator should inherit from this class and implement its methods.
     """
-
-    # Inicializace Binance
-    exchange = ccxt.binance({
-        'enableRateLimit': True
-    })
 
     @abstractmethod
-    def get_list(self, candles: Union[List[Dict], pd.DataFrame]) -> List[float]:
+    def get_list_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> list[float]:
         """
         Return a list of indicator values (e.g., RSI list, SMA list) for given candles.
 
@@ -28,20 +22,21 @@ class BaseStrategy(ABC):
         pass
 
     @abstractmethod
-    def get_signal(self, candles: Union[List[Dict], pd.DataFrame]) -> str:
+    def get_list_from_coin(self, coin: str, interval: str) -> list[float]:
         """
-        Return the latest signal based on the strategy.
+        Return a list of indicator values (e.g., RSI list, SMA list) for given coin.
 
         Args:
-            candles (list[dict] | pd.DataFrame): OHLCV candles data.
+            coin (str): Symbol, e.g., 'BTC/USDT'
+            interval (str): Time interval, e.g., '1h', '1d'
 
         Returns:
-            str: 'BUY', 'SELL', or 'HOLD'.
+            list[float]: Indicator values.
         """
         pass
-
+    
     @abstractmethod
-    def get_json(self) -> Dict:
+    def get_json(self) -> dict:
         """
         Return the strategy parameters in JSON/dict format.
 

@@ -1,20 +1,19 @@
-def generate_strategy_rules_json(indicators, models) -> dict:
+from apps.strategies.strategies.base_strategy import BaseStrategy
+from apps.strategies.strategies.base_model import BaseModel
+from apps.strategies.strategies.base_indicator import BaseIndicator
+
+def generate_strategy_rules_json(indicators: list[BaseIndicator], models: list[BaseModel]) -> dict:
+    
     rules = {
         "conditions": [
             {
                 "indicators": {
-                    "RSI": {
-                        "period": 14,
-                        "overbought": 70,
-                        "oversold": 30
-                    },
-                    "SMA": {
-                        "short_window": 50,
-                        "long_window": 200
-                    }
+                    type(i).__name__: i.get_json()[type(i).__name__] #name of each strategy class, e.g. SMAStrategy, RSIStrategy, etc.
+                    for i in indicators
                 },
                 "models": {
-                    "ARIMA": "LONG"
+                    type(i).__name__: i.get_json()[type(i).__name__] #name of each strategy class, e.g. ARIMA, etc.
+                    for i in models
                 },
                 "logic": "RSI.LONG & SMA.LONG & ARIMA.LONG",
                 "action": {
