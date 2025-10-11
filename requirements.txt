@@ -6,7 +6,6 @@ ccxt==4.3.48
 pandas>=2.2.0
 python-dotenv
 python-binance
-django
 daphne
 websockets
 matplotlib
