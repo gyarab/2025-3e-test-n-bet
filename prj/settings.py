@@ -40,7 +40,15 @@ INSTALLED_APPS = [
     'apps.strategies',
     'apps.market',
      "channels",
+     "rest_framework",
+    'apps.backtests',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',  # jen JSON
+        # 'rest_framework.renderers.BrowsableAPIRenderer',  # odkomentuj, pokud chceš browsable API
+    )
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

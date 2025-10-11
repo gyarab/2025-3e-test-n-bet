@@ -16,7 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from apps.market.views import BtcPricesView
+from apps.backtests.views import RunBacktestView
+
+router = DefaultRouter()
+# router.register(...)  # smažeme
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/btc_prices/', BtcPricesView.as_view(), name='btc-prices'),
+    path('api/run_backtest/', RunBacktestView.as_view(), name='run-backtest'),
+    path('api/', include(router.urls)),  # pokud máš ještě nějaké routery
 ]
