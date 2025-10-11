@@ -1,6 +1,6 @@
-import pytest
+import pytest # type: ignore
 from unittest.mock import patch
-from apps.strategies.strategies.macd import MACDStrategy  # adjust path as needed
+from apps.strategies.services.macd import MACDStrategy  # adjust path as needed
 
 @pytest.fixture
 def sample_candles():
@@ -63,7 +63,7 @@ def test_generate_macd_json():
         }
     }
 
-@patch("apps.strategies.strategies.macd.get_binance_ohlcv")
+@patch("apps.strategies.services.macd.get_binance_ohlcv")
 def test_get_signal_with_mock(mock_get_ohlcv, sample_candles):
     """Mock Binance fetch function to test coin-level method."""
     mock_get_ohlcv.return_value = sample_candles

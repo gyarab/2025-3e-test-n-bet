@@ -1,8 +1,8 @@
-import pytest
+import pytest # type: ignore
 import pandas as pd
 from unittest.mock import patch
 
-from apps.strategies.strategies.rsi import RSIStrategy  # adjust path as needed
+from apps.strategies.services.rsi import RSIStrategy  # adjust path as needed
 
 
 @pytest.fixture
@@ -66,7 +66,7 @@ def test_generate_rsi_json():
             }}
 
 
-@patch("apps.strategies.strategies.rsi.get_binance_ohlcv")
+@patch("apps.strategies.services.rsi.get_binance_ohlcv")
 def test_get_signal_with_mock(mock_get_ohlcv, sample_candles):
     """Mock Binance fetch function to ensure integration behavior works."""
     mock_get_ohlcv.return_value = sample_candles

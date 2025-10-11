@@ -1,8 +1,8 @@
 # apps/strategies/strategies/rsi.py
 import pandas as pd
 
-from apps.strategies.strategies.base_strategy import BaseStrategy
-from apps.strategies.strategies.base_indicator import BaseIndicator
+from apps.strategies.services.base_strategy import BaseStrategy
+from apps.strategies.services.base_indicator import BaseIndicator
 
 from apps.market.services import get_binance_ohlcv
 
