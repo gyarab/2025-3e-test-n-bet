@@ -7,14 +7,14 @@ class Trade():
     # If we keep it this way, then all the high-volatility candles will be counted as stop loss hits, which may be not so crucial, 
     # as high-volatility means manipulations and counting profitable trades based on manipulations is not correct.
 
-    def __init__(self, candles: list[dict], stop_loss: float, take_profit: float, quantity: float, trade_type: bool = True):
+    def __init__(self, candles: list[dict], stop_loss_pct: float, take_profit_pct: float, quantity: float, trade_type: bool = True):
         """
         Obj: Trade object to represent a trade with entry and exit details.
         
         Args:
             candles (list[dict]): List of OHLCV candles, where the first candle is the trade-open candle.
-            stop_loss (float): Stop-loss in % > 0, e.g. 5 for 5%
-            take_profit (float): Take-profit in % > 0, e.g. 5 for 5%
+            stop_loss_pct (float): Stop-loss in % > 0, e.g. 5 for 5%
+            take_profit_pct (float): Take-profit in % > 0, e.g. 5 for 5%
             quantity (float): Quantity of the asset traded, in dollars
             trade_type (bool): True for buy trade, False for sell trade.
         """
@@ -26,27 +26,39 @@ class Trade():
         self.exit_price = 0  # Will be updated when trade is closed
         self.status = True  # True if trade is open, False if closed
 
-        self.stop_loss = self.entry_price * (1 - stop_loss/100) if self.trade_type else self.entry_price * (1 + stop_loss/100)
-        self.take_profit = self.entry_price * (1 + take_profit/100) if self.trade_type else self.entry_price * (1 - take_profit/100)
+        self.stop_loss = self.entry_price * (1 - stop_loss_pct/100) if self.trade_type else self.entry_price * (1 + stop_loss_pct/100)
+        self.take_profit = self.entry_price * (1 + take_profit_pct/100) if self.trade_type else self.entry_price * (1 - take_profit_pct/100)
 
     def get_result(self) -> float:
-        if self.exit_price == 0:
+        """
+        Calculate the result of the trade.  
+        Returns:
+            float: The result of the trade (profit/loss) or -1 if trade is not closed.
+        """
+        if self.status == True:
             return -1  # Trade not closed yet
 
         if self.trade_type:  # Buy trade
-            return (self.exit_price/self.entry_price) * self.quantity
+            return (self.exit_price/self.entry_price) * self.quantity - self.quantity
         else:  # Sell trade
-            return (self.entry_price/self.exit_price) * self.quantity
+            return (self.entry_price/self.exit_price) * self.quantity - self.quantity
     
-    def execute(self):
+    def execute(self) -> float:
+        """
+        Execute the trade by iterating through the candles and checking for stop-loss or take-profit hits.
+        Returns:
+            float: The result of the trade (profit/loss) or -1 if trade is not closed.
+        """
         for c in self.candles[1:]:  # Start checking from the second candle
             result = self._check_status(c)
             if result:  # Trade is closed
                 break
+
+        return self.get_result()
         
     def _check_status(self, candle: dict) -> bool:
         """
-        Check if the trade should be closed based on the current candle.
+        Check if the trade should be closed based on the current candle. Sets exit_price and status if trade is closed.
 
         Args:
             candle (dict): A dictionary containing OHLCV data for the current candle.

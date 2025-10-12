@@ -1,19 +1,43 @@
-from apps.strategies.services.base_strategy import BaseStrategy
+from apps.strategies.services.strategy import Strategy
+from backtests.services.trade import Trade
+from backtests.services.trade_risk_model import TradeRiskModel
 
 class Backtest():
     #Finish implementing backtest class
     
-    def __init__(self, strategy: BaseStrategy, candles: list[dict], initial_balance: float = 1000):
+    def __init__(self, strategy: Strategy, trade_risk_model: TradeRiskModel | None = None, candles: list[dict] | None = None, initial_balance: float = 1000):
         self.strategy = strategy
-        self.candles = candles
+
+        if trade_risk_model is None:
+            self.trade_risk_model = TradeRiskModel()
+
+        candles = candles or []
+
         self.initial_balance = initial_balance
         self.current_balance = initial_balance
         self.trades = []
 
+    def set_data(self, coin: str, interval: str, candle_amount: int = 20):
+        from apps.market.services import get_binance_ohlcv
+        self.candles = get_binance_ohlcv(coin, interval, limit=candle_amount)
+
     def run(self):
         for i in range(len(self.candles)):
             current_candles = self.candles[:i+1]
-            signal = self.strategy.get_signal_from_candles(current_candles)
-            # Implement trade execution logic based on the signal
-            # Update current_balance and trades list accordingly
+            signal = self.strategy.get_signal_from_candles(current_candles) #TODO: implement Strategy class
+            if signal != 'HOLD':
+                # Get stop loss and take profit from risk model
+                stop_loss = self.trade_risk_model.get_stop_loss()
+                take_profit = self.trade_risk_model.get_take_profit() #TODO: make take_profit dynamic based on strategy calling "CLOSE" and not only the risk model
+
+                # Create and execute trade
+                trade = Trade(candles=current_candles, stop_loss=stop_loss, take_profit=take_profit, quantity=1000, trade_type=(signal == 'BUY'))
+                trade.execute()
+                self.trades.append(trade)
+
+                # Update balance based on trade result
+                result = trade.get_result()
+                if result != -1:
+                    self.current_balance += result
+
         return self.current_balance, self.trades
