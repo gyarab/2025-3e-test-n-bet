@@ -1,5 +1,5 @@
 from apps.strategies.services.base_strategy import BaseStrategy
-from apps.strategies.services.base_model import BaseModel
+from strategies.services.base_prediction_model import BaseModel
 from apps.strategies.services.base_indicator import BaseIndicator
 
 def generate_strategy_rules_json(indicators: list[BaseIndicator], models: list[BaseModel]) -> dict:

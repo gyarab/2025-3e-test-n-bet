@@ -12,6 +12,18 @@ class TradeRiskModel:
                  position_size_pct: float = 5,
                  position_size_type: str = 'fixed', 
                  candles: list[dict] = None):
+        """
+        Initialize the TradeRiskModel with default or specified parameters.
+
+        Args:
+            stop_loss_pct (float): Stop-loss percentage for 'fixed' type. Ignored if 'relative'.
+            stop_loss_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage, relative uses ATR-based volatility.
+            take_profit_pct (float): Take-profit percentage for 'fixed' type. Ignored if 'relative'.
+            take_profit_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage, relative is based on stop-loss.
+            position_size_pct (float): Percentage for fixed position size. Ignored if type is 'relative'.
+            position_size_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage of account balance, relative adjusts based on loss percentage.
+            candles (list[dict]): List of OHLCV candles, where last candle is the entry candle. Required if stop_loss_type is 'relative'.
+        """
         self.stop_loss_pct = None
         self.stop_loss_type = stop_loss_type
         self.take_profit_pct = None

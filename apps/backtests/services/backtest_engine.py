@@ -1,8 +1,8 @@
 from apps.strategies.services.strategy import Strategy
-from backtests.services.trade import Trade
-from backtests.services.trade_risk_model import TradeRiskModel
+from backtests.services.trade_engine import Trade
+from apps.strategies.services.trade_risk_model import TradeRiskModel
 
-class Backtest():
+class BacktestEngine():
     #Finish implementing backtest class
     
     def __init__(self, strategy: Strategy, trade_risk_model: TradeRiskModel | None = None, candles: list[dict] | None = None, initial_balance: float = 1000):

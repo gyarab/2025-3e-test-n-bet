@@ -1,6 +1,6 @@
 import pytest  # type: ignore
 from math import isclose
-from apps.backtests.services.trade import Trade
+from backtests.services.trade_engine import Trade
 
 def test_buy_trade_take_profit_hit():
     """Buy trade should close when take profit is reached."""

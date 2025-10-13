@@ -1,6 +1,6 @@
 import pytest # type: ignore
 from math import isclose
-from apps.backtests.services.trade_risk_model import TradeRiskModel 
+from apps.strategies.services.trade_risk_model import TradeRiskModel 
 
 
 @pytest.fixture

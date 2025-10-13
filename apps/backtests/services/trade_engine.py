@@ -1,6 +1,6 @@
-class Trade():
+class TradeEngine():
     """
-    A class to execute a trade with entry and exit details.
+    A class to execute a trade with entry and exit details. 
     """
 
     #TODO fix bug that if price hits take profit and stop loss in the same candle, it always counts as stop loss. 
