@@ -8,3 +8,6 @@ class BtcPrice(models.Model):
 
     def __str__(self):
         return f"{self.symbol} {self.price}"
+
+class Asset(models.Model):
+    pass
