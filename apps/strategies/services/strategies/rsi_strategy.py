@@ -5,8 +5,10 @@ from apps.strategies.services.base.base_strategy import BaseStrategy
 from apps.strategies.services.base.base_indicator import BaseIndicator
 from apps.market.services import get_binance_ohlcv
 from apps.strategies.services.indicators.rsi_indicator import RSIIndicator
+from apps.strategies.services.base.atomic_strategy import AtomicStrategy
+from apps.strategies.services.base.indicator_strategy import IndicatorStrategy
 
-class RSIStrategy(BaseStrategy):
+class RSIStrategy(IndicatorStrategy):
     def __init__(self, rsi_indicator: RSIIndicator = None, oversold: int = 30, overbought: int = 70):
         """
         Args:
@@ -23,8 +25,6 @@ class RSIStrategy(BaseStrategy):
     @classmethod
     def from_parametrs(cls, period: int = 14, oversold: int = 30, overbought: int = 70):
         return cls(RSIIndicator(period=period), oversold=oversold, overbought=overbought)
-
-
 
     def get_signal_from_candles(self, candles):
         """
@@ -71,7 +71,8 @@ class RSIStrategy(BaseStrategy):
 
     def get_json(self) -> dict:
         return {
-            "RSIStrategy": {
+            "name": "RSI Strategy",
+            "parameters": {
                 "period": self.period,
                 "oversold": self.oversold,
                 "overbought": self.overbought

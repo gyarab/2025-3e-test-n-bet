@@ -59,7 +59,11 @@ def test_get_signal_not_enough_data():
 def test_generate_sma_json():
     strat = SMAStrategy.from_parametrs(short_window=7, long_window=21)
     result = strat.get_json()
-    assert result == {"SMAStrategy": {"short_window": 7, "long_window": 21}}
+    assert result == {"name": "SMA Strategy",
+                    "parameters": {
+                        "short_window": 7,
+                        "long_window": 21
+                    }}
 
 
 @patch("apps.strategies.services.strategies.sma_strategy.get_binance_ohlcv")

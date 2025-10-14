@@ -56,13 +56,12 @@ def test_get_signal_not_enough_data():
 def test_generate_macd_json():
     strat = MACDStrategy.from_parametrs(fast_period=12, slow_period=26, signal_period=9)
     result = strat.get_json()
-    assert result == {
-        "MACDStrategy": {
-            "fast_period": 12,
-            "slow_period": 26,
-            "signal_period": 9
-        }
-    }
+    assert result == {"name": "MACD Strategy",
+                      "parameters": {
+                            "fast_period": 12,
+                            "slow_period": 26,
+                            "signal_period": 9
+                        }}
 
 @patch("apps.strategies.services.strategies.macd_strategy.get_binance_ohlcv")
 def test_get_signal_with_mock(mock_get_ohlcv, sample_candles):

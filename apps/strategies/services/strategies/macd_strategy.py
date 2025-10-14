@@ -4,8 +4,10 @@ from apps.strategies.services.base.base_strategy import BaseStrategy
 from apps.strategies.services.base.base_indicator import BaseIndicator
 from apps.market.services import get_binance_ohlcv
 from apps.strategies.services.indicators.macd_indicator import MACDIndicator
+from apps.strategies.services.base.atomic_strategy import AtomicStrategy
+from apps.strategies.services.base.indicator_strategy import IndicatorStrategy
 
-class MACDStrategy(BaseStrategy):
+class MACDStrategy(IndicatorStrategy):
     def __init__(self, macd_indicator: MACDIndicator = None):
         """
         
@@ -65,7 +67,8 @@ class MACDStrategy(BaseStrategy):
 
     def get_json(self) -> dict:
         return {
-            "MACDStrategy": {
+            "name": "MACD Strategy",
+            "parameters": {
                 "fast_period": self.fast_period,
                 "slow_period": self.slow_period,
                 "signal_period": self.signal_period

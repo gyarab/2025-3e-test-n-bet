@@ -1,8 +1,9 @@
-from apps.backtests.services.trade_engine import Trade, TradeEngine
-from apps.strategies.services.core.trade_risk_model import TradeRiskModel
+from backtests.services.trade_engine import TradeEngine
 from strategies.services.core.strategy_engine import StrategyEngine
+from strategies.services.core.trade_risk_model import TradeRiskModel
 
-class BacktestEngine():
+
+class Backtest():
     #Finish implementing backtest class
     
     def __init__(self, strategy: StrategyEngine, trade_risk_model: TradeRiskModel | None = None, candles: list[dict] | None = None, initial_balance: float = 1000):
@@ -24,7 +25,7 @@ class BacktestEngine():
     def run(self):
         for i in range(len(self.candles)):
             current_candles = self.candles[:i+1]
-            signal = self.strategy.get_signal_from_candles(current_candles)
+            signal = self.strategy.get_signal_from_candles(current_candles) #TODO: implement Strategy class
             if signal != 'HOLD':
                 # Get stop loss and take profit from risk model
                 stop_loss = self.trade_risk_model.get_stop_loss()

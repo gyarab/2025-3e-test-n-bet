@@ -40,25 +40,25 @@ def test_set_take_profit_fixed():
 
 
 def test_calculate_stop_loss_price_valid():
-    price = TradeRiskModel._calculate_stop_loss_price(100, 100, 0.05)
+    price = TradeRiskModel.calculate_stop_loss_price(100, 100, 0.05)
     assert price == 95.00
 
 
 def test_calculate_take_profit_price_valid():
-    price = TradeRiskModel._calculate_take_profit_price(100, 100, 0.10)
+    price = TradeRiskModel.calculate_take_profit_price(100, 100, 0.10)
     assert price == 110.00
 
 
 def test_calculate_stop_loss_price_invalid():
     with pytest.raises(ValueError):
-        TradeRiskModel._calculate_stop_loss_price(0, 100, 0.05)
+        TradeRiskModel.calculate_stop_loss_price(0, 100, 0.05)
     with pytest.raises(ValueError):
-        TradeRiskModel._calculate_stop_loss_price(100, 100, 0)
+        TradeRiskModel.calculate_stop_loss_price(100, 100, 0)
 
 
 def test_calculate_take_profit_price_invalid():
     with pytest.raises(ValueError):
-        TradeRiskModel._calculate_take_profit_price(-10, 100, 0.1)
+        TradeRiskModel.calculate_take_profit_price(-10, 100, 0.1)
 
 
 def test_relative_stop_loss_percentage(sample_candles):

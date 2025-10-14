@@ -59,11 +59,12 @@ def test_get_signal_not_enough_data():
 def test_generate_rsi_json():
     strat = RSIStrategy.from_parametrs(period = 18, oversold = 20, overbought = 50)
     result = strat.get_json()
-    assert result == {"RSIStrategy": {
-                "period": 18,
-                "oversold": 20,
-                "overbought": 50
-            }}
+    assert result == {"name": "RSI Strategy",
+                      "parameters": {
+                            "period": 18,
+                            "oversold": 20,
+                            "overbought": 50
+                        }}
 
 
 @patch("apps.strategies.services.strategies.rsi_strategy.get_binance_ohlcv")

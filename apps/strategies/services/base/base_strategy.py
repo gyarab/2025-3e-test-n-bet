@@ -4,6 +4,7 @@ import pandas as pd
 
 from apps.strategies.services.base.base_indicator import BaseIndicator
 from apps.strategies.services.base.base_signal import BaseSignal
+from apps.strategies.services.core.trade_risk_model import TradeRiskModel
 
 class BaseStrategy(BaseSignal, ABC):
     """
@@ -31,7 +32,7 @@ class BaseStrategy(BaseSignal, ABC):
         pass
 
     @abstractmethod
-    def get_signal_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> str:
+    def get_signal_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> str | tuple[str, TradeRiskModel]:
         """
         Return the latest signal based on the strategy for given candles.
 
@@ -51,8 +52,4 @@ class BaseStrategy(BaseSignal, ABC):
         Returns:
             dict: Dictionary representation of the strategy parameters.
         """
-        pass
-
-    @abstractmethod
-    def indicator(self) -> BaseIndicator:
         pass

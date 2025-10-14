@@ -114,8 +114,28 @@ class TradeRiskModel:
     
     def get_take_profit(self) -> float:
         return self.take_profit_pct
+    
+    def get_json(self) -> dict: #Maybe change depending on the frontend
+        """
+        Return a JSON-serializable dictionary representing the trade risk configuration.
+        """
+        return {
+            "stop_loss": {
+                "type": self.stop_loss_type,
+                "percentage": self.stop_loss_pct
+            },
+            "take_profit": {
+                "type": self.take_profit_type,
+                "percentage": self.take_profit_pct
+            },
+            "position_size": {
+                "type": self.position_size_type,
+                "percentage": self.position_size_pct
+            }
+    }
 
-    def _calculate_stop_loss_price(entry_price: float, current_price: float, percentage: float) -> float:
+
+    def calculate_stop_loss_price(entry_price: float, current_price: float, percentage: float) -> float:
         """
         Calculate the stop-loss price based on entry price and a percentage.
 
@@ -133,7 +153,7 @@ class TradeRiskModel:
         stop_loss_price = entry_price * (1 - percentage)
         return round(stop_loss_price, 2)
 
-    def _calculate_take_profit_price(entry_price: float, current_price: float, percentage: float) -> float:
+    def calculate_take_profit_price(entry_price: float, current_price: float, percentage: float) -> float:
         """
         Calculate the take-profit price based on entry price and a percentage.
 
@@ -191,5 +211,6 @@ class TradeRiskModel:
         stop_loss_pct = (atr_multiplier * atr / entry_price) * 100
 
         return stop_loss_pct
+    
 
 

@@ -5,8 +5,10 @@ from apps.strategies.services.base.base_strategy import BaseStrategy
 from apps.strategies.services.base.base_indicator import BaseIndicator
 from apps.market.services import get_binance_ohlcv
 from apps.strategies.services.indicators.sma_indicator import SMAIndicator
+from apps.strategies.services.base.atomic_strategy import AtomicStrategy
+from apps.strategies.services.base.indicator_strategy import IndicatorStrategy
 
-class SMAStrategy(BaseStrategy):
+class SMAStrategy(IndicatorStrategy):
     def __init__(self, sma_indicator: SMAIndicator = None, short_window: int = 10, long_window: int = 30):
         """
         Args:
@@ -70,7 +72,8 @@ class SMAStrategy(BaseStrategy):
 
     def get_json(self) -> dict:
         return {
-            "SMAStrategy": {
+            "name": "SMA Strategy",
+            "parameters": {
                 "short_window": self.short_window,
                 "long_window": self.long_window
             }
