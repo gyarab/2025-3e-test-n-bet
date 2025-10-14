@@ -1,6 +1,6 @@
-from apps.strategies.services.strategy import Strategy
-from backtests.services.trade_engine import Trade
-from apps.strategies.services.trade_risk_model import TradeRiskModel
+from apps.strategies.services.core.strategy_engine import Strategy
+from apps.backtests.services.trade_engine import Trade
+from apps.strategies.services.core.trade_risk_model import TradeRiskModel
 
 class BacktestEngine():
     #Finish implementing backtest class

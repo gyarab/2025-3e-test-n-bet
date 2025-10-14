@@ -33,7 +33,7 @@ class TradeEngine():
         """
         Calculate the result of the trade.  
         Returns:
-            float: The result of the trade (profit/loss) or -1 if trade is not closed.
+            float: The result of the trade (profit/loss amount) or -1 if trade is not closed.
         """
         if self.status == True:
             return -1  # Trade not closed yet
@@ -69,15 +69,19 @@ class TradeEngine():
         if self.trade_type:  # Buy trade
             if candle['low'] <= self.stop_loss:
                 self.exit_price = self.stop_loss
+                self.status = False
                 return True  # Stop-loss hit
             elif candle['high'] >= self.take_profit:
                 self.exit_price = self.take_profit
+                self.status = False
                 return True  # Take-profit hit
         else:  # Sell trade
             if candle['high'] >= self.stop_loss:
                 self.exit_price = self.stop_loss
+                self.status = False
                 return True  # Stop-loss hit
             elif candle['low'] <= self.take_profit:
                 self.exit_price = self.take_profit
+                self.status = False
                 return True  # Take-profit hit
         return False  # Trade remains open
