@@ -1,6 +1,6 @@
-from apps.backtests.services.trade_engine import Trade, TradeEngine
+from apps.backtests.services.trade_engine import TradeEngine
 from apps.strategies.services.core.trade_risk_model import TradeRiskModel
-from strategies.services.core.strategy_engine import StrategyEngine
+from apps.strategies.services.core.strategy_engine import StrategyEngine
 
 class BacktestEngine():
     #Finish implementing backtest class
@@ -10,6 +10,7 @@ class BacktestEngine():
 
         if trade_risk_model is None:
             self.trade_risk_model = TradeRiskModel()
+        else: self.trade_risk_model = trade_risk_model
 
         candles = candles or []
 
@@ -31,7 +32,7 @@ class BacktestEngine():
                 take_profit = self.trade_risk_model.get_take_profit() #TODO: make take_profit dynamic based on strategy calling "CLOSE" and not only the risk model
 
                 # Create and execute trade
-                trade = TradeEngine(candles=current_candles, stop_loss=stop_loss, take_profit=take_profit, quantity=1000, trade_type=(signal == 'BUY'))
+                trade = TradeEngine(candles=current_candles, stop_loss_pct=stop_loss, take_profit_pct=take_profit, quantity=1000, trade_type=(signal == 'BUY'))
                 trade.execute()
                 self.trades.append(trade)
 

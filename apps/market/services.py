@@ -34,6 +34,8 @@ def get_binance_ohlcv_and_timestamp(coin: str, interval: str, candle_amount: int
             'close': candle[4],
             'volume': candle[5]
         })
+
+    return candles
     
 
 def get_binance_ohlcv(coin: str, interval: str, candle_amount: int = 1):
