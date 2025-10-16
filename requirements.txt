@@ -9,3 +9,4 @@ python-binance
 daphne
 websockets
 matplotlib
+djangorestframework
