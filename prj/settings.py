@@ -42,6 +42,14 @@ INSTALLED_APPS = [
      "channels",
      "rest_framework",
     'apps.backtests',
+     'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # Google provider
+    'allauth.socialaccount.providers.google',
+
+    'apps.registration',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
@@ -58,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'allauth.account.middleware.AccountMiddleware',
+
 ]
 
 ROOT_URLCONF = 'prj.urls'
