@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Union
 import ccxt
 import pandas as pd
 
@@ -34,13 +35,10 @@ class BaseIndicator(ABC):
             list[float]: Indicator values.
         """
         pass
-    
-    @abstractmethod
-    def get_json(self) -> dict:
-        """
-        Return the strategy parameters in JSON/dict format.
 
-        Returns:
-            dict: Dictionary representation of the strategy parameters.
+    @abstractmethod
+    def calculate(self, candles: list[dict[str, float]], *args) -> Union[float, tuple[float, ...]]:
+        """
+        Returns a result after indicator's calculations on the set of candles based on indicator's parametrs
         """
         pass

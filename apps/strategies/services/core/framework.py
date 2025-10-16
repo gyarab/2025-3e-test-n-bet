@@ -1,6 +1,6 @@
-from apps.strategies.strategies.base_strategy import BaseStrategy
-from apps.strategies.strategies.base_model import BaseModel
-from apps.strategies.strategies.base_indicator import BaseIndicator
+from apps.strategies.services.base.base_strategy import BaseStrategy
+from apps.strategies.services.base.base_prediction_model import BaseModel
+from apps.strategies.services.base.base_indicator import BaseIndicator
 
 def generate_strategy_rules_json(indicators: list[BaseIndicator], models: list[BaseModel]) -> dict:
     

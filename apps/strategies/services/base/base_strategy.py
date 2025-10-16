@@ -2,7 +2,11 @@ from abc import ABC, abstractmethod
 import ccxt
 import pandas as pd
 
-class BaseStrategy(ABC):
+from apps.strategies.services.base.base_indicator import BaseIndicator
+from apps.strategies.services.base.base_signal import BaseSignal
+from apps.strategies.services.core.trade_risk_model import TradeRiskModel
+
+class BaseStrategy(BaseSignal, ABC):
     """
     Abstract base class for all trading strategies.
     Each strategy should inherit from this class and implement its methods.
@@ -28,7 +32,7 @@ class BaseStrategy(ABC):
         pass
 
     @abstractmethod
-    def get_signal_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> str:
+    def get_signal_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> str | tuple[str, TradeRiskModel]:
         """
         Return the latest signal based on the strategy for given candles.
 
@@ -37,5 +41,15 @@ class BaseStrategy(ABC):
 
         Returns:
             str: 'BUY', 'SELL', or 'HOLD'.
+        """
+        pass
+
+    @abstractmethod
+    def get_json(self) -> dict:
+        """
+        Return the strategy parameters in JSON/dict format.
+
+        Returns:
+            dict: Dictionary representation of the strategy parameters.
         """
         pass

@@ -9,4 +9,5 @@ python-binance
 daphne
 websockets
 matplotlib
+pytest
 djangorestframework

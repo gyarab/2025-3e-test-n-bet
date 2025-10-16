@@ -1,24 +1,18 @@
-# apps/strategies/strategies/rsi.py
 import pandas as pd
 
-from apps.strategies.strategies.base_strategy import BaseStrategy
-from apps.strategies.strategies.base_indicator import BaseIndicator
-
 from apps.market.services import get_binance_ohlcv
+from apps.strategies.services.base.base_indicator import BaseIndicator
 
-class RSIStrategy(BaseStrategy, BaseIndicator):
-    def __init__(self, period: int = 14, oversold: int = 30, overbought: int = 70):
+
+class RSIIndicator(BaseIndicator):
+    def __init__(self, period: int = 14):
         """
         Args:
-            period (int): Period for short RSI (default 14)
-            oversold (int): RSI value below which we buy (default 30)
-            overbought (int): RSI value above which we sell (default 70)
+            period ()
         """
         self.period = period
-        self.oversold = oversold
-        self.overbought = overbought
 
-    def calculate_rsi(self, candles):
+    def calculate_rsi(self, candles) -> float:
         """
         Calculate Relative Strength Index (RSI) for the last candle from a list of OHLCV candles.
 
@@ -43,8 +37,11 @@ class RSIStrategy(BaseStrategy, BaseIndicator):
         rsi = (100 - (100 / (1 + rs))).iloc[-1]
 
         return round(float(rsi),3) if pd.notna(rsi) else -1
-
-    def get_list_from_candles(self, candles):
+    
+    def calculate(self, candles, *args) -> float:
+        return self.calculate_rsi(candles)
+    
+    def get_list_from_candles(self, candles) -> list[float]:
         """
         Calculate Relative Strength Index (RSI) list from a list of OHLCV candles.
 
@@ -85,56 +82,3 @@ class RSIStrategy(BaseStrategy, BaseIndicator):
         """
         candles = get_binance_ohlcv(coin, interval, candle_amount)
         return self.get_list_from_candles(candles)  
-
-    def get_signal_from_candles(self, candles):
-        """
-        Calculate RSI signals from a list of OHLCV candles with timestamps.
-
-        Args:
-            candles (list[dict]): List of dictionaries, each containing: open, high, low, close, volume
-            
-        Returns:
-            str: 'BUY', 'SELL', or 'HOLD' based on the latest crossover signal. Return 'NOT ENOUGH DATA' if not enough data.
-        """
-        if not candles or len(candles) < self.period:
-            return 'NOT ENOUGH DATA'
-
-        RSI = self.calculate_rsi(candles)
-        
-        if RSI is None:
-            return 'NOT ENOUGH DATA'
-
-        # Poslední hodnoty RSI
-        if pd.isna(RSI):
-            return 'HOLD'
-        elif RSI < self.oversold:
-            return 'BUY'
-        elif RSI > self.overbought:
-            return 'SELL'
-        else:
-            return 'HOLD'
-        
-    def get_signal_from_coin(self, coin: str, interval: str):
-        """
-        Calculate RSI signal from a list of OHLCV candles with timestamps.
-
-        Args:
-            coin (str): Symbol, e.g., 'BTC/USDT'
-            interval (str): Time interval, e.g., '1h', '1d'
-            
-        Returns:
-            str: 'BUY', 'SELL', or 'HOLD' based on the latest rsi signal. Return 'NOT ENOUGH DATA' if not enough data.
-        """
-
-        candles = get_binance_ohlcv(coin, interval, candle_amount=self.period)
-        return self.get_signal_from_candles(candles)
-
-    def get_json(self) -> dict:
-        return {
-            "RSIStrategy": {
-                "period": self.period,
-                "oversold": self.oversold,
-                "overbought": self.overbought
-            }
-        }
-

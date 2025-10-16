@@ -11,3 +11,10 @@ class BacktestPrice(models.Model):
 
     def __str__(self):
         return f"{self.symbol} - {self.price} ({self.timestamp})"
+    
+
+class Backtest(models.Model):
+    pass
+
+class Trade(models.Model):
+    pass
