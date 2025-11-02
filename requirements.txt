@@ -11,5 +11,5 @@ websockets
 matplotlib
 pytest
 djangorestframework
-django-allouth
+django-allauth
 PyJWT
