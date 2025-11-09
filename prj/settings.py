@@ -96,20 +96,25 @@ ASGI_APPLICATION = 'prj.asgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 import os
-from dotenv import load_dotenv
-load_dotenv()  # načte .env
+from pathlib import Path
+import environ
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test_n_bet',
-        'USER': 'team_user',
-        'PASSWORD': 'tajneheslo',
-        'HOST': '185.107.56.78',  # Ujisti se, že **žádná mezera na začátku/konci**
-        'PORT': '5432',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST', default='127.0.0.1'),
+        'PORT': env('DB_PORT', default='5432'),
     }
 }
-
 
 
 # Password validation
@@ -152,9 +157,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-print("DB NAME:", os.getenv("POSTGRES_DB"))
-print("DB USER:", os.getenv("POSTGRES_USER"))
-print("DB PASSWORD:", os.getenv("POSTGRES_PASSWORD"))
+print("DB NAME:", env("DB_NAME"))
+print("DB USER:", env("DB_USER"))
+print("DB PASSWORD:", env("DB_PASSWORD"))
 
 CHANNEL_LAYERS = {
     "default": {
