@@ -102,10 +102,10 @@ load_dotenv()  # načte .env
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB', 'test_n_bet'),
-        'USER': os.environ.get('POSTGRES_USER', 'team_user'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'tajneheslo'),
-        'HOST': '127.0.0.1',
+        'NAME': 'test_n_bet',
+        'USER': 'team_user',
+        'PASSWORD': 'tajneheslo',
+        'HOST': '185.107.56.78',  # Ujisti se, že **žádná mezera na začátku/konci**
         'PORT': '5432',
     }
 }
