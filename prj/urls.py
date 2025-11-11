@@ -33,4 +33,6 @@ urlpatterns = [
     path('apps/registration/', include('apps.registration.urls')),
     path('home/', include('core.urls')),
     path('', include('core.urls')),
+    path('api/', include('api.urls')),  # všechny endpointy z api
+
 ]
