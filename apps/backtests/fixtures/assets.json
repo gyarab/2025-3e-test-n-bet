@@ -1,0 +1,18 @@
+[
+  {
+    "model": "backtests.asset",
+    "pk": 1,
+    "fields": {
+      "symbol": "BTC",
+      "name": "Bitcoin"
+    }
+  },
+  {
+    "model": "backtests.asset",
+    "pk": 2,
+    "fields": {
+      "symbol": "ETH",
+      "name": "Ethereum"
+    }
+  }
+]

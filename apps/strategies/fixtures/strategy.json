@@ -1,0 +1,50 @@
+[
+  {
+    "model": "strategies.strategy",
+    "pk": 1,
+    "fields": {
+      "name": "SMA",
+      "creator": 1,
+      "base_strategy": null,
+      "parameters": {"period": 20},
+      "is_default": true,
+      "created_at": "2025-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "strategies.strategy",
+    "pk": 2,
+    "fields": {
+      "name": "EMA",
+      "creator": 1,
+      "base_strategy": null,
+      "parameters": {"period": 20},
+      "is_default": false,
+      "created_at": "2025-01-01T12:05:00Z"
+    }
+  },
+  {
+    "model": "strategies.strategy",
+    "pk": 3,
+    "fields": {
+      "name": "RSI",
+      "creator": 1,
+      "base_strategy": null,
+      "parameters": {"period": 14, "overbought": 70, "oversold": 30},
+      "is_default": false,
+      "created_at": "2025-01-01T12:10:00Z"
+    }
+  },
+  {
+    "model": "strategies.strategy",
+    "pk": 4,
+    "fields": {
+      "name": "SMA - Derived",
+      "creator": 1,
+      "base_strategy": 1,
+      "parameters": {"period": 50},
+      "is_default": false,
+      "created_at": "2025-01-01T12:15:00Z"
+    }
+  }
+]

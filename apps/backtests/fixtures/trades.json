@@ -1,0 +1,24 @@
+[
+  {
+    "model": "backtests.trade",
+    "pk": 1,
+    "fields": {
+      "backtest": 1,
+      "time": "2025-02-01T10:00:00Z",
+      "price": 20000,
+      "quantity": 0.1,
+      "profit": 50
+    }
+  },
+  {
+    "model": "backtests.trade",
+    "pk": 2,
+    "fields": {
+      "backtest": 1,
+      "time": "2025-03-01T10:00:00Z",
+      "price": 25000,
+      "quantity": 0.2,
+      "profit": 100
+    }
+  }
+]
