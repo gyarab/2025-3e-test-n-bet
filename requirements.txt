@@ -13,3 +13,4 @@ djangorestframework
 django-allauth
 PyJWT
 django-environ
+django-tailwind

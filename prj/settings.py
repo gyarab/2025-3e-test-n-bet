@@ -39,16 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.strategies',
     'apps.market',
-     "channels",
-     "rest_framework",
+    'channels',
+    'rest_framework',
     'apps.backtests',
-     'allauth',
+    'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
-    # Google provider
+    'core',
     'allauth.socialaccount.providers.google',
-
     'apps.registration',
 ]
 REST_FRAMEWORK = {
@@ -66,7 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        'allauth.account.middleware.AccountMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 
 ]
 
@@ -75,7 +74,7 @@ ROOT_URLCONF = 'prj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -151,15 +150,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-print("DB NAME:", env("DB_NAME"))
-print("DB USER:", env("DB_USER"))
-print("DB PASSWORD:", env("DB_PASSWORD"))
 
 CHANNEL_LAYERS = {
     "default": {

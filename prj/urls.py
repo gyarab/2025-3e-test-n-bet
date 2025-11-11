@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/btc_prices/', BtcPricesView.as_view(), name='btc-prices'),
     path('api/run_backtest/', RunBacktestView.as_view(), name='run-backtest'),
     path('api/', include(router.urls)),  # pokud máš ještě nějaké routery
-        path('apps/registration/', include('apps.registration.urls')),
-
+    path('apps/registration/', include('apps.registration.urls')),
+    path('home/', include('core.urls')),
+    path('', include('core.urls')),
 ]
