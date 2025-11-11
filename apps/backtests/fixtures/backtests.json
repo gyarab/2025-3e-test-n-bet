@@ -1,6 +1,6 @@
 [
   {
-    "model": "backtests.backtest",
+    "model": "backtests.Backtest",
     "pk": 1,
     "fields": {
       "user": 1,

@@ -1,6 +1,6 @@
 [
   {
-    "model": "backtests.trade",
+    "model": "backtests.Trade",
     "pk": 1,
     "fields": {
       "backtest": 1,
@@ -11,7 +11,7 @@
     }
   },
   {
-    "model": "backtests.trade",
+    "model": "backtests.Trade",
     "pk": 2,
     "fields": {
       "backtest": 1,

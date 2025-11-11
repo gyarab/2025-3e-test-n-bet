@@ -1,6 +1,6 @@
 [
   {
-    "model": "registration.user",
+    "model": "registration.User",
     "pk": 1,
     "fields": {
       "user": 1,
@@ -10,23 +10,13 @@
     }
   },
   {
-    "model": "registration.user",
+    "model": "registration.User",
     "pk": 2,
     "fields": {
       "user": 2,
       "full_name": "Eva Novak",
       "date_of_birth": "1992-05-15",
       "created_at": "2025-01-02T12:00:00Z"
-    }
-  },
-  {
-    "model": "registration.user",
-    "pk": 3,
-    "fields": {
-      "user": 3,
-      "full_name": "Jan Svoboda",
-      "date_of_birth": "1985-10-20",
-      "created_at": "2025-01-03T12:00:00Z"
     }
   }
 ]

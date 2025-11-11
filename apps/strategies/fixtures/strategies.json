@@ -1,6 +1,6 @@
 [
   {
-    "model": "strategies.strategy",
+    "model": "strategies.Strategy",
     "pk": 1,
     "fields": {
       "name": "SMA",
@@ -12,7 +12,7 @@
     }
   },
   {
-    "model": "strategies.strategy",
+    "model": "strategies.Strategy",
     "pk": 2,
     "fields": {
       "name": "EMA",
@@ -24,7 +24,7 @@
     }
   },
   {
-    "model": "strategies.strategy",
+    "model": "strategies.Strategy",
     "pk": 3,
     "fields": {
       "name": "RSI",
@@ -36,7 +36,7 @@
     }
   },
   {
-    "model": "strategies.strategy",
+    "model": "strategies.Strategy",
     "pk": 4,
     "fields": {
       "name": "SMA - Derived",

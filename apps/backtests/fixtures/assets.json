@@ -1,6 +1,6 @@
 [
   {
-    "model": "backtests.asset",
+    "model": "backtests.Asset",
     "pk": 1,
     "fields": {
       "symbol": "BTC",
@@ -8,7 +8,7 @@
     }
   },
   {
-    "model": "backtests.asset",
+    "model": "backtests.Asset",
     "pk": 2,
     "fields": {
       "symbol": "ETH",
