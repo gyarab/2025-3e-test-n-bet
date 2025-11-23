@@ -27,7 +27,7 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/btc_prices/', BtcPricesView.as_view(), name='btc-prices'),
+   ## path('api/btc_prices/', BtcPricesView.as_view(), name='btc-prices'),
     path('api/run_backtest/', RunBacktestView.as_view(), name='run-backtest'),
     path('api/', include(router.urls)),  # pokud máš ještě nějaké routery
     path('apps/registration/', include('apps.registration.urls')),
