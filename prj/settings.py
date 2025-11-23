@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'core',
     'allauth.socialaccount.providers.google',
     'apps.registration',
+    'api'
 ]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
