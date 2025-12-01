@@ -1,0 +1,15 @@
+<div class="tradingview-widget-container col-span-1 lg:col-span-2 row-span-2 h-96">
+  <div id="my_chart_container" class="h-full w-full"></div>
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script>
+    new TradingView.widget({
+    "container_id": "my_chart_container",
+    "symbol": "BINANCE:BTCUSD",
+    "interval": "D",
+    "theme": "Light",
+    "autosize": true,
+    "allow_symbol_change": true,  
+    "show_popup_button": true,  
+    });
+  </script>
+</div>

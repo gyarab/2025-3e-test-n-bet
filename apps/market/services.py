@@ -65,3 +65,45 @@ def get_binance_ohlcv(coin: str, interval: str, candle_amount: int = 1):
         for candle in ohlcv_and_time
     ]
 
+def get_live_binance_price(coin: str):
+    """
+    Get the current price of a coin from Binance using CCXT.
+    
+    Args:
+        coin (str): Symbol, e.g., 'BTC/USDT'
+    Returns:
+        float: Current price of the coin
+    """
+    ticker = exchange.fetch_ticker(coin.upper())
+    return ticker['last'] if 'last' in ticker else None
+
+def get_live_binance_change(coin: str):
+    """
+    Get the 24-hour price change of a coin from Binance using CCXT.
+    
+    Args:
+        coin (str): Symbol, e.g., 'BTC/USDT'
+    Returns:
+        float: 24-hour price change of the coin
+    """
+    ticker = exchange.fetch_ticker(coin.upper())
+    return ticker['change'] if 'change' in ticker else None
+
+def get_market_summary(coin_list: list[str]):
+    """
+    Get market summary for a list of coins from Binance using CCXT.
+    
+    Args:
+        coin_list (list[str]): List of symbols, e.g., ['BTC/USDT', 'ETH/USDT']
+    
+    Returns:
+        dict: Market summary including current price and 24-hour change for each coin
+    """
+    summary = {}
+    for coin in coin_list:
+        ticker = exchange.fetch_ticker(coin.upper())
+        summary[coin] = {
+            'current_price': ticker['last'] if 'last' in ticker else None,
+            '24h_change': ticker['change'] if 'change' in ticker else None
+        }
+    return summary
