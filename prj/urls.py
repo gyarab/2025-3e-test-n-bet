@@ -23,16 +23,13 @@ from apps.backtests.views import RunBacktestView
 from django.urls import path, include
 
 router = DefaultRouter()
-# router.register(...)  # smažeme
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-   ## path('api/btc_prices/', BtcPricesView.as_view(), name='btc-prices'),
-    path('api/run_backtest/', RunBacktestView.as_view(), name='run-backtest'),
-    path('api/', include(router.urls)),  # pokud máš ještě nějaké routery
     path('apps/registration/', include('apps.registration.urls')),
     path('home/', include('core.urls')),
     path('', include('core.urls')),
     path('api/', include('api.urls')),  # všechny endpointy z api
-
+    path('backtests/', include('apps.backtests.urls')),
+    path('strategies/', include('apps.strategies.urls')),
 ]
