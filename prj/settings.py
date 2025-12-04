@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import psycopg2
+from psycopg2 import OperationalError
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -52,8 +54,8 @@ INSTALLED_APPS = [
 ]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',  # jen JSON
-        # 'rest_framework.renderers.BrowsableAPIRenderer',  # odkomentuj, pokud chceš browsable API
+        'rest_framework.renderers.JSONRenderer', 
+        # 'rest_framework.renderers.BrowsableAPIRenderer',
     )
 }
 
@@ -105,16 +107,40 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST', default='127.0.0.1'),
-        'PORT': env('DB_PORT', default='5432'),
+sqlite_db = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+postgres_db = {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': env('DB_NAME', default=None),
+    'USER': env('DB_USER', default=None),
+    'PASSWORD': env('DB_PASSWORD', default=None),
+    'HOST': env('DB_HOST', default='127.0.0.1'),
+    'PORT': env('DB_PORT', default='5432'),
+}
+
+try:
+    conn = psycopg2.connect(
+        dbname=postgres_db['NAME'],
+        user=postgres_db['USER'],
+        password=postgres_db['PASSWORD'],
+        host=postgres_db['HOST'],
+        port=postgres_db['PORT'],
+        connect_timeout=1,
+    )
+    conn.close()
+    DATABASES = {'default': postgres_db}
+    print("Using PostgreSQL.")
+except OperationalError:
+    DATABASES = sqlite_db
+    print("PostgreSQL not available — using SQLite.")
+
+
+# DATABASES = { 'default': { 'ENGINE': 'django.db.backends.postgresql', 'NAME': env('DB_NAME'), 'USER': env('DB_USER'), 'PASSWORD': env('DB_PASSWORD'), 'HOST': env('DB_HOST', default='127.0.0.1'), 'PORT': env('DB_PORT', default='5432'), } }
 
 
 # Password validation

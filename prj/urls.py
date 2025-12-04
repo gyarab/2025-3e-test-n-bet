@@ -18,8 +18,6 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from apps.market.views import BtcPricesView
-from apps.backtests.views import RunBacktestView
 from django.urls import path, include
 
 router = DefaultRouter()
@@ -29,7 +27,7 @@ urlpatterns = [
     path('apps/registration/', include('apps.registration.urls')),
     path('home/', include('core.urls')),
     path('', include('core.urls')),
-    path('api/', include('api.urls')),  # všechny endpointy z api
+    path('api/', include('api.urls')), 
     path('backtests/', include('apps.backtests.urls')),
     path('strategies/', include('apps.strategies.urls')),
 ]
