@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.shortcuts import redirect
+from django.urls import path, re_path
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
@@ -30,4 +31,8 @@ urlpatterns = [
     path('api/', include('api.urls')), 
     path('backtests/', include('apps.backtests.urls')),
     path('strategies/', include('apps.strategies.urls')),
+]
+
+urlpatterns += [
+    re_path(r'^.*$', lambda request: redirect('/#')),  
 ]
