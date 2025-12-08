@@ -7,7 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
             item: function(data, escape) {
                 return `
                     <div class="indicator-chip cursor-pointer bg-blue-100 px-3 py-1 rounded-md" data-value="${data.value}">
-                        ${escape(data.text)}
+                        ${escape("adfsd")}
+                                        <div class="font-semibold mb-2 capitalize">${value.replace("_", " ")} Settings</div>
+                <label class="block text-sm text-gray-600 mb-1">Parameter</label>
+                <input type="number" class="w-full border p-2 rounded" placeholder="Set value..." />
                     </div>
                 `;
             }
