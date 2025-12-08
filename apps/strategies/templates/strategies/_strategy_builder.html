@@ -1,0 +1,31 @@
+{% load static %}
+
+<div id="strategy_builder" class ="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Strategy Builder</h2>
+    <form id="strategy_form" class="space-y-4">
+        <div>
+            <label for="strategy_name" class="block text-sm font-medium text-gray-700">Strategy Name</label>
+            <input type="text" id="strategy_name" name="strategy_name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+        </div>
+        <div>
+            <label for="indicators" class="block text-sm font-medium text-gray-700">Indicators</label>
+            <select id="indicators" name="indicators" multiple class="mt-1 block w-full">
+                <option value="moving_average">Moving Average</option>
+                <option value="rsi">Relative Strength Index (RSI)</option>
+                <option value="macd">MACD</option>
+                <option value="bollinger_bands">Bollinger Bands</option>
+            </select>
+        </div>
+        <div>
+            <label for="parameters" class="block text-sm font-medium text-gray-700">Parameters (JSON format)</label>
+            <textarea id="parameters" name="parameters" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder='{"moving_average": {"period": 20}, "rsi": {"period": 14}}'></textarea>
+        </div> 
+        <div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Save Strategy</button>   
+        </div>
+    </form>
+    <div id="strategy_result" class="mt-6"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script src="{% static 'strategies/strategy_builder.js' %}" defer></script>
