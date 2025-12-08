@@ -101,11 +101,11 @@ import os
 from pathlib import Path
 import environ
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Initialise environment variables
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+print("Environment variables loaded.")
+print(f"DB_NAME: {env('DB_NAME')}")
 
 sqlite_db = {
     "default": {
@@ -116,11 +116,11 @@ sqlite_db = {
 
 postgres_db = {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': env('DB_NAME', default=None),
-    'USER': env('DB_USER', default=None),
-    'PASSWORD': env('DB_PASSWORD', default=None),
-    'HOST': env('DB_HOST', default='127.0.0.1'),
-    'PORT': env('DB_PORT', default='5432'),
+    'NAME': env('DB_NAME'),
+    'USER': env('DB_USER'),
+    'PASSWORD': env('DB_PASSWORD'),
+    'HOST': env('DB_HOST'),
+    'PORT': env('DB_PORT'),
 }
 
 try:
@@ -130,7 +130,7 @@ try:
         password=postgres_db['PASSWORD'],
         host=postgres_db['HOST'],
         port=postgres_db['PORT'],
-        connect_timeout=1,
+        connect_timeout=5,
     )
     conn.close()
     DATABASES = {'default': postgres_db}
