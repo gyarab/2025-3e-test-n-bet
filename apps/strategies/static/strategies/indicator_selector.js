@@ -1,9 +1,12 @@
 class IndicatorSelector {
+    //TODO: keyboard support for choosing indicators
+    //TODO: smoothly animate card expand/collapse
+    //TODO: 
     constructor(selector, options) {
         this.wrapper = document.querySelector(selector);
         this.possible_options = options;
         this.current_options = options;
-        this.selected = new Map();
+        this.selected = new Set();
 
         this.buildUI();
         this.bindEvents();
@@ -23,37 +26,54 @@ class IndicatorSelector {
         this.list = this.wrapper.querySelector(".indicator-list");
         this.cards = this.wrapper.querySelector(".indicator-cards");
 
-        this.renderList();
+        this.updateList();
     }
 
-    // Opens the drop-list
-    renderList() {
+    // Changes the list's content based on the input
+    updateList() {
         const q = this.input.value.toLowerCase();
         this.list.innerHTML = "";
+        
+        const optionsToShow = this.current_options.filter(opt => 
+            opt.toLowerCase().includes(q)
+        );
+        
+        if (optionsToShow.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "p-2 text-gray-400 text-sm";
+            empty.textContent = "No results found";
+            this.list.appendChild(empty);
+            return;
+        }
 
-        this.current_options
-            .filter(opt => opt.includes(q))
-            .forEach(opt => {
+        optionsToShow.forEach(opt => {
                 const el = document.createElement("div");
                 el.className = "p-2 hover:bg-gray-100 cursor-pointer";
                 el.dataset.value = opt;
-                console.log(opt)
+                el.textContent = opt;
                 this.list.appendChild(el);
             });
     }
 
-    // Adds open/close events 
+    // Adds open/close list events 
     bindEvents() {
-        this.input.addEventListener("input", () => this.renderList());
-        this.input.addEventListener("focus", () => this.list.classList.remove("hidden"));
-
-        document.addEventListener("click", (e) => {
-            if (!this.wrapper.contains(e.target)) {
-                this.list.classList.add("hi`dden");
-            }
+        this.input.addEventListener("input", () => {
+            this.updateList();
+            this.list.classList.remove("hidden"); 
         });
 
+        this.input.addEventListener("focus", () => this.list.classList.remove("hidden"));
+        
+        // Closing the list when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!this.wrapper.contains(e.target)) {
+                this.list.classList.add("hidden");
+            }
+        });
+        
+        // Choosing an indicator from the list
         this.list.addEventListener("click", (e) => {
+            e.stopPropagation();
             if (!e.target.dataset.value) return;
             this.addIndicator(e.target.dataset.value);
         });
@@ -61,11 +81,13 @@ class IndicatorSelector {
 
     // Adding inidcator after it being chosen
     addIndicator(value) {
-        if (this.selected.has(value)) return;
+        if (this.selected.has(value)) 
+            return;
 
-        this.selected.set(value, true);
+        this.selected.add(value);
 
         const card = document.createElement("div");
+        card.dataset.value = value;
         card.className = "p-3 bg-blue-100 rounded border cursor-pointer";
 
         card.innerHTML = `
@@ -105,14 +127,14 @@ class IndicatorSelector {
         for (const opt of this.possible_options) {
             const isSelected = this.selected.has(opt)
             
-            if (isSelected) {
+            if (!isSelected) {
                 updated.push(opt)
             }
         }
 
         this.current_options = updated
 
-        this.renderList();
+        this.updateList();
     }
 
     // Removes the indicator
@@ -123,7 +145,7 @@ class IndicatorSelector {
         );
         const all = this.cards.children;
         for (const c of all) {
-            if (c.querySelector("span").textContent.toLowerCase().replace(" ", "_") === value) {
+            if (c.dataset.value === value) {
                 c.remove();
             }
         }
