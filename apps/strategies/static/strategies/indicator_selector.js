@@ -1,7 +1,7 @@
 class IndicatorSelector {
     //TODO: keyboard support for choosing indicators
     //TODO: smoothly animate card expand/collapse
-    //TODO: 
+    //TODO: fix bugs that when something is added and i click enter it deletes
     constructor(selector, options) {
         this.wrapper = document.querySelector(selector);
         this.possible_options = options;
@@ -15,14 +15,14 @@ class IndicatorSelector {
     // Creates the HTML elements
     buildUI() {
         this.wrapper.innerHTML = `
-            <input class="indicator-input border p-2 w-full rounded mb-2" placeholder="Search...">
+            <input name="indicator-input" class="indicator-input border p-2 w-full rounded mb-2" placeholder="Search...">
 
             <div class="indicator-list bg-white border rounded shadow mb-2 hidden max-h-40 overflow-auto"></div>
 
             <div class="indicator-cards space-y-3"></div>
         `;
 
-        this.input = this.wrapper.querySelector(".indicator-input");
+        this.input = this.wrapper.querySelector("input[name='indicator-input']");
         this.list = this.wrapper.querySelector(".indicator-list");
         this.cards = this.wrapper.querySelector(".indicator-cards");
 
@@ -47,12 +47,12 @@ class IndicatorSelector {
         }
 
         optionsToShow.forEach(opt => {
-                const el = document.createElement("div");
-                el.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                el.dataset.value = opt;
-                el.textContent = opt;
-                this.list.appendChild(el);
-            });
+            const el = document.createElement("div");
+            el.className = "p-2 hover:bg-gray-100 cursor-pointer";
+            el.dataset.value = opt;
+            el.textContent = opt;
+            this.list.appendChild(el);
+        });
     }
 
     // Adds open/close list events 
@@ -60,6 +60,7 @@ class IndicatorSelector {
         this.input.addEventListener("input", () => {
             this.updateList();
             this.list.classList.remove("hidden"); 
+            this.clearHighlight([...this.list.querySelectorAll(".bg-gray-200")]);
         });
 
         this.input.addEventListener("focus", () => this.list.classList.remove("hidden"));
@@ -76,13 +77,77 @@ class IndicatorSelector {
             e.stopPropagation();
             if (!e.target.dataset.value) return;
             this.addIndicator(e.target.dataset.value);
+
+            if (!this.wrapper.contains(e.target)) {
+                this.list.classList.add("hidden");
+                this.clearHighlight([...this.list.querySelectorAll(".bg-gray-200")]);
+            }
         });
+
+        this.input.addEventListener("keydown", (e) => {
+            const items = [...this.list.querySelectorAll("[data-value]")];
+
+            if (items.length === 0 || this.list.classList.contains("hidden")) {
+                if (["ArrowUp", "ArrowDown", "Enter"].includes(e.key)) {
+                    e.preventDefault();
+                }
+                return;
+            }
+
+            let index = items.findIndex(i => i.classList.contains("bg-gray-200"));
+
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                index = this.highlightMatch(items, index, 1);
+            }
+
+            if (e.key === "ArrowUp") {
+                e.preventDefault();
+                index = this.highlightMatch(items, index, -1);
+            }
+
+            if (e.key === "Enter" && index >= 0) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.addIndicator(items[index].dataset.value);
+            }
+
+            if (e.key === "Escape") {
+                e.preventDefault();
+                e.stopPropagation();
+                this.clearHighlight([...this.list.querySelectorAll(".bg-gray-200")]);
+                this.list.classList.add("hidden");
+            }
+        });
+        
+    }
+
+    // Highlights the matched item in the list
+    highlightMatch(items, index, delta= 1) {
+        if (index >= 0) 
+            items[index].classList.remove("bg-gray-200");
+        index = (index + delta + items.length) % items.length;
+        items[index].classList.add("bg-gray-200");
+        items[index].scrollIntoView({ block: "nearest" });
+        return index;
+    }
+
+    // Clears all highlights
+    clearHighlight(items) {
+        items.forEach(i => i.classList.remove("bg-gray-200"));
     }
 
     // Adding inidcator after it being chosen
     addIndicator(value) {
+        console.log("Adding indicator:", value);
         if (this.selected.has(value)) 
             return;
+
+        if (value === undefined || value === null || value === "") {
+console.log("Invalid value");
+            return;
+        }
+            
 
         this.selected.add(value);
 
@@ -93,7 +158,7 @@ class IndicatorSelector {
         card.innerHTML = `
             <div class="flex justify-between items-center">
                 <span class="font-semibold capitalize">${value.replace("_", " ")}</span>
-                <button class="remove-card text-red-600 font-bold text-lg leading-none px-2">×</button>
+                <button type="button" class="remove-card text-red-600 font-bold text-lg leading-none px-2">×</button>
             </div>
 
             <div class="settings mt-3 hidden">
@@ -113,6 +178,7 @@ class IndicatorSelector {
         });
 
         removeBtn.addEventListener("click", (e) => {
+            console.log("Removing indicator:", value);
             e.stopPropagation();
             this.removeIndicator(value);
         });
