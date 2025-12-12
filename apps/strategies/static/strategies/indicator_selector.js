@@ -15,7 +15,7 @@ class IndicatorSelector {
     // Creates the HTML elements
     buildUI() {
         this.wrapper.innerHTML = `
-            <input name="indicator-input" class="indicator-input border p-2 w-full rounded mb-2" placeholder="Search...">
+            <input name="indicator-input" class="indicator-input border p-2 w-full rounded mb-2" placeholder="Add new indicator...">
 
             <div class="indicator-list bg-white border rounded shadow mb-2 hidden max-h-40 overflow-auto"></div>
 
@@ -69,6 +69,7 @@ class IndicatorSelector {
         document.addEventListener("click", (e) => {
             if (!this.wrapper.contains(e.target)) {
                 this.list.classList.add("hidden");
+                console.log("Clicked outside indicator selector");
             }
         });
         
@@ -85,13 +86,19 @@ class IndicatorSelector {
         });
 
         this.input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
             const items = [...this.list.querySelectorAll("[data-value]")];
 
             if (items.length === 0 || this.list.classList.contains("hidden")) {
-                if (["ArrowUp", "ArrowDown", "Enter"].includes(e.key)) {
+                if (["ArrowUp", "ArrowDown"].includes(e.key)) {
                     e.preventDefault();
+                    e.stopPropagation();
                 }
-                return;
+                return false;
             }
 
             let index = items.findIndex(i => i.classList.contains("bg-gray-200"));
@@ -139,12 +146,10 @@ class IndicatorSelector {
 
     // Adding inidcator after it being chosen
     addIndicator(value) {
-        console.log("Adding indicator:", value);
         if (this.selected.has(value)) 
             return;
 
         if (value === undefined || value === null || value === "") {
-console.log("Invalid value");
             return;
         }
             
@@ -156,31 +161,39 @@ console.log("Invalid value");
         card.className = "p-3 bg-blue-100 rounded border cursor-pointer";
 
         card.innerHTML = `
-            <div class="flex justify-between items-center">
-                <span class="font-semibold capitalize">${value.replace("_", " ")}</span>
-                <button type="button" class="remove-card text-red-600 font-bold text-lg leading-none px-2">×</button>
-            </div>
-
-            <div class="settings mt-3 hidden">
-                <label class="block text-sm text-gray-600 mb-1">Parameter</label>
-                <input type="number" class="w-full border p-2 rounded" placeholder="Set value...">
+            <div class="p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-100">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="flex items-center justify-center px-4 py-2 bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">
+                        ${value.replace("_", " ")}
+                    </span>
+                    <button type="button" class="remove-card text-white bg-gray-500 hover:bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md transition-colors duration-200">
+                        x
+                    </button>
+                </div>
+                <div class="settings mt-2 hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Parameter</label>
+                    <input type="number" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150" placeholder="Set value...">
+                </div>
             </div>
         `;
+
 
         this.cards.appendChild(card);
 
         const settings = card.querySelector(".settings");
+        const header = card.querySelector(".flex");
         const removeBtn = card.querySelector(".remove-card");
 
-        card.addEventListener("click", (e) => {
-            if (e.target === removeBtn) return;
-            settings.classList.toggle("hidden");
+        removeBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            this.removeIndicator(value);
         });
 
-        removeBtn.addEventListener("click", (e) => {
-            console.log("Removing indicator:", value);
+        header.addEventListener("click", (e) => {
             e.stopPropagation();
-            this.removeIndicator(value);
+            e.preventDefault();
+            settings.classList.toggle("hidden");
         });
 
         this.reloadTheInitialList()
