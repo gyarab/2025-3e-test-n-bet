@@ -15,6 +15,9 @@ class SMAStrategy(IndicatorStrategy):
             short_window (int): Period for short SMA (default 10)
             long_window (int): Period for long SMA (default 30)
         """
+        if (short_window < 0 or long_window < 0) or (short_window >= long_window) or (short_window > 50) or (long_window > 300):
+            raise ValueError("Invalid window sizes: short_window must be > 0, long_window must be > short_window, short_window <= 50, long_window <= 300.")
+
         sma_indicator = sma_indicator or SMAIndicator()
         self.sma_indicator = sma_indicator
         self.short_window = short_window

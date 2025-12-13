@@ -1,9 +1,6 @@
 import IndicatorSelector from './indicator_selector.js'
 
-document.addEventListener("DOMContentLoaded", () => {
-    new IndicatorSelector("#indicator-select", [
-        "RSI",
-        "SMA",
-        "MACD"
-    ]);
-});
+export function initIndicatorSelector(wrapperSelector, indicatorsData) {
+    const optionNames = indicatorsData.indicators.map(i => i.name);
+    return new IndicatorSelector(wrapperSelector, optionNames, indicatorsData);
+}

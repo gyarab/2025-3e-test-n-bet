@@ -1,0 +1,61 @@
+{
+  "indicators": [
+    {
+      "name": "SMA",
+      "parameters": [
+        {
+          "name": "short_window",
+          "min": 1,
+          "max": 50,
+          "default": 10
+        },
+        {
+          "name": "long_window",
+          "min": 2,
+          "max": 300,
+          "default": 30
+        }
+      ]
+    },
+    {
+      "name": "RSI",
+      "parameters": [
+        {
+          "name": "oversold",
+          "min": 0,
+          "max": 50,
+          "default": 30
+        },
+        {
+          "name": "overbought",
+          "min": 50,
+          "max": 100,
+          "default": 70
+        }
+      ]
+    },
+    {
+      "name": "MACD",
+      "parameters": [
+        {
+          "name": "fast_period",
+          "min": 2,
+          "max": 50,
+          "default": 12
+        },
+        {
+          "name": "slow_period",
+          "min": 3,
+          "max": 100,
+          "default": 26
+        },
+        {
+          "name": "signal_period",
+          "min": 1,
+          "max": 50,
+          "default": 9
+        }
+      ]
+    }
+  ]
+}

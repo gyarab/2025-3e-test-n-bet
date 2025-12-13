@@ -1,12 +1,10 @@
 class IndicatorSelector {
-    //TODO: keyboard support for choosing indicators
-    //TODO: smoothly animate card expand/collapse
-    //TODO: fix bugs that when something is added and i click enter it deletes
-    constructor(selector, options) {
+    constructor(selector, options, indicatorsData) {
         this.wrapper = document.querySelector(selector);
         this.possible_options = options;
         this.current_options = options;
         this.selected = new Set();
+        this.indicatorsData = indicatorsData.indicators;
 
         this.buildUI();
         this.bindEvents();
@@ -152,37 +150,76 @@ class IndicatorSelector {
         if (value === undefined || value === null || value === "") {
             return;
         }
-            
 
         this.selected.add(value);
 
         const card = document.createElement("div");
         card.dataset.value = value;
-        card.className = "p-3 bg-blue-100 rounded border cursor-pointer";
+        card.className = "p-3 bg-teal-300 rounded border cursor-pointer";
 
         card.innerHTML = `
             <div class="p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-100">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="flex items-center justify-center px-4 py-2 bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">
-                        ${value.replace("_", " ")}
-                    </span>
-                    <button type="button" class="remove-card text-white bg-gray-500 hover:bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md transition-colors duration-200">
-                        x
+                <div class="card-header flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <span class="flex items-center justify-center px-4 py-2 bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">
+                            ${value.replace("_", " ")}
+                        </span>
+                        <svg class="arrow w-4 h-4 left text-teal-700 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </div>
+                    <button type="button" class="remove-card bg-gray-500 hover:bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md transition-colors duration-200">
+                        <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="15" y1="5" x2="5" y2="15" />
+                            <line x1="5" y1="5" x2="15" y2="15" />
+                        </svg>
                     </button>
                 </div>
-                <div class="settings mt-2 hidden">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Parameter</label>
-                    <input type="number" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150" placeholder="Set value...">
+                <div class="settings overflow-y-auto max-h-0 opacity-0 transition-all duration-200 ease-in-out">
+                    <!-- Parameter settings -->
                 </div>
             </div>
         `;
 
-
         this.cards.appendChild(card);
 
         const settings = card.querySelector(".settings");
-        const header = card.querySelector(".flex");
+        this.addParameterToIndicator(settings, value);
+
+        const header = card.querySelector(".card-header");
         const removeBtn = card.querySelector(".remove-card");
+        const expandIcon = card.querySelector(".arrow");
+        
+        //Toggles the parameter settings section
+        const toggleExpand = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            expandIcon.classList.toggle("rotate-180");
+            expandIcon.classList.toggle("text-teal-900");
+
+            // Animate settings section
+            if (settings.classList.contains("max-h-0")) {
+                // Expanding
+                settings.classList.remove("max-h-0", "opacity-0");
+                settings.classList.add("max-h-40", "opacity-100", "mt-2");
+                settings.style.overflowY = "hidden";
+
+                // Adding overflow auto after transition
+                settings.addEventListener("transitionend", function handler() {
+                    settings.style.overflowY = "auto";
+                    settings.removeEventListener("transitionend", handler);
+                });
+            } else {
+                // Collapsing
+                settings.classList.remove("max-h-40", "opacity-100", "mt-2");
+                settings.classList.add("max-h-0", "opacity-0");
+                settings.style.overflowY = "hidden";
+            }
+        };
+
+        header.addEventListener("click", toggleExpand);
+        expandIcon.addEventListener("click", toggleExpand);
 
         removeBtn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -190,15 +227,42 @@ class IndicatorSelector {
             this.removeIndicator(value);
         });
 
-        header.addEventListener("click", (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            settings.classList.toggle("hidden");
-        });
-
         this.reloadTheInitialList()
     }
-    
+
+    addParameterToIndicator(settings, indicator_name) {
+        function capitalizeWords(str) {
+            return str
+                .split("_") 
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ");
+        };
+        console.log(document.currentScript);
+
+        this.indicatorsData.forEach(indicator => {
+            if (indicator.name === indicator_name) {
+                indicator.parameters.forEach(param => {
+                    const container = document.createElement("div");
+
+                    const label = document.createElement("label");
+                    label.className = "block text-sm font-medium text-gray-700 mb-1";
+                    label.textContent = capitalizeWords(param.name);
+                    container.appendChild(label);
+
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.min = param.min;
+                    input.max = param.max;
+                    input.className = "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150";  
+                    input.placeholder = param.default;       
+                    container.appendChild(input);
+
+                    settings.appendChild(container);
+                });
+            }
+        });
+    }
+
     // Reloads the choice-list. Must be called after each operation
     reloadTheInitialList() {
         let updated = []
