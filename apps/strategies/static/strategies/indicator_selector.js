@@ -155,7 +155,7 @@ class IndicatorSelector {
 
         const card = document.createElement("div");
         card.dataset.value = value;
-        card.className = "p-3 bg-teal-300 rounded border cursor-pointer";
+        card.className = "overflow-hidden transform opacity-0 scale-80 max-h-0 transition-all duration-500 ease-out p-3 bg-teal-300 rounded border cursor-pointer";
 
         card.innerHTML = `
             <div class="p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-100">
@@ -176,15 +176,34 @@ class IndicatorSelector {
                     </button>
                 </div>
                 <div class="settings overflow-y-auto max-h-0 opacity-0 transition-all duration-200 ease-in-out">
-                    <!-- Parameter settings -->
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 mt-3">Condition</label>
+                        <select class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150 mb-3">
+                            <option value="greater_than">Greater Than</option>
+                            <option value="less_than">Less Than</option>
+                        </select>
+                        <input type="number" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150" placeholder="Value">
+                    </div> 
+                    <hr class="my-3">
+                    <div class="parameters space-y-3">
+                        <!-- Parameter settings -->
+                    </div>              
                 </div>
             </div>
         `;
 
         this.cards.appendChild(card);
+        
+        // Because card was just added, we need to wait for the next frame to trigger the transition
+        requestAnimationFrame(() => {
+            card.classList.remove("opacity-0", "scale-80", "max-h-0");
+            card.classList.add("opacity-100", "scale-100", "max-h-[500px]");
+        });
 
         const settings = card.querySelector(".settings");
-        this.addParameterToIndicator(settings, value);
+        const parametersContainer = card.querySelector(".parameters");
+        this.addParameterToIndicator(parametersContainer, value);
 
         const header = card.querySelector(".card-header");
         const removeBtn = card.querySelector(".remove-card");
@@ -237,8 +256,32 @@ class IndicatorSelector {
                 .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(" ");
         };
-        console.log(document.currentScript);
 
+        this.indicatorsData.forEach(indicator => {
+            if (indicator.name === indicator_name) {
+                indicator.parameters.forEach(param => {
+                    const container = document.createElement("div");
+
+                    const label = document.createElement("label");
+                    label.className = "block text-sm font-medium text-gray-700 mb-1";
+                    label.textContent = capitalizeWords(param.name);
+                    container.appendChild(label);
+
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.min = param.min;
+                    input.max = param.max;
+                    input.className = "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150";  
+                    input.placeholder = param.default;       
+                    container.appendChild(input);
+
+                    settings.appendChild(container);
+                });
+            }
+        });
+    }
+
+    addConditionInputToIndicator(settings) {
         this.indicatorsData.forEach(indicator => {
             if (indicator.name === indicator_name) {
                 indicator.parameters.forEach(param => {
@@ -286,14 +329,16 @@ class IndicatorSelector {
         const card = this.cards.querySelector(
             `[data-value="${value}"]`
         );
-        const all = this.cards.children;
-        for (const c of all) {
-            if (c.dataset.value === value) {
-                c.remove();
-            }
-        }
+        if (!card) return;
+        
+        card.classList.remove("opacity-100", "scale-100", "max-h-[500px]");
+        card.classList.add("opacity-0", "scale-80", "max-h-0", "p-0", "mb-0");
 
-        this.reloadTheInitialList()
+        card.addEventListener("transitionend", () => {
+            card.remove();
+            const all = this.cards.children;
+            this.reloadTheInitialList();
+        });
     }
 }
 

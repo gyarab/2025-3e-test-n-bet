@@ -1,0 +1,16 @@
+{% load static %}
+
+<div id="condition-builder" class="w-96 border rounded-lg p-3 bg-white shadow">
+    <!-- Condition builder will be rendered here by condition_builder.js -->
+</div>
+
+<script id="indicators-data" type="application/json">
+    {{ indicators_json|safe }}
+</script>
+<script type="module">
+    import { initConditionBuilder } from "{% static 'strategies/strategy_builder.js' %}";
+    const indicatorsData = JSON.parse(
+        document.getElementById('indicators-data').textContent
+    );
+    const builder = initConditionBuilder('#condition-builder', indicatorsData);
+</script>

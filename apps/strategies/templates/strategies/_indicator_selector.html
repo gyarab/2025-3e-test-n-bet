@@ -1,0 +1,16 @@
+{% load static %}
+
+<div id="indicator-select" class="w-96 border rounded-lg p-3 bg-white shadow">
+    <!-- Indicator selector will be rendered here by indicator_selector.js -->
+</div>
+
+<script id="indicators-data" type="application/json">
+    {{ indicators_json|safe }}
+</script>
+<script type="module">
+    import { initIndicatorSelector } from "{% static 'strategies/strategy_builder.js' %}";
+    const indicatorsData = JSON.parse(
+        document.getElementById('indicators-data').textContent
+    );
+    const selector = initIndicatorSelector('#indicator-select', indicatorsData);
+</script>

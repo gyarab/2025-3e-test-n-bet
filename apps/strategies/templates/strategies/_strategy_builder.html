@@ -8,11 +8,13 @@
             <input type="text" id="strategy_name" name="strategy_name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
         </div>
         <div>
+            <label for="indicators" class="block text-sm font-medium text-gray-700">Conditions</label>
+        </div>
+        {% include 'strategies/_condition_builder.html' %}
+        <div>
             <label for="indicators" class="block text-sm font-medium text-gray-700">Indicators</label>
         </div>
-        <div id="indicator-select" class="w-96 border rounded-lg p-3 bg-white shadow">
-            <!-- Indicator selector will be rendered here by indicator_selector.js -->
-        </div>
+        {% include 'strategies/_indicator_selector.html' %}
         <div>
             <label for="parameters" class="block text-sm font-medium text-gray-700">Parameters (JSON format)</label>
             <textarea id="parameters" name="parameters" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder='{"moving_average": {"period": 20}, "rsi": {"period": 14}}'></textarea>
@@ -25,13 +27,3 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
-<script id="indicators-data" type="application/json">
-    {{ indicators_json|safe }}
-</script>
-<script type="module">
-    import { initIndicatorSelector } from "{% static 'strategies/strategy_builder.js' %}";
-    const indicatorsData = JSON.parse(
-        document.getElementById('indicators-data').textContent
-    );
-    const selector = initIndicatorSelector('#indicator-select', indicatorsData);
-</script>
