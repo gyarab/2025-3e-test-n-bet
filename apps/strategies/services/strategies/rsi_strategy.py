@@ -16,6 +16,9 @@ class RSIStrategy(IndicatorStrategy):
             oversold (int): RSI value below which we buy (default 30)
             overbought (int): RSI value above which we sell (default 70)
         """
+        if (oversold < 0 or overbought < 0) or (oversold >= overbought) or (oversold > 50) or (overbought > 100):
+            raise ValueError("Invalid RSI thresholds: oversold must be >= 0, overbought must be > oversold, oversold <= 50, overbought <= 100.")
+
         rsi_indicator = rsi_indicator or RSIIndicator()
         self.rsi_indicator = rsi_indicator
         self.period = rsi_indicator.period

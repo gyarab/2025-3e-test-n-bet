@@ -8,17 +8,21 @@ from apps.strategies.services.base.atomic_strategy import AtomicStrategy
 from apps.strategies.services.base.indicator_strategy import IndicatorStrategy
 
 class MACDStrategy(IndicatorStrategy):
-    def __init__(self, macd_indicator: MACDIndicator = None):
+    def __init__(self, macd_indicator: MACDIndicator = None, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9):
         """
-        
+        Args:
+            macd_indicator
         """
+        if (fast_period < 1 or slow_period < 1 or signal_period < 1) or (fast_period >= slow_period) or (fast_period > 50) or (slow_period > 100) or (signal_period > 50):
+            raise ValueError("Invalid MACD parameters: fast_period must be > 0, slow_period must be > fast_period, signal_period must be > 0, fast_period <= 50, slow_period <= 100, signal_period <= 50.")
+
         self.macd_indicator = macd_indicator or MACDIndicator
         self.fast_period = self.macd_indicator.fast_period 
         self.slow_period = self.macd_indicator.slow_period
         self.signal_period = self.macd_indicator.signal_period 
 
     @classmethod
-    def from_parametrs(cls, fast_period: int = 12, slow_period: int = 26, signal_period: int = 90):
+    def from_parametrs(cls, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9):
         return cls(MACDIndicator(fast_period=fast_period, slow_period=slow_period, signal_period=signal_period))
         
 
