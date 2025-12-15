@@ -3,7 +3,7 @@ import os
 import json
 
 def strategy(request):
-    json_path = os.path.join('apps', 'strategies', 'static', 'strategies', 'indicators.json')
+    json_path = os.path.join('apps', 'strategies', 'static', 'strategies', 'strategy_builder', 'indicators.json')
     with open(json_path, 'r') as f:
         indicators = json.load(f)
 

@@ -1,6 +1,6 @@
 {% load static %}
 
-<div id="condition-builder" class="w-96 border rounded-lg p-3 bg-white shadow">
+<div id="condition-builder" class="border rounded-lg p-3 bg-white shadow">
     <!-- Condition builder will be rendered here by condition_builder.js -->
 </div>
 
@@ -8,7 +8,7 @@
     {{ indicators_json|safe }}
 </script>
 <script type="module">
-    import { initConditionBuilder } from "{% static 'strategies/strategy_builder.js' %}";
+    import { initConditionBuilder } from "{% static 'strategies/main.js' %}";
     const indicatorsData = JSON.parse(
         document.getElementById('indicators-data').textContent
     );
