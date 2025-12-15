@@ -1,4 +1,5 @@
-create or replace function chybova_hlaska(
+
+CREATE FUNCTION chybova_hlaska(
     chyba_id integer,
     code integer,
     c_op integer,
@@ -7,23 +8,23 @@ create or replace function chybova_hlaska(
     cas timestamp with time zone default current_timestamp,
     detaily jsonb default '{}'::jsonb
 )
-returns table(
+RETURNS TABLE(
     stav integer,
     odpoved json,
-    hlavicky json
-) as $$
-begin
+    headers json
+) AS $$
+BEGIN
     stav := chyba_id; 
     odpoved := json_build_object(
         'message', 'Došlo k chybě',
-        'detaily', detaily,
+        'details', detaily,
         'request', req
     );
-    hlavicky := json_build_object(
+    headers := json_build_object(
         'X-Operation', c_op,
         'X-Code', code
     );
 
-    return next;
-end;
-$$ language plpgsql security definer;
+    RETURN NEXT;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

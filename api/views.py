@@ -12,15 +12,15 @@ def get_trades(request):
         result = cursor.fetchone()
 
     if result:
-        stav, odpoved, hlavicky = result
+        stav, odpoved, headers = result
         return JsonResponse({
             'stav': stav,
             'data': odpoved,
-            'hlavicky': hlavicky
+            'headers': headers
         })
     else:
         return JsonResponse({
             'stav': 1,
             'data': [],
-            'hlavicky': {}
+            'headers': {}
         })
