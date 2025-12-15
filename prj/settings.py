@@ -102,45 +102,25 @@ from pathlib import Path
 import environ
 
 # Initialise environment variables
+import environ
+import os
+
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-print("Environment variables loaded.")
-print(f"DB_NAME: {env('DB_NAME')}")
 
-sqlite_db = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME', default='defaultdb'),
+        'USER': env('DB_USER', default='avnadmin'),
+        'PASSWORD': env('DB_PASSWORD', default=''),
+        'HOST': env('DB_HOST', default='testnbet-testnbet.j.aivencloud.com'),
+        'PORT': env('DB_PORT', default='12601'),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
-
-postgres_db = {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': env('DB_NAME'),
-    'USER': env('DB_USER'),
-    'PASSWORD': env('DB_PASSWORD'),
-    'HOST': env('DB_HOST'),
-    'PORT': env('DB_PORT'),
-}
-
-try:
-    conn = psycopg2.connect(
-        dbname=postgres_db['NAME'],
-        user=postgres_db['USER'],
-        password=postgres_db['PASSWORD'],
-        host=postgres_db['HOST'],
-        port=postgres_db['PORT'],
-        connect_timeout=5,
-    )
-    conn.close()
-    DATABASES = {'default': postgres_db}
-    print("Using PostgreSQL.")
-except OperationalError:
-    DATABASES = sqlite_db
-    print("PostgreSQL not available — using SQLite.")
-
-
-# DATABASES = { 'default': { 'ENGINE': 'django.db.backends.postgresql', 'NAME': env('DB_NAME'), 'USER': env('DB_USER'), 'PASSWORD': env('DB_PASSWORD'), 'HOST': env('DB_HOST', default='127.0.0.1'), 'PORT': env('DB_PORT', default='5432'), } }
 
 
 # Password validation
