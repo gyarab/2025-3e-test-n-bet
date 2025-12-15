@@ -50,5 +50,7 @@ class StrategyEngine(BaseStrategy):
             ]
         }
 
-    def _read_strategies_from_json(self, json_data: dict) -> list[BaseStrategy]:
+    @classmethod
+    def _from_json(cls, json_data: dict) -> 'StrategyEngine':
         pass
+

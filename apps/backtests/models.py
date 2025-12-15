@@ -8,9 +8,6 @@ class Asset(models.Model):
     def __str__(self):
         return self.name
 
-
-
-
 class Backtest(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time = models.DateTimeField()
@@ -20,6 +17,8 @@ class Backtest(models.Model):
 
     def __str__(self):
         return f"Trade {self.id} - P/L: {self.profit}"
+    
+    
 class Trade(models.Model):
     backtest = models.ForeignKey(Backtest, on_delete=models.CASCADE, related_name="trades", default=1)
     time = models.DateTimeField()
