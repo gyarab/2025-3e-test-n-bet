@@ -1,13 +1,15 @@
 {% load static %}
 
 <div class="bg-white p-6 rounded-lg shadow-md hidden" id="strategy_builder">
-    <h2 class="text-2xl font-bold mb-4">Strategy Builder</h2>
-    <button type="button" class="hide-strategy-builder bg-gray-500 hover:bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md transition-colors duration-200">
-        <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="15" y1="5" x2="5" y2="15" />
-            <line x1="5" y1="5" x2="15" y2="15" />
-        </svg>
-    </button>
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold mb-4">Strategy Builder</h2>
+        <button type="button" class="hide-strategy-builder bg-gray-500 hover:bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md transition-colors duration-200">
+            <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="15" y1="5" x2="5" y2="15" />
+                <line x1="5" y1="5" x2="15" y2="15" />
+            </svg>
+        </button>
+    </div>
     <form id="strategy_form" class="space-y-4">
         <div>
             <label for="strategy_name" class="block text-sm font-medium text-gray-700">Strategy Name</label>
@@ -26,7 +28,5 @@
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
 <script>
-    document.querySelector('.hide-strategy-builder').addEventListener('click', () => {
-        document.getElementById('strategy_builder').classList.add('hidden');
-    });
+    
 </script>
