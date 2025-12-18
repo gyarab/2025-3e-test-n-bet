@@ -24,7 +24,7 @@ export function indicatorCardTemplate(indicatorName) {
                         <option value="greater_than">Greater Than</option>
                         <option value="less_than">Less Than</option>
                     </select>
-                    <input type="number" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150" placeholder="Value">
+                    <input type="number" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150" placeholder="Value" required>
                 </div> 
                 <hr class="my-3">
                 <div class="parameters space-y-3">

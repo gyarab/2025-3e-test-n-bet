@@ -9,5 +9,24 @@
 {% block main_class %}p-6 grid grid-cols-1 gap-4{% endblock %}
 
 {% block content %}
+  <button id="create-strategy-button" class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mb-4">Create New Strategy</button>
+  
   {% include 'strategies/_strategy_builder.html' %}
+
+  <div id="strategies_list">
+    {% for strategy in strategies %}
+      {% include 'strategies/_strategy_card.html' with strategy=strategy %}
+    {% empty %}
+      <p>No strategies available.</p>
+    {% endfor %}
+  </div>
+
+  <script type="module">
+    document.getElementById('create-strategy-button').addEventListener('click', () => {
+        console.log('Show strategy builder');
+        document.getElementById('strategy_builder').classList.remove('hidden');
+        
+    });
+  </script>
 {% endblock %}
+
