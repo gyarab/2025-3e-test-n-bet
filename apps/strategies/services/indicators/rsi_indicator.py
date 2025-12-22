@@ -82,3 +82,4 @@ class RSIIndicator(BaseIndicator):
         """
         candles = get_binance_ohlcv(coin, interval, candle_amount)
         return self.get_list_from_candles(candles)  
+    

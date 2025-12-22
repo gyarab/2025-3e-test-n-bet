@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings  # ✅ nutné pro settings.AUTH_USER_MODEL
+from django.conf import settings
 
 class Strategy(models.Model):   
     name = models.CharField(max_length=100)
