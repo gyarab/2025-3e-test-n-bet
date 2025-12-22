@@ -1,7 +1,87 @@
 {% load static %}
 
-<div class="flex bg-white md-shadow border rounded-lg p-4 mb-4 items-center justify-between">
-    <h2 class="text-2xl font-bold">{{ strategy.name }}</h2>
-    <button type="button" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">Delete</button>
-    <button type="button" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Edit</button>
+<div class="bg-white p-6 rounded-lg shadow-md mb-4">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">
+            {{ strategy.name }}
+        </h2>
+        <div class="flex gap-2">
+            <!-- TODO: add functionality -->
+            <button type="button" class="bg-blue-600 text-white py-1.5 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors">Edit</button>
+            <button type="button" class="bg-red-600 text-white py-1.5 px-3 rounded-md text-sm hover:bg-red-700 transition-colors">Delete</button>
+        </div>
+    </div>
+    <div class="space-y-2 text-gray-600">
+        {% if strategy.base_strategy %}
+            <p>
+                <span class="font-medium text-gray-700">Base strategy:</span>
+                {{ strategy.base_strategy.name }}
+            </p>
+        {% endif %}
+
+        {% if strategy.parameters %}
+        <div class="space-y-4">
+            <p class="font-medium text-gray-700">Conditions</p>
+
+            {% for condition in strategy.parameters %}
+            <div class="border border-gray-200 rounded-md p-4 bg-gray-50 space-y-3">
+                <div>
+                    <p class="font-semibold text-gray-700 mb-1">Indicators</p>
+                    <ul class="space-y-1 text-sm">
+                        {% for indicator in condition.signal_models.indicators %}
+                        <li class="flex gap-4">
+                            <span class="font-medium">{{ indicator.name }}</span>
+                            <span class="text-gray-500">
+                            {% for key, value in indicator.parameters.items %}
+                                {{ key }}={{ value }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                            </span>
+                        </li>
+                        {% empty %}
+                        <li class="italic text-gray-400">No indicators</li>
+                        {% endfor %}
+                    </ul>           
+                </div>
+
+                {% if condition.action.buy_signal %}
+                <div>
+                    <p class="text-sm font-semibold text-green-700 mb-1">Buy signal</p>
+                    <div class="flex gap-4 text-xs text-gray-700">
+                        <div>
+                            SL: {{ condition.action.buy_signal.stop_loss.percentage }}%
+                        </div>
+                        <div>
+                            TP: {{ condition.action.buy_signal.take_profit.percentage }}%
+                        </div>
+                        <div>
+                            Size: {{ condition.action.buy_signal.position_size.percentage }}%
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if condition.action.short_signal %}
+                <div>
+                    <p class="text-sm font-semibold text-red-700 mb-1">Short signal</p>
+                    <div class="flex gap-4 text-xs text-gray-700">
+                        <div>
+                            SL: {{ condition.action.short_signal.stop_loss.percentage }}%
+                        </div>
+                        <div>
+                            TP: {{ condition.action.short_signal.take_profit.percentage }}%
+                        </div>
+                        <div>
+                            Size: {{ condition.action.short_signal.position_size.percentage }}%
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="italic text-gray-400">No parameters defined</p>
+        {% endif %}
+    </div>
 </div>

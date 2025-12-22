@@ -12,3 +12,5 @@ media/
 
 # Environment variables
 .env
+.env_copy
+

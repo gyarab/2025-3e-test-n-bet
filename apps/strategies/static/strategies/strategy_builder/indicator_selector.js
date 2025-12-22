@@ -72,7 +72,6 @@ class IndicatorSelector {
         document.addEventListener("click", (e) => {
             if (!this.wrapper.contains(e.target)) {
                 this.list.classList.add("hidden");
-                console.log("Clicked outside indicator selector");
             }
         });
         

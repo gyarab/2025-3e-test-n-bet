@@ -11,7 +11,3 @@ class BasePredictionModel(ABC):
     @abstractmethod
     def get_prediction_list(self, coin: str, interval: str) -> str:
         pass
-
-    @abstractmethod
-    def get_json(self) -> dict:
-        pass

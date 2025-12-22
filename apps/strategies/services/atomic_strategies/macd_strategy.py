@@ -12,11 +12,14 @@ class MACDStrategy(IndicatorStrategy):
         """
         Args:
             macd_indicator
+            fast_period (int): Period for fast EMA (default 12)
+            slow_period (int): Period for slow EMA (default 26)
+            signal_period (int): Period for signal line EMA (default 9)
         """
         if (fast_period < 1 or slow_period < 1 or signal_period < 1) or (fast_period >= slow_period) or (fast_period > 50) or (slow_period > 100) or (signal_period > 50):
             raise ValueError("Invalid MACD parameters: fast_period must be > 0, slow_period must be > fast_period, signal_period must be > 0, fast_period <= 50, slow_period <= 100, signal_period <= 50.")
 
-        self.macd_indicator = macd_indicator or MACDIndicator
+        self.macd_indicator = macd_indicator or MACDIndicator(fast_period=fast_period, slow_period=slow_period, signal_period=signal_period)
         self.fast_period = self.macd_indicator.fast_period 
         self.slow_period = self.macd_indicator.slow_period
         self.signal_period = self.macd_indicator.signal_period 
