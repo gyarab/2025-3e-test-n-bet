@@ -13,11 +13,11 @@ def run_backtest(user, strategy: Strategy, initial_balance: float = 1000, token:
     """
     #TODO: fix reading strategy from json
 
-    if not user or not user.is_authenticated:
-        raise PermissionDenied("Authentication required")
+    # Maybe fix? As user doesn't have id
+    if(user.id != strategy.creator.id):
+        raise PermissionDenied("User does not have permission to run this strategy.")
 
-    srategy_engine = StrategyEngine._from_json(strategy.parameters.strategy)
-    risk_model = TradeRiskModel._from_json(strategy.parameters.risk_model)
+    srategy_engine = StrategyEngine._from_json(strategy.parameters)
     candles = get_binance_ohlcv(token, timeframe, candle_amount)
 
     backtest = BacktestEngine(strategy=srategy_engine, initial_balance=initial_balance, candles=candles)

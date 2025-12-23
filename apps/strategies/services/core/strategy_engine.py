@@ -52,5 +52,6 @@ class StrategyEngine(BaseStrategy):
 
     @classmethod
     def _from_json(cls, json_data: dict) -> 'StrategyEngine':
+        # Implement to reconstruct StrategyEngine from JSON data with conditions and risk models
         pass
 
