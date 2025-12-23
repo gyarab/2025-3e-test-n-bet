@@ -72,7 +72,6 @@ class IndicatorSelector {
         document.addEventListener("click", (e) => {
             if (!this.wrapper.contains(e.target)) {
                 this.list.classList.add("hidden");
-                console.log("Clicked outside indicator selector");
             }
         });
         
@@ -244,7 +243,13 @@ class IndicatorSelector {
                     input.min = param.min;
                     input.max = param.max;
                     input.className = "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150";  
-                    input.placeholder = param.default;       
+                    input.placeholder = param.default;  
+                    input.value = param.default;
+                    
+                    input.addEventListener('blur', () => {
+                        input.value = Math.min(input.max, Math.max(input.min, input.value));
+                    });
+
                     container.appendChild(input);
 
                     settings.appendChild(container);

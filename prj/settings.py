@@ -108,6 +108,8 @@ import os
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+DB_SSL = env.bool('DB_SSL', default=True)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -117,7 +119,7 @@ DATABASES = {
         'HOST': env('DB_HOST', default='testnbet-testnbet.j.aivencloud.com'),
         'PORT': env('DB_PORT', default='12601'),
         'OPTIONS': {
-            'sslmode': 'require',
+             'sslmode': 'require' if DB_SSL else 'disable',
         },
     }
 }

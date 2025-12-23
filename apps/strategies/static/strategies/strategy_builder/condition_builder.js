@@ -128,6 +128,14 @@ class ConditionBuilder {
             this.conditionControls.classList.add("mb-4");
         }
     }
+
+    // Clear all conditions
+    clear() {
+        this.conditions.forEach(({ card }) => card.remove());
+        this.conditions = [];
+        this.index = 0;
+        this.toggleConditionControls();
+    }
 }
 
 export default ConditionBuilder;

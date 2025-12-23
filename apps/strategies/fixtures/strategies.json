@@ -1,50 +1,46 @@
 [
   {
-    "model": "strategies.Strategy",
-    "pk": 1,
-    "fields": {
-      "name": "SMA",
-      "creator": 1,
-      "base_strategy": null,
-      "parameters": {"period": 20},
-      "is_default": true,
-      "created_at": "2025-01-01T12:00:00Z"
-    }
-  },
-  {
-    "model": "strategies.Strategy",
+    "model": "strategies.strategy",
     "pk": 2,
     "fields": {
-      "name": "EMA",
-      "creator": 1,
+      "name": "Base SMA Strategy",
+      "creator": null,
       "base_strategy": null,
-      "parameters": {"period": 20},
+      "parameters": [
+            {
+            "signal_models": {
+                "indicators": [
+                {
+                    "name": "SMA Strategy",
+                    "parameters": {
+                        "short_window": 10,
+                        "long_window": 30
+                    }
+                }
+                ],
+                "prediction_models": []
+            },
+            "action": {
+                "buy_signal": {
+                "stop_loss": {
+                    "type": "percentage",
+                    "percentage": 1.5
+                },
+                "take_profit": {
+                    "type": "percentage",
+                    "percentage": 3.0
+                },
+                "position_size": {
+                    "type": "fixed",
+                    "percentage": 10.0
+                }
+                },
+                "short_signal": null
+            }
+            }
+        ],
       "is_default": false,
-      "created_at": "2025-01-01T12:05:00Z"
-    }
-  },
-  {
-    "model": "strategies.Strategy",
-    "pk": 3,
-    "fields": {
-      "name": "RSI",
-      "creator": 1,
-      "base_strategy": null,
-      "parameters": {"period": 14, "overbought": 70, "oversold": 30},
-      "is_default": false,
-      "created_at": "2025-01-01T12:10:00Z"
-    }
-  },
-  {
-    "model": "strategies.Strategy",
-    "pk": 4,
-    "fields": {
-      "name": "SMA - Derived",
-      "creator": 1,
-      "base_strategy": 1,
-      "parameters": {"period": 50},
-      "is_default": false,
-      "created_at": "2025-01-01T12:15:00Z"
+      "created_at": "2025-01-02T12:00:00Z"
     }
   }
 ]

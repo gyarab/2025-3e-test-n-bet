@@ -39,7 +39,7 @@ export function conditionCardTemplate(cardName, index) {
                     </div>
                     <div>
                         <label class="block text-gray-700 font-semibold mb-1" for="stop-loss-pct-${index}">Stop Loss %:</label>
-                        <input type="number" step="0.01" id="stop-loss-pct-${index}" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 2.5">
+                        <input type="number" step="0.01" id="stop-loss-pct-${index}" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 2.5" required>
                     </div>
                 </div>
                 <div class="flex flex-col space-y-2 take-profit-pair border border-gray-200 rounded px-3 py-2 bg-transparent shadow-sm">
@@ -52,7 +52,7 @@ export function conditionCardTemplate(cardName, index) {
                     </div>
                     <div>
                         <label class="block text-gray-700 font-semibold mb-1" for="take-profit-pct-${index}">Take Profit %:</label>
-                        <input type="number" step="0.01" id="take-profit-pct-${index}" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 5">
+                        <input type="number" step="0.01" id="take-profit-pct-${index}" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 5" required>
                     </div>
                 </div>
                 <div class="flex grid col-span-2 grid-cols-2 gap-10 position-size-pair border border-gray-200 rounded px-3 py-2 bg-transparent shadow-sm"> 
@@ -65,7 +65,7 @@ export function conditionCardTemplate(cardName, index) {
                     </div>
                     <div>
                         <label class="block text-gray-700 font-semibold mb-1" for="position-size-pct-${index}">Position Size %:</label>
-                        <input type="number" step="0.01" id="position-size-pct-${index}" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 1">
+                        <input type="number" step="0.01" id="position-size-pct-${index}" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 1" required>
                     </div>
                 </div>
             </div>

@@ -12,5 +12,16 @@
     const indicatorsData = JSON.parse(
         document.getElementById('indicators-data').textContent
     );
-    const builder = initConditionBuilder('#condition-builder', indicatorsData);
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const conditionBuilder = initConditionBuilder(
+            '#condition-builder',
+            indicatorsData
+        );
+
+    document.getElementById('hide-strategy-builder')
+        ?.addEventListener('click', () => {
+            conditionBuilder.clear();
+        });
+});
 </script>

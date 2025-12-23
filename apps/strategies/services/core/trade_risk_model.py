@@ -212,5 +212,18 @@ class TradeRiskModel:
 
         return stop_loss_pct
     
+    @classmethod
+    def _from_json(cls, json_data: dict) -> 'TradeRiskModel':
+        """
+        Create a TradeRiskModel instance from a JSON dictionary.
+
+        Args:
+            json_data (dict): JSON dictionary with keys 'stop_loss', 'take_profit', and 'position_size'.
+        
+        Returns:
+            TradeRiskModel: An instance of TradeRiskModel initialized with the provided parameters.
+        """
+        pass
+    
 
 

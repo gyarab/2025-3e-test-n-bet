@@ -14,11 +14,13 @@ class StrategyCondition():
                  do_action_if_sell: bool = 1):
         """
         A condition within a trading strategy that combines indicators and prediction models to generate buy/sell signals. 
+        Condition is composed of multiple atomic strategies (indicator-based and/or prediction-model-based), but treated as a single unit with the same buy/sell risk models and logic.
         All indicators and models must signal the same action to trigger a buy or sell.
         
         Args:
-            indicator_list (dict[BaseStrategy]): A dictionary of indicators used in the condition, e.g. SMAStrategy, RSIStrategy, ..etc.
-            prediction_model_list (dict[BaseStrategy]): A dictionary of predictions models used in the condition.
+            strategy_list (list[AtomicStrategy]): List of strategies (indicator-based and/or prediction-model-based) to evaluate.
+            buy_risk_model (TradeRiskModel): Risk model to apply when a buy signal is generated.
+            sell_risk_model (TradeRiskModel): Risk model to apply when a sell signal is generated.
             do_action_if_buy (bool): Whether to perform an action if the condition signals a buy (default True).
             do_action_if_sell (bool): Whether to perform an action if the condition signals a sell (default True).
         """
@@ -70,17 +72,20 @@ class StrategyCondition():
 
     def get_json(self) -> dict:
         indicators: list[IndicatorStrategy] = []
+
+        # Collect only indicator-based strategies
         for ind in self.strategy_list:
             if isinstance(ind, IndicatorStrategy):
                 indicators.append(ind)
 
+        # Collect only prediction model-based strategies
         models: list[PredictionModelStrategy] = []
         for model in self.strategy_list:
             if isinstance(model, PredictionModelStrategy):
                 models.append(model)
 
         return {
-                "signal models": {
+                "signal_models": {
                     "indicators": [ind.get_json() for ind in indicators],
                     "prediction_models": [model.get_json() for model in models]
                 },
