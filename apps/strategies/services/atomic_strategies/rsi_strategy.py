@@ -1,11 +1,9 @@
 # apps/strategies/strategies/rsi.py
 import pandas as pd
 
-from apps.strategies.services.base.base_strategy import BaseStrategy
 from apps.strategies.services.base.base_indicator import BaseIndicator
 from apps.market.services import get_binance_ohlcv
 from apps.strategies.services.indicators.rsi_indicator import RSIIndicator
-from apps.strategies.services.base.atomic_strategy import AtomicStrategy
 from apps.strategies.services.base.indicator_strategy import IndicatorStrategy
 
 class RSIStrategy(IndicatorStrategy):
@@ -28,6 +26,22 @@ class RSIStrategy(IndicatorStrategy):
     @classmethod
     def from_parametrs(cls, period: int = 14, oversold: int = 30, overbought: int = 70):
         return cls(RSIIndicator(period=period), oversold=oversold, overbought=overbought)
+    
+    @classmethod
+    def _from_json(cls, json_data: dict) -> 'RSIStrategy':
+        """
+        Create an RSIStrategy instance from JSON data.
+        Get json data structure:
+        {
+            "period": 14,
+            "oversold": 30,
+            "overbought": 70
+        }
+        """
+        period = json_data.get("period", 14)
+        oversold = json_data.get("oversold", 30)
+        overbought = json_data.get("overbought", 70)
+        return cls.from_parametrs(period=period, oversold=oversold, overbought=overbought)
 
     def get_signal_from_candles(self, candles):
         """
@@ -47,7 +61,7 @@ class RSIStrategy(IndicatorStrategy):
         if RSI is None:
             return 'NOT ENOUGH DATA'
 
-        # Poslední hodnoty RSI
+        # If some of the latest RSI values are NaN, return HOLD
         if pd.isna(RSI):
             return 'HOLD'
         elif RSI < self.oversold:

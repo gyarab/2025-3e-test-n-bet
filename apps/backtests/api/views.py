@@ -53,11 +53,13 @@ def run_backtest_view(request):
     try:
         strategy = Strategy.objects.get(id=strategy_id)
 
+        print("Strategy found:", strategy)
+
         result = run_backtest(
             user=request.user,
             strategy=strategy,
             initial_balance=payload.get("initial_balance", 1000),
-            token=payload.get("token", "BTC"),
+            token=payload.get("token", "BTCUSDT"),
             timeframe=payload.get("timeframe", "1h"),
             candle_amount=payload.get("candle_amount", 500)
         )

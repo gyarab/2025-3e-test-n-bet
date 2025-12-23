@@ -27,7 +27,22 @@ class MACDStrategy(IndicatorStrategy):
     @classmethod
     def from_parametrs(cls, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9):
         return cls(MACDIndicator(fast_period=fast_period, slow_period=slow_period, signal_period=signal_period))
-        
+    
+    @classmethod
+    def _from_json(cls, json_data: dict) -> 'MACDStrategy':
+        """
+        Create an MACDStrategy instance from JSON data.
+        Get json data structure:
+        {
+            "fast_period": 12,
+            "slow_period": 26,
+            "signal_period": 9
+        }
+        """
+        fast_period = json_data.get("fast_period", 12)
+        slow_period = json_data.get("slow_period", 26)
+        signal_period = json_data.get("signal_period", 9)
+        return cls.from_parametrs(fast_period=fast_period, slow_period=slow_period, signal_period=signal_period)
 
     def get_signal_from_candles(self, candles):
         """

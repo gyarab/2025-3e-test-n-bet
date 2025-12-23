@@ -66,6 +66,7 @@ class TradeEngine():
         Returns: 
             True if trade is closed, otherwise returns False. Sets exit_price if trade is closed, status to False. 
         """
+        print("Current candle for trade check:", candle)
         if self.trade_type:  # Buy trade
             if candle['low'] <= self.stop_loss:
                 self.exit_price = self.stop_loss
@@ -85,3 +86,15 @@ class TradeEngine():
                 self.status = False
                 return True  # Take-profit hit
         return False  # Trade remains open
+    
+    def get_json(self) -> dict:
+        return {
+            "entry_price": self.entry_price,
+            "exit_price": self.exit_price,
+            "quantity": self.quantity,
+            "trade_type": "BUY" if self.trade_type else "SELL",
+            "stop_loss": self.stop_loss,
+            "take_profit": self.take_profit,
+            "status": "OPEN" if self.status else "CLOSED",
+            "result": self.get_result() if not self.status else "NOT CLOSED"
+        }

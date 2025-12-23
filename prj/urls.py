@@ -25,7 +25,8 @@ urlpatterns = [
     path('apps/registration/', include('apps.registration.urls')),
     path('home/', include('core.urls')),
     path('', include('core.urls')),
-    path('api/', include('api.urls')), 
+    path('api/', include('api.urls')),
+    path('api/backtests', include('apps.backtests.api.urls')), 
     path('backtests/', include('apps.backtests.urls')),
     path('strategies/', include('apps.strategies.urls')),
 ]

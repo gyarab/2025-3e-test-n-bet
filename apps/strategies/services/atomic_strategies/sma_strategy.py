@@ -26,6 +26,20 @@ class SMAStrategy(IndicatorStrategy):
     @classmethod
     def from_parametrs(cls, short_window: int = 10, long_window: int = 30):
         return cls(SMAIndicator(window=short_window), short_window=short_window, long_window=long_window)
+    
+    @classmethod
+    def _from_json(cls, json_data: dict) -> 'SMAStrategy':
+        """
+        Create an SMAStrategy instance from JSON data.
+        Get json data structure:
+        {
+            "short_window": 10,
+            "long_window": 30
+        }
+        """
+        short_window = json_data.get("short_window", 10)
+        long_window = json_data.get("long_window", 30)
+        return cls.from_parametrs(short_window=short_window, long_window=long_window)
 
     def get_signal_from_candles(self, candles) -> str:
         """

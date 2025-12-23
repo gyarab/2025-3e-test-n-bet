@@ -8,35 +8,35 @@
       "base_strategy": null,
       "parameters": [
             {
-            "signal_models": {
-                "indicators": [
-                {
-                    "name": "SMA Strategy",
-                    "parameters": {
-                        "short_window": 10,
-                        "long_window": 30
+                "signal_models": {
+                    "indicators": [
+                    {
+                        "name": "SMA Strategy",
+                        "parameters": {
+                            "short_window": 10,
+                            "long_window": 30
+                        }
                     }
+                    ],
+                    "prediction_models": []
+                },
+                "action": {
+                    "buy_signal": {
+                        "stop_loss": {
+                            "type": "percentage",
+                            "percentage": 1.5
+                        },
+                        "take_profit": {
+                            "type": "percentage",
+                            "percentage": 3.0
+                        },
+                        "position_size": {
+                            "type": "fixed",
+                            "percentage": 10.0
+                        }
+                    },
+                    "short_signal": null
                 }
-                ],
-                "prediction_models": []
-            },
-            "action": {
-                "buy_signal": {
-                "stop_loss": {
-                    "type": "percentage",
-                    "percentage": 1.5
-                },
-                "take_profit": {
-                    "type": "percentage",
-                    "percentage": 3.0
-                },
-                "position_size": {
-                    "type": "fixed",
-                    "percentage": 10.0
-                }
-                },
-                "short_signal": null
-            }
             }
         ],
       "is_default": false,

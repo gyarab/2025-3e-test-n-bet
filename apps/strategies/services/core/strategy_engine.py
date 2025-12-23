@@ -7,9 +7,8 @@ from apps.strategies.services.base.atomic_strategy import AtomicStrategy
 from apps.strategies.services.core.strategy_condition import StrategyCondition
 
 class StrategyEngine(BaseStrategy):
-    def __init__(self, conditions: list[StrategyCondition], trade_risk_model: TradeRiskModel):
+    def __init__(self, conditions: list[StrategyCondition]):
         self.conditions = conditions
-        self.trade_risk_model = trade_risk_model
 
     def add_strategy(self, strategy: AtomicStrategy, 
                      buy_risk_model: TradeRiskModel = None, 
@@ -36,6 +35,7 @@ class StrategyEngine(BaseStrategy):
     def get_signal_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> tuple[str, TradeRiskModel]:
         for condition in self.conditions:
             result = condition.evaluate(candles=candles)
+            print("Condition result:", result)
             if result == 'BUY':
                 return result, condition.buy_risk_model
             elif result == 'SELL':
@@ -51,7 +51,15 @@ class StrategyEngine(BaseStrategy):
         }
 
     @classmethod
-    def _from_json(cls, json_data: dict) -> 'StrategyEngine':
-        # Implement to reconstruct StrategyEngine from JSON data with conditions and risk models
-        pass
+    def _from_parameters(cls, parameters: dict) -> 'StrategyEngine':
+        """
+        Create a StrategyEngine instance from JSON data.
+        Expected json data structure:
+        """
+        print("Loading StrategyEngine from parameters:", parameters)
+        conditions = [
+            StrategyCondition._from_json(condition) for condition in parameters
+        ]
+        print("conditions loaded from json:", conditions)
+        return cls(conditions=conditions)
 
