@@ -1,0 +1,23 @@
+{% load static %}
+
+<div id="strategy-selector" class="border rounded-lg p-3 bg-white shadow">
+    <!-- Condition builder will be rendered here by condition_builder.js -->
+</div>
+
+<script id="strategies-data" type="application/json">
+    {{ strategies_json|escapejs }}
+</script>
+
+<script type="module">
+    import { StrategySelector } from "{% static 'backtests/strategy_selector.js' %}";
+    const strategiesData = JSON.parse(
+        document.getElementById('strategies-data').textContent
+    );
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const strategySelector = StrategySelector(
+            '#strategy-selector',
+            strategiesData
+        );
+});
+</script>
