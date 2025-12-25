@@ -39,11 +39,9 @@ class StrategyCondition():
         if not signal_sources: # No indicators or models to evaluate
             return 'HOLD'
 
-        print("First candle for evaluation:", candles[0] if candles else "No candles")
-        print("last candle for evaluation:", candles[-1] if candles else "No candles")
-
         signals = [src.get_signal_from_candles(candles) for src in signal_sources]
 
+        # All signals must agree to trigger an action
 
         if self.do_action_if_buy:
             if not self.buy_risk_model:

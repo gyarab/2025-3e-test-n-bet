@@ -66,7 +66,7 @@ class TradeEngine():
         Returns: 
             True if trade is closed, otherwise returns False. Sets exit_price if trade is closed, status to False. 
         """
-        print("Current candle for trade check:", candle)
+
         if self.trade_type:  # Buy trade
             if candle['low'] <= self.stop_loss:
                 self.exit_price = self.stop_loss

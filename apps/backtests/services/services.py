@@ -19,11 +19,8 @@ def run_backtest(user, strategy: Strategy, initial_balance: float = 1000, token:
             print(strategy.creator, strategy.creator_id, user.id, user.is_staff, user.is_superuser)
             raise PermissionDenied("User does not have permission to run this strategy.")
 
-    print("Strategy parameters:", strategy.parameters)
-    print("Strategy:", strategy)
     srategy_engine = StrategyEngine._from_parameters(strategy.parameters)
     candles = get_binance_ohlcv(token, timeframe, candle_amount)
-    print("Candles fetched:", candles)
 
     backtest = BacktestEngine(strategy=srategy_engine, initial_balance=initial_balance, candles=candles)
 

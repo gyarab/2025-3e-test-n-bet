@@ -15,8 +15,8 @@ class SMAStrategy(IndicatorStrategy):
             short_window (int): Period for short SMA (default 10)
             long_window (int): Period for long SMA (default 30)
         """
-        if (short_window < 0 or long_window < 0) or (short_window >= long_window) or (short_window > 50) or (long_window > 300):
-            raise ValueError("Invalid window sizes: short_window must be > 0, long_window must be > short_window, short_window <= 50, long_window <= 300.")
+        if (short_window < 1 or long_window < 2) or (short_window >= long_window) or (short_window > 50) or (long_window > 300):
+            raise ValueError("Invalid window sizes: short_window must be > 1, long_window must be > short_window, short_window <= 50, long_window <= 300.")
 
         sma_indicator = sma_indicator or SMAIndicator()
         self.sma_indicator = sma_indicator
@@ -57,17 +57,20 @@ class SMAStrategy(IndicatorStrategy):
 
         SMA_short = self.indicator().calculate(candles, self.short_window)
         SMA_long = self.indicator().calculate(candles, self.long_window)
+
+        SMA_long_previous = self.indicator().calculate(candles[:-1], self.long_window)
+        SMA_short_previous = self.indicator().calculate(candles[:-1], self.short_window)
         
-        if SMA_long is None or SMA_short is None:
+        if SMA_long is None or SMA_short is None or SMA_long_previous is None or SMA_short_previous is None:
             return 'NOT ENOUGH DATA'
 
-        # Poslední hodnoty SMA
+        # Check for NaN values
         if pd.isna(SMA_short) or pd.isna(SMA_long):
             return 'HOLD'
 
-        if SMA_short > SMA_long:
+        if SMA_short > SMA_long and SMA_short_previous <= SMA_long_previous:
             return 'BUY'
-        elif SMA_short < SMA_long:
+        elif SMA_short < SMA_long and SMA_short_previous >= SMA_long_previous:
             return 'SELL'
         else:
             return 'HOLD'

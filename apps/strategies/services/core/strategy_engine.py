@@ -35,7 +35,6 @@ class StrategyEngine(BaseStrategy):
     def get_signal_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> tuple[str, TradeRiskModel]:
         for condition in self.conditions:
             result = condition.evaluate(candles=candles)
-            print("Condition result:", result)
             if result == 'BUY':
                 return result, condition.buy_risk_model
             elif result == 'SELL':
@@ -56,10 +55,8 @@ class StrategyEngine(BaseStrategy):
         Create a StrategyEngine instance from JSON data.
         Expected json data structure:
         """
-        print("Loading StrategyEngine from parameters:", parameters)
         conditions = [
             StrategyCondition._from_json(condition) for condition in parameters
         ]
-        print("conditions loaded from json:", conditions)
         return cls(conditions=conditions)
 

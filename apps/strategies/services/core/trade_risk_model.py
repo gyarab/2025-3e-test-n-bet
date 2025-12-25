@@ -20,7 +20,7 @@ class TradeRiskModel:
             stop_loss_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage, relative uses ATR-based volatility.
             take_profit_pct (float): Take-profit percentage for 'fixed' type. Ignored if 'relative'.
             take_profit_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage, relative is based on stop-loss.
-            position_size_pct (float): Percentage for fixed position size. Ignored if type is 'relative'.
+            position_size_pct (float): Used as a fixed percentage of the balance to calculate the quantity if 'fixed'. Used as max loss percentage to calculate the quantity if 'relative'.
             position_size_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage of account balance, relative adjusts based on loss percentage.
             candles (list[dict]): List of OHLCV candles, where last candle is the entry candle. Required if stop_loss_type is 'relative'.
         """
@@ -33,7 +33,22 @@ class TradeRiskModel:
         
         self.set_stop_loss(stop_loss_type=stop_loss_type, stop_loss_pct=stop_loss_pct, candles=candles)
         self.set_take_profit(take_profit_type=take_profit_type, take_profit_pct=take_profit_pct)
-        self.set_position_size(position_size_type=position_size_type, position_size_pct=position_size_pct)
+        # If the position size type is relative, we need stop_loss to calculate it. Loss percentage is assumed to be equal to position_size_pct
+        self.set_position_size(position_size_type=position_size_type, position_size_pct=position_size_pct, loss_percetage=position_size_pct)
+
+    def get_position_quantity(self, account_balance: float) -> float:
+        """
+        Calculate position quantity based on account balance and position size settings.
+
+        Args:
+            account_balance (float): Current account balance.
+        
+        Returns:
+            float: Calculated position quantity in dollars.
+        """
+        quantity = (self.position_size_pct / 100) * account_balance
+        
+        return round(quantity, 2)
 
     def set_position_size(self, position_size_type: str = 'fixed', position_size_pct: float = 5, loss_percetage: float = 2) -> None:
         """

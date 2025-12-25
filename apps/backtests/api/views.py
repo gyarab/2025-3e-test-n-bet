@@ -53,8 +53,6 @@ def run_backtest_view(request):
     try:
         strategy = Strategy.objects.get(id=strategy_id)
 
-        print("Strategy found:", strategy)
-
         result = run_backtest(
             user=request.user,
             strategy=strategy,
