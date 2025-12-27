@@ -29,6 +29,9 @@ urlpatterns = [
     path('api/backtests', include('apps.backtests.api.urls')), 
     path('backtests/', include('apps.backtests.urls')),
     path('strategies/', include('apps.strategies.urls')),
+    path('api/strategies/', include('apps.strategies.api.urls')),
+
+
 ]
 
 urlpatterns += [

@@ -7,6 +7,8 @@ from apps.backtests.services.services import run_backtest
 
 from django.views.decorators.http import require_http_methods
 
+from apps.backtests.models import Backtest
+
 logger = logging.getLogger(__name__)
 
 @csrf_protect
@@ -69,4 +71,38 @@ def run_backtest_view(request):
     except Exception as e:
         logger.error(f"Error running backtest: {e}", exc_info=True)
         return JsonResponse({"status":"error","message": "Internal server error"}, status=500)
+    
 
+
+
+
+@require_http_methods(["GET"])
+def get_user_backtest(request):
+    """
+    Retrieves backtests filtered by user_id if provided.
+.
+    """
+
+   
+    user_id = request.user.id
+
+    try:
+        backtests = Backtest.objects.filter(user_id=user_id)
+        
+
+        data = [
+            {
+                "user_id": b.user_id,
+                "time": b.time.isoformat(),
+                "price": b.price,
+                "quantity": b.quantity,
+                "profit": b.profit,
+            }
+            for b in backtests
+        ]
+
+        return JsonResponse({"status": "success", "backtests": data})
+
+    except Exception as e:
+        logger.error(f"Error retrieving strategies: {e}", exc_info=True)
+        return JsonResponse({"status": "error", "message": "Internal server error"}, status=500)
