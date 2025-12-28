@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import psycopg2
+import os
 from psycopg2 import OperationalError
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +27,10 @@ SECRET_KEY = 'django-insecure-8z7ujy6&1+6f+1=^uv8uz&&fq+=l@=id+(e4$1zj+i4e9%06zk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -77,7 +80,7 @@ ROOT_URLCONF = 'prj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,7 +100,7 @@ ASGI_APPLICATION = 'prj.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-import os
+
 from pathlib import Path
 import environ
 
@@ -175,3 +178,5 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
+
+APPEND_SLASH = True

@@ -3,10 +3,10 @@ import logging
 from django.http import JsonResponse
 from apps.strategies.models import Strategy
 from django.views.decorators.csrf import csrf_protect
-from apps.backtests.services.services import run_backtest
-
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
+from apps.backtests.services.services import run_backtest
 from apps.backtests.models import Backtest
 
 logger = logging.getLogger(__name__)
@@ -73,30 +73,54 @@ def run_backtest_view(request):
         return JsonResponse({"status":"error","message": "Internal server error"}, status=500)
     
 
-
-
-
 @require_http_methods(["GET"])
 def get_user_backtest(request):
     """
     Retrieves backtests filtered by user_id if provided.
-.
     """
+    # Check authentication
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "Authentication required"}, status=401)
 
-   
-    user_id = request.user.id
+    user = request.user
 
     try:
-        backtests = Backtest.objects.filter(user_id=user_id)
-        
+        backtests = Backtest.objects.filter(user=user)
 
         data = [
             {
-                "user_id": b.user_id,
-                "time": b.time.isoformat(),
-                "price": b.price,
-                "quantity": b.quantity,
-                "profit": b.profit,
+                "id": b.id,
+                "user_id": b.user,
+
+                "strategy": {
+                    "id": b.strategy_id,
+                    "name": b.strategy.name,
+                    "parameters": b.strategy.parameters,
+                },
+
+                "asset": {
+                    "id": b.asset_id,
+                    "symbol": b.asset.symbol,
+                    "name": b.asset.name,
+                },
+
+                "start_date": b.start_date.isoformat() if b.start_date else None,
+                "end_date": b.end_date.isoformat() if b.end_date else None,
+                "initial_capital": b.initial_capital,
+                "position_size": b.position_size,
+                "created_at": b.created_at.isoformat() if b.created_at else None,
+
+                "trades": [
+                    {
+                        "id": t.id,
+                        "time": t.time.isoformat(),
+                        "price": t.price,
+                        "quantity": t.quantity,
+                        "profit": t.profit,
+                        "type": "BUY" if t.is_buy else "SELL",
+                    }
+                    for t in b.trades.all()
+                ],
             }
             for b in backtests
         ]

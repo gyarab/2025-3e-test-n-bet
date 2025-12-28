@@ -1,7 +1,7 @@
 import json
 import logging
+import os
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
 
@@ -9,23 +9,22 @@ from apps.strategies.models import Strategy
 
 logger = logging.getLogger(__name__)
 
-@csrf_protect
+
 @require_http_methods(["GET"])
 def get_strategy_view(request):
     """
-    Retrieves strategies filtered by creator_id if provided.
-    If no creator_id is given, returns all strategies.
+    View to retrieve strategies for the authenticated user.
+    Retrieves both user-created and default strategies.
     """
-
-    
-    creator_id = request.GET.get("creator_id") # Can be None
+    # Check authentication
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "Authentication required"}, status=401)
 
     try:
-        # Decide which strategies to return
-        if creator_id:
-            strategies = Strategy.objects.filter(creator_id=creator_id)
-        else:
-            strategies = Strategy.objects.filter(creator__isnull=True)
+        # Django ORM query to get strategies. Q object is used for complex queries.
+        strategies = strategies = Strategy.objects.filter(
+            Q(creator=request.user) | Q(creator__isnull=True)
+        ).order_by("id")
 
         data = [
             {
@@ -45,3 +44,20 @@ def get_strategy_view(request):
     except Exception as e:
         logger.error(f"Error retrieving strategies: {e}", exc_info=True)
         return JsonResponse({"status": "error", "message": "Internal server error"}, status=500)
+
+
+def get_indicator_list(request):
+    """
+    View to retrieve the list of available indicators from a static JSON file.
+    """
+    try:
+        json_path = os.path.join('apps', 'strategies', 'static', 'strategies', 'strategy_builder', 'indicators.json')
+        with open(json_path, 'r') as f:
+            indicators = json.load(f)
+
+        return JsonResponse({"status": "success", "indicators": indicators})
+
+    except Exception as e:
+        logger.error(f"Error retrieving indicators: {e}", exc_info=True)
+        return JsonResponse({"status":"error","message": "Internal server error"}, status=500)
+        

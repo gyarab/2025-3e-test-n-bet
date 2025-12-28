@@ -26,14 +26,8 @@ urlpatterns = [
     path('home/', include('core.urls')),
     path('', include('core.urls')),
     path('api/', include('api.urls')),
-    path('api/backtests', include('apps.backtests.api.urls')), 
+    path('api/backtests/', include('apps.backtests.api.urls')), 
     path('backtests/', include('apps.backtests.urls')),
     path('strategies/', include('apps.strategies.urls')),
     path('api/strategies/', include('apps.strategies.api.urls')),
-
-
-]
-
-urlpatterns += [
-    re_path(r'^.*$', lambda request: redirect('/#')),  
 ]

@@ -6,17 +6,28 @@
 
 <script type="module">
     import { initConditionBuilder } from "{% static 'strategies/main.js' %}";
-    const indicatorsData = JSON.parse('{{ indicators_json|escapejs }}');
     
-    document.addEventListener('DOMContentLoaded', () => {
-        const conditionBuilder = initConditionBuilder(
-            '#condition-builder',
-            indicatorsData
-        );
+    let indicatorsData = [];
 
-    document.getElementById('hide-strategy-builder')
-        ?.addEventListener('click', () => {
-            conditionBuilder.clear();
+    fetch('/api/strategies/indicators/')
+        .then(res => {
+            if (res.status === 400) {
+                window.location.href = '/backtests/';
+                return;
+            }
+            return res.json();
+        })
+        .then(data => {
+            indicatorsData = data.indicators;
+
+            const conditionBuilder = initConditionBuilder(
+                    '#condition-builder',
+                    indicatorsData
+                );
+
+            document.getElementById('hide-strategy-builder')
+                ?.addEventListener('click', () => {
+                    conditionBuilder.clear();
+                });
         });
-});
 </script>

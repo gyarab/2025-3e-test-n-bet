@@ -1,15 +1,16 @@
 import { strategyCardTemplate } from "./strategy_card_template.js";
+import { strategyDescriptionTemplate } from "./templates/strategy_description_template.js";
 
-class StrategySelector {
-    constructor(selector, strategysData) {
+export default class StrategySelector {
+    constructor(selector, strategiesData) {
         this.wrapper = document.querySelector(selector);
 
-        const options = strategysData.strategys.map(i => i.name);
+        this.strategiesData = strategiesData;
+
+        const options = strategiesData.map(i => [i.id, i.name]);
         this.possible_options = options;
         this.current_options = options;
         this.selected = new Set();
-
-        this.strategysData = strategysData.strategys;
 
         this.buildUI();
         this.bindEvents();
@@ -18,10 +19,16 @@ class StrategySelector {
     // Creates the HTML elements
     buildUI() {
         this.wrapper.innerHTML = `
-            <input name="strategy-input" class="strategy-input border p-2 w-full rounded mb-2" placeholder="Add new strategy...">
-
+            <h2 class="text-lg font-semibold mb-3">Select Strategy</h2>
+            <div class="flex items-center space-x-2"    >
+                <input name="strategy-input" class="strategy-input border p-2 w-full rounded mb-2" placeholder="Select strategy...">
+                <a href="/strategies/" class="inline-block">
+                    <button type="button" class="mb-2 px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors duration-200 flex items-center justify-center">
+                        <span class="text-1xl font-bold transform scale-5">+</span>
+                    </button>
+                </a>
+            </div>
             <div class="strategy-list bg-white border rounded shadow mb-2 hidden max-h-40 overflow-auto"></div>
-
             <div class="strategy-cards"></div>
         `;
 
@@ -38,7 +45,7 @@ class StrategySelector {
         this.list.innerHTML = "";
         
         const optionsToShow = this.current_options.filter(opt => 
-            opt.toLowerCase().includes(q)
+            opt[1].toLowerCase().includes(q)
         );
         
         if (optionsToShow.length === 0) {
@@ -52,8 +59,8 @@ class StrategySelector {
         optionsToShow.forEach(opt => {
             const el = document.createElement("div");
             el.className = "p-2 hover:bg-gray-100 cursor-pointer";
-            el.dataset.value = opt;
-            el.textContent = opt;
+            el.dataset.value = opt; // Set data-value attribute to find it later
+            el.textContent = opt[1];
             this.list.appendChild(el);
         });
     }
@@ -147,7 +154,11 @@ class StrategySelector {
     }
 
     // Adding inidcator after it being chosen
-    addStrategy(value) {
+    addStrategy(datasetValue) {
+        
+        const id = datasetValue.split(",")[0];
+        const value = datasetValue.split(",")[1];
+
         if (this.selected.has(value)) 
             return;
 
@@ -155,11 +166,16 @@ class StrategySelector {
             return;
         }
 
+        for (const selectedValue of [...this.selected]) {
+            this.removeStrategy(selectedValue);
+        }
+
         this.selected.add(value);
+        this.showDescription(id);
 
         const card = document.createElement("div");
         card.dataset.value = value;
-        card.className = "overflow-hidden transform opacity-0 scale-80 max-h-0 mb-3 transition-all duration-500 ease-out p-3 bg-teal-300 rounded border cursor-pointer";
+        card.className = "overflow-hidden transform opacity-0 scale-80 max-h-0 mb-3 transition-all duration-500 ease-out cursor-pointer";
 
         card.innerHTML = strategyCardTemplate(value.replace("_", " "));
 
@@ -171,44 +187,7 @@ class StrategySelector {
             card.classList.add("opacity-100", "scale-100", "max-h-[500px]");
         });
 
-        const settings = card.querySelector(".settings");
-        const parametersContainer = card.querySelector(".parameters");
-        this.addParameterToStrategy(parametersContainer, value);
-
-        const header = card.querySelector(".card-header");
         const removeBtn = card.querySelector(".remove-card");
-        const expandIcon = card.querySelector(".arrow");
-        
-        //Toggles the parameter settings section
-        const toggleExpand = (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-
-            expandIcon.classList.toggle("rotate-180");
-            expandIcon.classList.toggle("text-teal-900");
-
-            // Animate settings section
-            if (settings.classList.contains("max-h-0")) {
-                // Expanding
-                settings.classList.remove("max-h-0", "opacity-0");
-                settings.classList.add("max-h-40", "opacity-100", "mt-2");
-                settings.style.overflowY = "hidden";
-
-                // Adding overflow auto after transition
-                settings.addEventListener("transitionend", function handler() {
-                    settings.style.overflowY = "auto";
-                    settings.removeEventListener("transitionend", handler);
-                });
-            } else {
-                // Collapsing
-                settings.classList.remove("max-h-40", "opacity-100", "mt-2");
-                settings.classList.add("max-h-0", "opacity-0");
-                settings.style.overflowY = "hidden";
-            }
-        };
-
-        header.addEventListener("click", toggleExpand);
-        expandIcon.addEventListener("click", toggleExpand);
 
         removeBtn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -217,6 +196,13 @@ class StrategySelector {
         });
 
         this.reloadTheInitialList()
+    }
+
+    showDescription(id) {
+        const strategy = this.strategiesData.find(s => s.id == id);
+
+        const field = document.getElementById("strategy-description");
+        field.appendChild(strategyDescriptionTemplate(strategy.name, strategy.parameters));
     }
 
     // Reloads the choice-list. Must be called after each operation
@@ -238,6 +224,7 @@ class StrategySelector {
 
     // Removes the strategy
     removeStrategy(value) {
+        document.getElementById("strategy-description").innerHTML = "";
         this.selected.delete(value);
         const card = this.cards.querySelector(
             `[data-value="${value}"]`
@@ -249,10 +236,7 @@ class StrategySelector {
 
         card.addEventListener("transitionend", () => {
             card.remove();
-            const all = this.cards.children;
             this.reloadTheInitialList();
         });
     }
 }
-
-export default StrategySelector;

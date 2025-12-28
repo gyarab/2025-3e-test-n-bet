@@ -19,7 +19,7 @@ class ConditionBuilder {
                     Add Condition
                 </button>
             </div>
-            <div class="grid condition-list xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4"></div>
+            <div class="grid condition-list xl:grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-4"></div>
         `;
 
         this.addBtn = this.wrapper.querySelector(".add-condition-btn");

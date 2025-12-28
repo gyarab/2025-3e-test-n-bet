@@ -11,12 +11,9 @@ def run_backtest(user, strategy: Strategy, initial_balance: float = 1000, token:
     """
     Application service entry point.
     """
-    #TODO: fix reading strategy from json
 
-    # Maybe fix? As user doesn't have id
     if(not strategy.creator is None):
         if(user.id != strategy.creator_id and not user.is_staff and not user.is_superuser):
-            print(strategy.creator, strategy.creator_id, user.id, user.is_staff, user.is_superuser)
             raise PermissionDenied("User does not have permission to run this strategy.")
 
     srategy_engine = StrategyEngine._from_parameters(strategy.parameters)

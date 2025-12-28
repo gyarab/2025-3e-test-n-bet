@@ -1,14 +1,11 @@
 export function strategyCardTemplate(strategyName) {
     return `
-        <div class="p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-100">
+        <div class="p-4 bg-white rounded-2xl hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-100">
             <div class="card-header flex justify-between items-center">
                 <div class="flex items-center space-x-3">
                     <span class="flex items-center justify-center px-4 py-2 bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">
                         ${strategyName}
                     </span>
-                    <svg class="arrow w-4 h-4 left text-teal-700 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9" />
-                    </svg>
                 </div>
                 <button type="button" class="remove-card bg-gray-500 hover:bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md transition-colors duration-200">
                     <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

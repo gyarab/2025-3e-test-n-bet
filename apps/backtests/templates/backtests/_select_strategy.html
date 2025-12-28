@@ -1,23 +1,30 @@
 {% load static %}
 
-<div id="strategy-selector" class="border rounded-lg p-3 bg-white shadow">
-    <!-- Condition builder will be rendered here by condition_builder.js -->
+<div class="col-span-3 h-full grid grid-cols-3 gap-4">
+    <div id="strategy-selector" class="border bg-white rounded-2xl p-5 h-full shadow col-span-1">
+        <!-- Condition builder will be rendered here by condition_builder.js -->
+    </div>
+
+    <div class="border bg-white rounded-2xl p-5 h-full shadow col-span-2">
+        <h2 class="text-lg font-semibold mb-3">Strategy Description</h2>
+        <div id="strategy-description">
+            <!-- Strategy description will be rendered here -->
+        </div>
+    </div>
 </div>
 
-<script id="strategies-data" type="application/json">
-    {{ strategies_json|escapejs }}
-</script>
-
 <script type="module">
-    import { StrategySelector } from "{% static 'backtests/strategy_selector.js' %}";
-    const strategiesData = JSON.parse(
-        document.getElementById('strategies-data').textContent
-    );
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        const strategySelector = StrategySelector(
-            '#strategy-selector',
-            strategiesData
-        );
-});
+    import StrategySelector from "/static/backtests/strategy_selector.js";
+
+    fetch('/api/strategies/get')
+        .then(res => {
+            if (res.status === 401) {
+            window.location.href = '/login';
+            return;
+            }
+            return res.json();
+        })
+        .then(data => {
+            new StrategySelector('#strategy-selector', data.strategies);
+        });
 </script>
