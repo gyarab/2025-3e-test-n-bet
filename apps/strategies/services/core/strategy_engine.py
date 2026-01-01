@@ -33,6 +33,7 @@ class StrategyEngine(BaseStrategy):
         return self.get_signal_from_candles(candles=candles)
 
     def get_signal_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> tuple[str, TradeRiskModel]:
+        # Order-priority evaluation of conditions. If one condition returns BUY or SELL, that signal is returned immediately.
         for condition in self.conditions:
             result = condition.evaluate(candles=candles)
             if result == 'BUY':

@@ -1,6 +1,6 @@
 export function strategyCardTemplate(strategyName) {
     return `
-        <div class="p-4 bg-white rounded-2xl hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-100">
+        <div class="p-4 bg-white rounded-2xl transition-shadow duration-200 cursor-pointer border border-gray-100">
             <div class="card-header flex justify-between items-center">
                 <div class="flex items-center space-x-3">
                     <span class="flex items-center justify-center px-4 py-2 bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">

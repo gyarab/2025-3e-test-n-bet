@@ -1,4 +1,4 @@
-import { strategyCardTemplate } from "./strategy_card_template.js";
+import { strategyCardTemplate } from "./templates/strategy_card_template.js";
 import { strategyDescriptionTemplate } from "./templates/strategy_description_template.js";
 
 export default class StrategySelector {
@@ -19,8 +19,7 @@ export default class StrategySelector {
     // Creates the HTML elements
     buildUI() {
         this.wrapper.innerHTML = `
-            <h2 class="text-lg font-semibold mb-3">Select Strategy</h2>
-            <div class="flex items-center space-x-2"    >
+            <div class="flex items-center space-x-2">
                 <input name="strategy-input" class="strategy-input border p-2 w-full rounded mb-2" placeholder="Select strategy...">
                 <a href="/strategies/" class="inline-block">
                     <button type="button" class="mb-2 px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors duration-200 flex items-center justify-center">
@@ -37,6 +36,7 @@ export default class StrategySelector {
         this.cards = this.wrapper.querySelector(".strategy-cards");
 
         this.updateList();
+        this.updateButtonColor();
     }
 
     // Changes the list's content based on the input
@@ -175,8 +175,9 @@ export default class StrategySelector {
 
         const card = document.createElement("div");
         card.dataset.value = value;
-        card.className = "overflow-hidden transform opacity-0 scale-80 max-h-0 mb-3 transition-all duration-500 ease-out cursor-pointer";
 
+        card.className = "strategy-card-unique overflow-hidden transform opacity-0 scale-80 max-h-0 transition-all duration-500 ease-out cursor-pointer";
+        card.id = `strategy-card-${id}`;
         card.innerHTML = strategyCardTemplate(value.replace("_", " "));
 
         this.cards.appendChild(card);
@@ -195,7 +196,8 @@ export default class StrategySelector {
             this.removeStrategy(value);
         });
 
-        this.reloadTheInitialList()
+        this.reloadTheInitialList();
+        this.updateButtonColor();
     }
 
     showDescription(id) {
@@ -204,6 +206,8 @@ export default class StrategySelector {
         const field = document.getElementById("strategy-description");
         field.appendChild(strategyDescriptionTemplate(strategy.name, strategy.parameters));
     }
+
+
 
     // Reloads the choice-list. Must be called after each operation
     reloadTheInitialList() {
@@ -238,5 +242,26 @@ export default class StrategySelector {
             card.remove();
             this.reloadTheInitialList();
         });
+
+        this.updateButtonColor();
     }
+
+    updateButtonColor() {
+        console.log("fsdfds")
+        const startBtn = document.getElementById("start-backtest-btn");
+        console.log(startBtn);  
+        console.log(this.selected);
+
+        if (this.selected.size > 0) {
+            startBtn.classList.remove("bg-gray-400", "cursor-not-allowed");
+            startBtn.classList.add("bg-teal-600", "hover:bg-teal-700");
+            startBtn.disabled = false;
+        } else {
+            startBtn.classList.remove("bg-teal-600", "hover:bg-teal-700");
+            startBtn.classList.add("bg-gray-400", "cursor-not-allowed");
+            startBtn.disabled = true;
+        }
+    }
+
+    
 }
