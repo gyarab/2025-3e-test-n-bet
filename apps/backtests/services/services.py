@@ -15,6 +15,12 @@ def run_backtest(user, strategy: Strategy, initial_balance: float = 1000, token:
     if(not strategy.creator is None):
         if(user.id != strategy.creator_id and not user.is_staff and not user.is_superuser):
             raise PermissionDenied("User does not have permission to run this strategy.")
+    
+    try:
+        initial_balance = float(initial_balance)
+        candle_amount = int(candle_amount)
+    except ValueError:
+        raise ValueError("Initial balance must be a float and candle amount must be an integer.")
 
     srategy_engine = StrategyEngine._from_parameters(strategy.parameters)
     candles = get_binance_ohlcv(token, timeframe, candle_amount)
@@ -30,7 +36,8 @@ def run_backtest(user, strategy: Strategy, initial_balance: float = 1000, token:
         "token": token,
         "timeframe": timeframe,
         "total_trades": len(self_trades),
-        "total_wins": len([trade for trade in self_trades if trade.get_result() > 0]),
-        "total_losses": len([trade for trade in self_trades if trade.get_result() <= 0]),
+        "total_wins": len([trade for trade in self_trades if trade.get_result() and trade.get_result() > 0]),
+        "total_losses": len([trade for trade in self_trades if trade.get_result() and trade.get_result() <= 0]),
+        "not_closed_trades": len([trade for trade in self_trades if trade.get_result() is None]),
         "trades": [trade.get_json() for trade in self_trades],
     }

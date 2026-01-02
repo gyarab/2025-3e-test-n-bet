@@ -205,6 +205,12 @@ export default class StrategySelector {
 
         const field = document.getElementById("strategy-description");
         field.appendChild(strategyDescriptionTemplate(strategy.name, strategy.parameters));
+
+        const placeholder = document.getElementById("strategy-description-placeholder");
+        console.log(placeholder);
+        if (placeholder) {
+            placeholder.classList.add("hidden");
+        }
     }
 
 
@@ -244,6 +250,12 @@ export default class StrategySelector {
         });
 
         this.updateButtonColor();
+
+        const placeholder = document.getElementById("strategy-description-placeholder");
+        console.log(placeholder);
+        if (placeholder) {
+            placeholder.classList.remove("hidden");
+        }
     }
 
     updateButtonColor() {

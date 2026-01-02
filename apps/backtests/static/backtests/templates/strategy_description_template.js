@@ -1,9 +1,8 @@
+// Returns a DOM element representing the strategy description
 export function strategyDescriptionTemplate(strategyName, parameters) {
-    // Returns a DOM element representing the strategy description
+    
     const div = document.createElement("div");
     div.className = "strategy-description";
-
-    console.log(parameters[0]);
 
     parameters = parameters[0] || {};
     

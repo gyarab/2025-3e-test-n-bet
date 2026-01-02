@@ -8,7 +8,7 @@
     <div class="space-y-4">
         <div>
             <label for="strategy_name" class="block text-sm font-medium text-gray-700">Initial Balance</label>
-            <input type="number" id="initial-balance-input" step="100" min="0" max="100000" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+            <input type="number" id="initial-balance-input" step="100" min="0" max="100000" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="1000">
         </div>
         <div>
             <label for="strategy_name" class="block text-sm font-medium text-gray-700">Token</label>
@@ -21,7 +21,6 @@
         <div>
             <label for="strategy_name" class="block text-sm font-medium text-gray-700">Timeframe</label>
             <select id="timeframe-select" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
-                <option value="5m">5m</option>
                 <option value="15m">15m</option>
                 <option value="30m">30m</option>
                 <option value="1h">1h</option>
@@ -32,20 +31,21 @@
         </div>
         <div>
             <label for="strategy_name" class="block text-sm font-medium text-gray-700">Candle Amount</label>
-            <input type="text" id="candle-amount-input" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+            <input type="text" id="candle-amount-input" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="500">
         </div>
     </div>
 </div>
 
 <div class="border bg-white rounded-2xl p-5 h-full shadow col-span-2">
     <h2 class="text-lg font-semibold mb-3">Strategy Description</h2>
+    <label id="strategy-description-placeholder" class="text-gray-500">Select a strategy to see its description here.</label>
     <div id="strategy-description">
         <!-- Strategy description will be rendered here -->
     </div>
 </div>  
 
 <div class="mx-auto border bg-white rounded-2xl p-5 shadow self-start w-1/2 mt-6 col-span-3">
-    <span class="flex items-center justify-center bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">
+    <span class="relative flex items-center justify-center bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">
         <button id="start-backtest-btn" class="w-full block text-center bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition-colors">
             Start Backtest
         </button>
@@ -72,7 +72,13 @@
     document.getElementById('start-backtest-btn').addEventListener('click', function(event) {
         event.preventDefault();
         const selectedStrategy = document.querySelector('#strategy-selector .strategy-card-unique');
+        const backtestResultsDiv = document.getElementById('backtest-results');
+        backtestResultsDiv.innerHTML = '';  
+        backtestResultsDiv.classList.add('hidden');
         
+        const circleImg = document.getElementById('loading-circle');
+        circleImg.classList.remove('hidden');
+
         if (selectedStrategy) {
             const strategy_id = selectedStrategy.id.split('-').pop();
             const initial_balance = document.getElementById('initial-balance-input').value || 1000;
@@ -106,6 +112,7 @@
                 })
                 .then(data => {
                     const backtestResults = new BacktestResults('#backtest-results', data.result);
+                    circleImg.classList.add('hidden');
                 });
             } catch (error) {
                 console.error("Error running backtest:", error);

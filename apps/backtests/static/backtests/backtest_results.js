@@ -5,7 +5,7 @@ export default class BacktestResults {
         this.wrapper = document.querySelector(selector);
 
         this.backtestData = backtestData;
-        console.log(this.backtestData);
+        
 
         this.buildUI();
     }
@@ -21,9 +21,11 @@ export default class BacktestResults {
             this.backtestData.total_trades,
             this.backtestData.total_wins,
             this.backtestData.total_losses,
+            this.backtestData.not_closed_trades,
             this.backtestData.trades
         );
         this.wrapper.innerHTML = results;
+        this.wrapper.classList.remove("hidden");
     }
     
 }

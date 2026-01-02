@@ -19,8 +19,7 @@ def get_binance_ohlcv_and_timestamp(coin: str, interval: str, candle_amount: int
     """
 
     # CCXT očekává symbol ve formátu 'BTC/USDT'
-    print(candle_amount)
-    ohlcv = exchange.fetch_ohlcv(coin.upper(), timeframe=interval, limit=candle_amount)
+    ohlcv = exchange.fetch_ohlcv(coin.upper(), timeframe=interval, limit=int(candle_amount))
     print("Length of ohlcv fetched:", len(ohlcv))
     if not ohlcv:
         return None

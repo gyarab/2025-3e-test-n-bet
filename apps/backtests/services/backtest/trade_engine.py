@@ -29,14 +29,15 @@ class TradeEngine():
         self.stop_loss = self.entry_price * (1 - stop_loss_pct/100) if self.trade_type else self.entry_price * (1 + stop_loss_pct/100)
         self.take_profit = self.entry_price * (1 + take_profit_pct/100) if self.trade_type else self.entry_price * (1 - take_profit_pct/100)
 
-    def get_result(self) -> float:
+    def get_result(self) -> float | None:
         """
         Calculate the result of the trade.  
+        
         Returns:
-            float: The result of the trade (profit/loss amount) or -1 if trade is not closed.
+            float | None: The result of the trade (profit/loss amount) or None if trade is not closed.
         """
         if self.status == True:
-            return -1  # Trade not closed yet
+            return None  # Trade not closed yet
 
         if self.trade_type:  # Buy trade
             return (self.exit_price/self.entry_price) * self.quantity - self.quantity

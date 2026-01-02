@@ -57,7 +57,7 @@ class BacktestEngine():
 
                 # Update balance based on trade result
                 result = trade.get_result()
-                if result != -1:
+                if result != None:
                     self.current_balance += result
 
         return self.current_balance, self.trades
