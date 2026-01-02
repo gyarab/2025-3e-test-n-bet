@@ -30,4 +30,7 @@ urlpatterns = [
     path('backtests/', include('apps.backtests.urls')),
     path('strategies/', include('apps.strategies.urls')),
     path('api/strategies/', include('apps.strategies.api.urls')),
+    path('api/registration/', include('apps.registration.api.urls')),
+
+
 ]
