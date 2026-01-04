@@ -7,6 +7,6 @@ class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=False)
     last_name = forms.CharField(max_length=30, required=False)
 
-    class Meta:  # ✅ Must be inside the form
+    class Meta:
         model = get_user_model()
         fields = ("username", "email", "first_name", "last_name")
