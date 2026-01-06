@@ -10,6 +10,9 @@
             </svg>
         </button>
     </div>
+
+    {% csrf_token %}
+
     <form id="strategy_form" class="space-y-4">
         <div>
             <label for="strategy_name" class="block text-sm font-medium text-gray-700">Strategy Name</label>
@@ -18,9 +21,11 @@
         <div>
             <label for="indicators" class="block text-sm font-medium text-gray-700">Conditions</label>
         </div>
+        
         {% include 'strategies/_condition_builder.html' %}
+
         <div>
-            <button type="sumbit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Save Strategy</button>   
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Save Strategy</button>   
         </div>
     </form>
 </div>
@@ -28,8 +33,55 @@
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
 <script type="module">
+    // Schování builderu
     document.getElementById('hide-strategy-builder')?.addEventListener('click', () => {
         document.getElementById('strategy_builder').classList.add('hidden');
         document.getElementById('strategy_name').value = '';
     });
-  </script>
+
+    // Odeslání formuláře
+    const strategyForm = document.getElementById('strategy_form');
+    strategyForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Zabrání klasickému obnovení stránky
+
+        const name = document.getElementById('strategy_name').value;
+        
+        /* ZDE JE POTŘEBA FUNKCE, KTERÁ POSBÍRÁ DATA Z TVÉHO _condition_builder.html.
+           Předpokládám, že tvůj builder vrací nějaký objekt nebo pole podmínek.
+        */
+        const parameters = {
+            // Příklad: zde zavoláš funkci tvého condition builderu
+            // conditions: getBuilderData() 
+            test: "data" 
+        };
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        try {
+            const response = await fetch('/api/strategies/save/', { // Použití Django URL tagu
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    name: name,
+                    parameters: parameters,
+                    base_strategy_id: null
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Strategie uložena! ID: ' + result.strategy_id);
+                document.getElementById('strategy_builder').classList.add('hidden');
+            } else {
+                alert('Chyba: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Chyba při odesílání:', error);
+            alert('Nepodařilo se spojit se serverem.');
+        }
+    });
+</script>

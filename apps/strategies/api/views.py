@@ -1,9 +1,11 @@
+from cmath import e
 import json
 import logging
 import os
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_protect
 
 from apps.strategies.models import Strategy
 
@@ -60,4 +62,41 @@ def get_indicator_list(request):
     except Exception as e:
         logger.error(f"Error retrieving indicators: {e}", exc_info=True)
         return JsonResponse({"status":"error","message": "Internal server error"}, status=500)
+
+@csrf_protect
+@require_http_methods(["POST"])
+def save_strategy_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "User not authenticated"}, status=401)
+
+    if not request.content_type == "application/json":
+        return JsonResponse({"status": "error", "message": "Invalid content type"}, status=415)
+
+    try:
+        data = json.loads(request.body)
+        if isinstance(data, list) and len(data) > 0:
+            data = data[0]
+    except json.JSONDecodeError:
+        return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+
+    try:
+        create_strategy = Strategy.objects.create(
+            name=data.get("name", "Unnamed Strategy"),
+            creator=request.user,
+            base_strategy_id=data.get("base_strategy_id"),
+            parameters=data.get("parameters", {}),
+            is_default=False
+        )
         
+        return JsonResponse({
+            "status": "success", 
+            "strategy_id": create_strategy.id,
+            "message": "Strategy successfully saved"
+        }, status=201)
+
+    except Exception as err:
+        logger.error(f"Error saving strategy: {err}", exc_info=True)
+        return JsonResponse({
+            "status": "error", 
+            "message": "Nepodařilo se uložit strategii do DB."
+        }, status=500)
