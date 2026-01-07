@@ -10,10 +10,12 @@
   </head>
   <body class="bg-gray-50 text-gray-800">
     <div class="container mx-auto p-6">
-        {% include 'core/navbar.html' %}
-        <main class="{% block main_class %}p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch{% endblock %}">
-        {% block content %}
+        {% block navbar %}
+          {% include 'core/navbar.html' %}
         {% endblock %}
+        <main class="{% block main_class %}p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch{% endblock %}">
+          {% block content %}
+          {% endblock %}
         </main>
     </div>
   </body>
