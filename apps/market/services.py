@@ -108,3 +108,42 @@ def get_market_summary(coin_list: list[str]):
             '24h_change': ticker['change'] if 'change' in ticker else None
         }
     return summary
+
+def get_supported_binance_symbols():
+    """
+    Get a list of all supported trading pairs (symbols) on Binance using CCXT.
+    
+    Returns:
+        list: List of supported trading pairs
+    """
+    markets = exchange.load_markets()
+    return list(markets.keys())
+
+def get_hot_coins(threshold_change: float = 5.0, only_positive: bool = False, limit: int = 10):
+    """
+    Get a list of 'hot' coins from Binance using CCXT, defined as those with a 24-hour change above a certain threshold.
+    
+    Args:
+        threshold_change (float): Minimum 24-hour change percentage to consider a coin 'hot'
+        positive (bool): If True, only consider coins with positive changes. Otherwise, consider only negative changes.
+    
+    Returns:
+        list: List of hot coins with their current price, 24-hour change, and volume
+    """
+    hot_coins = []
+    markets = exchange.load_markets()
+    for symbol in markets.keys():
+        ticker = exchange.fetch_ticker(symbol)
+        if 'change' in ticker:
+            if (only_positive and ticker['change'] >= threshold_change) or (not only_positive and ticker['change'] <= -threshold_change):
+                hot_coins.append({
+                    'symbol': symbol,
+                    'current_price': ticker['last'] if 'last' in ticker else None,
+                    '24h_change': ticker['change'],
+                    'volume': ticker['baseVolume'] if 'baseVolume' in ticker else None
+                })
+
+    hot_coins = sorted(hot_coins, key=lambda x: x['24h_change'], reverse=only_positive)[:limit]
+    
+    return hot_coins
+
