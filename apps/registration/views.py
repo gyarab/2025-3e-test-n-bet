@@ -22,7 +22,8 @@ def login_view(request):
 
     if request.method == "POST" and form.is_valid():
         login(request, form.get_user())
-        return redirect("login")
+        return redirect("/home")
+    
     
     return render(request, "registration/login.html", {
         "form": form
@@ -31,5 +32,4 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out.")
-    return redirect("login")
-    return render(request, "registration/login.html")
+    return redirect("/home")
