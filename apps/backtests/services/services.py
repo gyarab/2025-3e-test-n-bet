@@ -5,13 +5,18 @@ from apps.strategies.models import Strategy
 from apps.market.services import get_binance_ohlcv
 from apps.strategies.services.core.trade_risk_model import TradeRiskModel
 from .backtest.backtest_engine import BacktestEngine
+from ccxt.base.errors import RequestTimeout
+from ccxt.base.errors import RequestTimeout
+
+
 
 
 def run_backtest(user, strategy: Strategy, initial_balance: float = 1000, token: str = 'BTCUSDT', timeframe: str = '1h', candle_amount: int = 500) -> dict:
     """
     Application service entry point.
     """
-
+    
+    
     if(not strategy.creator is None):
         if(user.id != strategy.creator_id and not user.is_staff and not user.is_superuser):
             raise PermissionDenied("User does not have permission to run this strategy.")
@@ -23,7 +28,10 @@ def run_backtest(user, strategy: Strategy, initial_balance: float = 1000, token:
         raise ValueError("Initial balance must be a float and candle amount must be an integer.")
 
     srategy_engine = StrategyEngine._from_parameters(strategy.parameters)
-    candles = get_binance_ohlcv(token, timeframe, candle_amount)
+    try:
+        candles =  get_binance_ohlcv(token, timeframe, candle_amount)
+    except RequestTimeout as e:
+        raise RuntimeError("Market data timeout") from e
 
     backtest = BacktestEngine(strategy=srategy_engine, initial_balance=initial_balance, candles=candles)
 

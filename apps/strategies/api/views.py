@@ -18,12 +18,10 @@ def get_strategy_view(request):
     View to retrieve strategies for the authenticated user.
     Retrieves both user-created and default strategies.
     """
-    # Check authentication
     if not request.user.is_authenticated:
         return JsonResponse({"status": "error", "message": "Authentication required"}, status=401)
 
     try:
-        # Django ORM query to get strategies. Q object is used for complex queries.
         strategies = strategies = Strategy.objects.filter(
             Q(creator=request.user) | Q(creator__isnull=True)
         ).order_by("id")

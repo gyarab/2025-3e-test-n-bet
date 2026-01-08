@@ -43,7 +43,7 @@
         <!-- Strategy description will be rendered here -->
     </div>
 </div>  
-
+<!---
 <div class="mx-auto border bg-white rounded-2xl p-5 shadow self-start w-1/2 mt-6 col-span-3">
     <span class="relative flex items-center justify-center bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">
         <button id="start-backtest-btn" class="w-full block text-center bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition-colors">
@@ -51,17 +51,36 @@
         </button>
     </span>
 </div>
+-->
+<div class="mx-auto border bg-white rounded-2xl p-5 shadow self-start w-1/2 mt-6 col-span-3 flex items-center justify-between space-x-4">
+    <button id="start-backtest-btn" class="w-1/2 bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition-colors">
+        Start Backtest
+    </button>
 
+    <button id="save-backtest-btn" class="w-1/2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-opacity opacity-50 cursor-not-allowed" disabled>
+        Save Backtest
+    </button>
+</div>
 
 <script type="module">
     import StrategySelector from "/static/backtests/strategy_selector.js";
     import BacktestResults from "/static/backtests/backtest_results.js";
 
+    // 1. VARIABLE TO STORE DATA FOR SAVING
+    let lastBacktestData = null; 
+    let lastUsedParams = null;
+
+    // Helper to get CSRF token
+    function getCsrfToken() {
+        return document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
+    }
+
+    // Load Strategies
     fetch('/api/strategies/get')
         .then(res => {
             if (res.status === 401) {
-            window.location.href = '/login';
-            return;
+                window.location.href = '/login';
+                return;
             }
             return res.json();
         })
@@ -69,56 +88,129 @@
             new StrategySelector('#strategy-selector', data.strategies);
         });
 
+    // --- START BACKTEST LOGIC ---
     document.getElementById('start-backtest-btn').addEventListener('click', function(event) {
         event.preventDefault();
-        const selectedStrategy = document.querySelector('#strategy-selector .strategy-card-unique');
+        
+        // UI Reset
         const backtestResultsDiv = document.getElementById('backtest-results');
+        const circleImg = document.getElementById('loading-circle');
+        const saveBtn = document.getElementById('save-backtest-btn');
+        
+        // Disable save button while new test runs
+        saveBtn.disabled = true;
+        saveBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
         backtestResultsDiv.innerHTML = '';  
         backtestResultsDiv.classList.add('hidden');
-        
-        const circleImg = document.getElementById('loading-circle');
         circleImg.classList.remove('hidden');
 
+        const selectedStrategy = document.querySelector('#strategy-selector .strategy-card-unique');
+
         if (selectedStrategy) {
+            // Gather Input Data
             const strategy_id = selectedStrategy.id.split('-').pop();
             const initial_balance = document.getElementById('initial-balance-input').value || 1000;
             const token = document.getElementById('token-select').value;
             const timeframe = document.getElementById('timeframe-select').value;
             const candle_amount = document.getElementById('candle-amount-input').value || 500;
             
-            try {
-                const response = fetch("/api/backtests/run/ ", {
-                    method: "POST",
-                    credentials: "same-origin",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1],
-                        "Accept": "application/json"
-                    },
-                    body: JSON.stringify({
-                        strategy_id,
-                        initial_balance,
-                        token,
-                        timeframe,
-                        candle_amount
-                    })
+            // Store params for saving later
+            lastUsedParams = {
+                strategy_id,
+                initial_capital: initial_balance,
+                asset_id: token, // Mapping token to asset_id
+                timeframe, 
+                position_size: 1.0 // Example: default to 1.0 or get from input if you have one
+            };
+
+            fetch("/api/backtests/run/", { 
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCsrfToken(),
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    strategy_id,
+                    initial_balance,
+                    token,
+                    timeframe,
+                    candle_amount
                 })
-                .then(res => {
-                    if (res.status === 401) {
-                        window.location.href = '/login';
-                        return;
-                    }   
-                    return res.json();
-                })
-                .then(data => {
-                    const backtestResults = new BacktestResults('#backtest-results', data.result);
-                    circleImg.classList.add('hidden');
-                });
-            } catch (error) {
+            })
+            .then(res => {
+                if (res.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }   
+                return res.json();
+            })
+            .then(data => {
+                // 2. STORE RESULT AND ENABLE SAVE BUTTON
+                lastBacktestData = data.result; // Ensure this matches your API response structure
+
+                // Render Results
+                new BacktestResults('#backtest-results', data.result);
+                
+                // Hide Loader
+                circleImg.classList.add('hidden');
+
+                // Enable Save Button
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            })
+            .catch(error => {
                 console.error("Error running backtest:", error);
-            }
+                circleImg.classList.add('hidden');
+                alert("An error occurred while running the backtest.");
+            });
         } else {
             alert('Please select a strategy before starting the backtest.');
+            circleImg.classList.add('hidden');
         }
+    });
+
+    // --- SAVE BACKTEST LOGIC ---
+    document.getElementById('save-backtest-btn').addEventListener('click', function() {
+        if (!lastBacktestData || !lastUsedParams) return;
+
+        // Prepare the payload strictly matching your Django View expectations
+        const payload = {
+            strategy_id: lastUsedParams.strategy_id,
+            asset_id: lastUsedParams.asset_id,
+            initial_capital: lastUsedParams.initial_capital,
+            position_size: lastUsedParams.position_size,
+            // Assuming your backtest result contains dates, otherwise pass current date
+            start_date: lastBacktestData.start_date || new Date().toISOString().split('T')[0], 
+            end_date: lastBacktestData.end_date || new Date().toISOString().split('T')[0],
+            result: lastBacktestData // Passing the whole result JSON
+        };
+
+        // MAKE SURE THIS URL MATCHES YOUR urls.py
+        fetch("/api/backtests/save/", { 
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCsrfToken()
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert("Backtest saved successfully!");
+                // Optional: Disable button again so they don't save twice
+                const saveBtn = document.getElementById('save-backtest-btn');
+                saveBtn.disabled = true;
+                saveBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                alert("Error saving: " + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Network error trying to save.");
+        });
     });
 </script>

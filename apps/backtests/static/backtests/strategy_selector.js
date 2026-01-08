@@ -17,27 +17,58 @@ export default class StrategySelector {
     }
 
     // Creates the HTML elements
-    buildUI() {
-        this.wrapper.innerHTML = `
-            <div class="flex items-center space-x-2">
-                <input name="strategy-input" class="strategy-input border p-2 w-full rounded mb-2" placeholder="Select strategy...">
-                <a href="/strategies/" class="inline-block">
-                    <button type="button" class="mb-2 px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors duration-200 flex items-center justify-center">
-                        <span class="text-1xl font-bold transform scale-5">+</span>
-                    </button>
-                </a>
-            </div>
-            <div class="strategy-list bg-white border rounded shadow mb-2 hidden max-h-40 overflow-auto"></div>
-            <div class="strategy-cards"></div>
-        `;
+   buildUI() {
+    this.wrapper.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <input name="strategy-input" class="strategy-input border p-2 w-full rounded mb-2" placeholder="Select strategy...">
+            <a href="/strategies/" class="inline-block">
+                <button type="button" class="mb-2 px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors duration-200 flex items-center justify-center">
+                    <span class="text-1xl font-bold transform scale-5">+</span>
+                </button>
+            </a>
+        </div>
+        <div class="strategy-list bg-white border rounded shadow mb-2 hidden max-h-40 overflow-auto"></div>
+        <div class="strategy-cards"></div>
 
-        this.input = this.wrapper.querySelector("input[name='strategy-input']");
-        this.list = this.wrapper.querySelector(".strategy-list");
-        this.cards = this.wrapper.querySelector(".strategy-cards");
+        <!-- Save Button -->
+        <div class="mt-4 text-center">
+            <button id="save-backtest-btn" class="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition opacity-50 cursor-not-allowed" disabled>
+                Save Backtest
+            </button>
+        </div>
+    `;
 
-        this.updateList();
-        this.updateButtonColor();
-    }
+    this.input = this.wrapper.querySelector("input[name='strategy-input']");
+    this.list = this.wrapper.querySelector(".strategy-list");
+    this.cards = this.wrapper.querySelector(".strategy-cards");
+    this.saveBtn = this.wrapper.querySelector("#save-backtest-btn");
+
+    this.updateList();
+    this.updateButtonColor();
+    
+    // Event listener pro save tlačítko
+    this.saveBtn.addEventListener("click", () => {
+        const selectedCard = this.cards.querySelector(".strategy-card-unique");
+        if (!selectedCard) return alert("Select a strategy first");
+
+        const strategyId = selectedCard.id.split("-").pop();
+        const strategy = this.strategiesData.find(s => s.id == strategyId);
+
+        if (!strategy) return alert("Strategy not found");
+
+        if (typeof window.saveBacktest === "function") {
+            // zavolá globální JS funkci saveBacktest s objektem strategy
+            window.saveBacktest({
+                strategy_id: strategy.id,
+                asset_id: strategy.asset_id,  // musíš mít asset_id v datech
+                start_date: new Date().toISOString(),
+                end_date: new Date().toISOString(),
+                position_size: 0
+            });
+        }
+    });
+}
+
 
     // Changes the list's content based on the input
     updateList() {
