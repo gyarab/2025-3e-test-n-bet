@@ -1,6 +1,6 @@
 {% load static %}
 
-<nav class="bg-white shadow-sm p-4 flex justify-between items-center">
+<nav class="bg-white shadow-sm p-6 flex justify-between items-center">
     <div class="flex items-center space-x-4">
         <img src="https://placehold.co/40" alt="Logo" class="rounded-full w-10 h-10" />
         <div class="text-xl font-semibold text-teal-600">Test & Bet</div>
@@ -12,28 +12,16 @@
         <a href="/strategies/" class="hover:text-teal-600">Srovnání strategií</a>
     </div>
     <div class="relative group">
-        <div class="group flex items-center space-x-2 cursor-pointer pb-6 pt-2 px-2">
-            <img src="https://placehold.co/40" alt="User" class="rounded-full w-10 h-10" />
-             {% if user.is_authenticated %}
-             <div class="flex flex-col text-sm leading-tight">
-                <span>  
+        {% if user.is_authenticated %}
+        <div class="group flex items-center space-x-6 cursor-pointer ">
+            <div class="flex flex-col leading-tight bg-teal-100 rounded-lg text-gray-600 hover:bg-teal-300 hover:text-teal-900 ">
+                <span class="text-gray-800 font-medium p-2 px-6">  
                     {{ user.username }}
                 </span>
-                <form method="post" action="/registration/logout/">
-                    {% csrf_token %}
-                    <button type="submit" class="text-red-600 hover:underline font-medium text-left">Logout</button>
-                </form>
-             </div>
-                {% else %}
-                <div class="flex flex-col text-sm leading-tight">
-                    <a href="/registration/login/" class="text-blue-600 hover:underline font-medium">log in</a>
-                </div>
-                {% endif %}
-        
-                </div>
+            </div>
+        </div> 
         <div class="absolute left-0 right-0 h-4 top-full"></div>
-
-        <div class="absolute left-1/2 -translate-x-1/2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4
+        <div class="absolute left-1/2 mt-4 -translate-x-1/2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4
             opacity-0 pointer-events-none translate-y-1 transition-all duration-200 ease-out z-50
             group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0">
 
@@ -47,7 +35,22 @@
                 <a href="/backtests/" class="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition font-medium">
                     My Backtests
                 </a>
+                <form method="post" action="/registration/logout/" class="block flex  bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full font-medium text-left no-underline p-3">
+                        <span>Logout</span>
+                    </button>
+                </form>
             </ul>
         </div>
+        {% else %}
+        <div class="group flex items-center space-x-6 cursor-pointer ">
+            <div class="flex flex-col leading-tight bg-teal-100 rounded-lg text-gray-600 hover:bg-teal-300 hover:text-teal-900 ">
+                <a href="/registration/login/" class="font-medium no-underline p-2 px-6">
+                    <span>Login</span>
+                </a>
+            </div>
+        </div>  
+        {% endif %}
     </div>
 </nav>

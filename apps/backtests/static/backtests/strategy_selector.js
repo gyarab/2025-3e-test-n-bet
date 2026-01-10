@@ -29,44 +29,14 @@ export default class StrategySelector {
         </div>
         <div class="strategy-list bg-white border rounded shadow mb-2 hidden max-h-40 overflow-auto"></div>
         <div class="strategy-cards"></div>
-
-        <!-- Save Button -->
-        <div class="mt-4 text-center">
-            <button id="save-backtest-btn" class="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition opacity-50 cursor-not-allowed" disabled>
-                Save Backtest
-            </button>
-        </div>
     `;
 
     this.input = this.wrapper.querySelector("input[name='strategy-input']");
     this.list = this.wrapper.querySelector(".strategy-list");
     this.cards = this.wrapper.querySelector(".strategy-cards");
-    this.saveBtn = this.wrapper.querySelector("#save-backtest-btn");
 
     this.updateList();
     this.updateButtonColor();
-    
-    // Event listener pro save tlačítko
-    this.saveBtn.addEventListener("click", () => {
-        const selectedCard = this.cards.querySelector(".strategy-card-unique");
-        if (!selectedCard) return alert("Select a strategy first");
-
-        const strategyId = selectedCard.id.split("-").pop();
-        const strategy = this.strategiesData.find(s => s.id == strategyId);
-
-        if (!strategy) return alert("Strategy not found");
-
-        if (typeof window.saveBacktest === "function") {
-            // zavolá globální JS funkci saveBacktest s objektem strategy
-            window.saveBacktest({
-                strategy_id: strategy.id,
-                asset_id: strategy.asset_id,  // musíš mít asset_id v datech
-                start_date: new Date().toISOString(),
-                end_date: new Date().toISOString(),
-                position_size: 0
-            });
-        }
-    });
 }
 
 
@@ -238,7 +208,6 @@ export default class StrategySelector {
         field.appendChild(strategyDescriptionTemplate(strategy.name, strategy.parameters));
 
         const placeholder = document.getElementById("strategy-description-placeholder");
-        console.log(placeholder);
         if (placeholder) {
             placeholder.classList.add("hidden");
         }
@@ -283,17 +252,13 @@ export default class StrategySelector {
         this.updateButtonColor();
 
         const placeholder = document.getElementById("strategy-description-placeholder");
-        console.log(placeholder);
         if (placeholder) {
             placeholder.classList.remove("hidden");
         }
     }
 
     updateButtonColor() {
-        console.log("fsdfds")
         const startBtn = document.getElementById("start-backtest-btn");
-        console.log(startBtn);  
-        console.log(this.selected);
 
         if (this.selected.size > 0) {
             startBtn.classList.remove("bg-gray-400", "cursor-not-allowed");
@@ -305,6 +270,4 @@ export default class StrategySelector {
             startBtn.disabled = true;
         }
     }
-
-    
 }

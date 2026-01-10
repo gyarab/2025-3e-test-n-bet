@@ -1,17 +1,21 @@
 import { backtestResultsTableTemplate } from "./templates/backtest_results_table_template.js";
 
 export default class BacktestResults {
-    constructor(selector, backtestData) {
+    constructor(selector) {
         this.wrapper = document.querySelector(selector);
-
-        this.backtestData = backtestData;
         
+        if (!this.wrapper) {
+            throw new Error(`BacktestResults: selector "${selector}" not found`);
+        }
 
-        this.buildUI();
+        this.backtestData = null;
+        this.reset();
     }
 
     // Creates the HTML elements
-    buildUI() {
+    buildUI(backtestData) {
+        this.backtestData = backtestData;
+
         const results = backtestResultsTableTemplate(
             this.backtestData.initial_balance,
             this.backtestData.final_balance,
@@ -28,4 +32,8 @@ export default class BacktestResults {
         this.wrapper.classList.remove("hidden");
     }
     
+    reset() {
+        this.wrapper.innerHTML = "";
+        this.wrapper.classList.add("hidden");
+    }
 }

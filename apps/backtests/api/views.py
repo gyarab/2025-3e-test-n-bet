@@ -81,6 +81,20 @@ logger = logging.getLogger(__name__)
 
 @require_http_methods(["POST"])
 def save_backtest_view(request):
+    """
+    Docstring for save_backtest_view
+    Expects a JSON body with the following structure:
+    {
+        "strategy_id": int,
+        "asset_id": str,
+        "start_date": str (YYYY-MM-DD),
+        "end_date": str (YYYY-MM-DD),
+        "initial_capital": float,
+        "position_size": float,
+        "result": dict
+    }
+    
+    """
     if not request.user.is_authenticated:
         return JsonResponse({"status": "error", "message": "User not authenticated"}, status=401)
 
@@ -99,9 +113,7 @@ def save_backtest_view(request):
         backtest = Backtest.objects.create(
             user=request.user,
             strategy_id=data.get("strategy_id"),
-            
             asset=asset_obj,  
-            
             result=data.get("result", {}),
             start_date=data.get("start_date"),
             end_date=data.get("end_date"),

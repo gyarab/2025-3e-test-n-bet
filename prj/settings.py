@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'core',
     'allauth.socialaccount.providers.google',
     'apps.registration',
-    'api'
 ]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
@@ -96,15 +95,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'prj.wsgi.application'
 ASGI_APPLICATION = 'prj.asgi.application'
 
+LOGIN_URL = '/registration/login/'
+
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
-from pathlib import Path
-import environ
 
 # Initialise environment variables
+
+from pathlib import Path
 import environ
 import os
 
