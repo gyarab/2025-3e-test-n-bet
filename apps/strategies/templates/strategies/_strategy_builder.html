@@ -33,32 +33,25 @@
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
 <script type="module">
-    // Schování builderu
     document.getElementById('hide-strategy-builder')?.addEventListener('click', () => {
         document.getElementById('strategy_builder').classList.add('hidden');
         document.getElementById('strategy_name').value = '';
     });
 
-    // Odeslání formuláře
     const strategyForm = document.getElementById('strategy_form');
     strategyForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Zabrání klasickému obnovení stránky
+        e.preventDefault();
 
         const name = document.getElementById('strategy_name').value;
         
-        /* ZDE JE POTŘEBA FUNKCE, KTERÁ POSBÍRÁ DATA Z TVÉHO _condition_builder.html.
-           Předpokládám, že tvůj builder vrací nějaký objekt nebo pole podmínek.
-        */
         const parameters = {
-            // Příklad: zde zavoláš funkci tvého condition builderu
-            // conditions: getBuilderData() 
-            test: "data" 
+            //TODO: Gather parameters from condition builder
         };
 
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         try {
-            const response = await fetch('/api/strategies/save/', { // Použití Django URL tagu
+            const response = await fetch('/api/strategies/save/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,14 +67,14 @@
             const result = await response.json();
 
             if (response.ok) {
-                alert('Strategie uložena! ID: ' + result.strategy_id);
+                alert('Strategy saved successfully!');
                 document.getElementById('strategy_builder').classList.add('hidden');
             } else {
-                alert('Chyba: ' + result.message);
+                alert('Error: ' + result.message);
             }
         } catch (error) {
-            console.error('Chyba při odesílání:', error);
-            alert('Nepodařilo se spojit se serverem.');
+            console.error('Error sending request:', error);
+            alert('Failed to connect to the server.');
         }
     });
 </script>
