@@ -131,10 +131,24 @@ def get_hot_coins(threshold_change: float = 5.0, only_positive: bool = False, li
         list: List of hot coins with their current price, 24-hour change, and volume
     """
     hot_coins = []
-    markets = exchange.load_markets()
+    markets = exchange.fetch_tickers()
+
+    print(markets)
+
+    if not markets:
+        return hot_coins
+
+    # Filter to only USDT pairs
+    for m in list(markets.keys()):
+        if not m.endswith('/USDT'):
+            del markets[m]
+    
     for symbol in markets.keys():
         ticker = exchange.fetch_ticker(symbol)
         if 'change' in ticker:
+            if (ticker['change'] is None):
+                continue
+            print(f"Evaluating {symbol}: change = {ticker['change']}")
             if (only_positive and ticker['change'] >= threshold_change) or (not only_positive and ticker['change'] <= -threshold_change):
                 hot_coins.append({
                     'symbol': symbol,
@@ -144,6 +158,5 @@ def get_hot_coins(threshold_change: float = 5.0, only_positive: bool = False, li
                 })
 
     hot_coins = sorted(hot_coins, key=lambda x: x['24h_change'], reverse=only_positive)[:limit]
-    
-    return hot_coins
 
+    return hot_coins
