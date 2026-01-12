@@ -6,8 +6,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-@require_http_methods(["GET"])
-def  get_hot_tokens(request):
+@require_http_methods(["POST"])
+def get_hot_tokens(request):
     """
     API endpoint to retrieve hot tokens from the market service.
     Expects a JSON payload with optional parameters:

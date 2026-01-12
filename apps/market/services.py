@@ -133,30 +133,29 @@ def get_hot_coins(threshold_change: float = 5.0, only_positive: bool = False, li
     hot_coins = []
     markets = exchange.fetch_tickers()
 
-    print(markets)
-
     if not markets:
         return hot_coins
 
     # Filter to only USDT pairs
-    for m in list(markets.keys()):
-        if not m.endswith('/USDT'):
-            del markets[m]
+    markets = {k: v for k, v in markets.items() if k.endswith('/USDT')}
     
-    for symbol in markets.keys():
-        ticker = exchange.fetch_ticker(symbol)
-        if 'change' in ticker:
-            if (ticker['change'] is None):
+    for ticker, value in markets.items():
+        if 'percentage' in value:
+            if (value['percentage'] is None):
                 continue
-            print(f"Evaluating {symbol}: change = {ticker['change']}")
-            if (only_positive and ticker['change'] >= threshold_change) or (not only_positive and ticker['change'] <= -threshold_change):
+            if (only_positive and value['percentage'] >= threshold_change) or (not only_positive and value['percentage'] <= -threshold_change):
                 hot_coins.append({
-                    'symbol': symbol,
-                    'current_price': ticker['last'] if 'last' in ticker else None,
-                    '24h_change': ticker['change'],
-                    'volume': ticker['baseVolume'] if 'baseVolume' in ticker else None
+                    'symbol': ticker,
+                    'current_price': value['last'] if 'last' in value else None,
+                    '24h_change': value['percentage'] if 'percentage' in value else None,
+                    'volume': value['baseVolume'] if 'baseVolume' in value else None
                 })
 
+
+    print(limit)
+
     hot_coins = sorted(hot_coins, key=lambda x: x['24h_change'], reverse=only_positive)[:limit]
+
+    print("Hot coins found:", hot_coins)
 
     return hot_coins
