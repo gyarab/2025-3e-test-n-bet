@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'core',
     'allauth.socialaccount.providers.google',
     'apps.registration',
+    'livereload',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
@@ -71,7 +72,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'allauth.account.middleware.AccountMiddleware',
-
+    'livereload.middleware.LiveReloadScript',
 ]
 
 ROOT_URLCONF = 'prj.urls'

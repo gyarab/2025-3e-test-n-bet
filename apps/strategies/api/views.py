@@ -64,6 +64,17 @@ def get_indicator_list(request):
 @csrf_protect
 @require_http_methods(["POST"])
 def save_strategy_view(request):
+    """
+    Docstring for save_strategy_view
+    Json structure expected:
+    {
+        "name": "Strategy Name",
+        "base_strategy_id": 1,
+        "parameters": {
+            ... strategy parameters ...
+        }
+    }
+    """
     if not request.user.is_authenticated:
         return JsonResponse({"status": "error", "message": "User not authenticated"}, status=401)
 

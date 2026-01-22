@@ -18,16 +18,7 @@ export function indicatorCardTemplate(indicatorName) {
                 </button>
             </div>
             <div class="settings overflow-y-auto max-h-0 opacity-0 transition-all duration-200 ease-in-out">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1 mt-3">Condition</label>
-                    <select class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150 mb-3">
-                        <option value="greater_than">Greater Than</option>
-                        <option value="less_than">Less Than</option>
-                    </select>
-                    <input type="number" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition duration-150" placeholder="Value" required>
-                </div> 
-                <hr class="my-3">
-                <div class="parameters space-y-3">
+                <div class="parameters space-y-3 mt-3">
                     <!-- Parameter settings -->
                 </div>              
             </div>
