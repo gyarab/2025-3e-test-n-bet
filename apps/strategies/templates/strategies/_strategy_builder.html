@@ -48,7 +48,7 @@
             //TODO: Gather parameters from condition builder
         };
 
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
         try {
             const response = await fetch('/api/strategies/save/', {

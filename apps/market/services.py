@@ -143,19 +143,24 @@ def get_hot_coins(threshold_change: float = 5.0, only_positive: bool = False, li
         if 'percentage' in value:
             if (value['percentage'] is None):
                 continue
+            
+            market = exchange.markets[ticker]
+            spot_url = None
+
+            if 'spot' in market and market['spot']:
+                base = market['base'] if 'base' in market else 'BTC'
+                quote = market['quote'] if 'quote' in market else 'USDT'
+                spot_url = f"https://www.binance.com/en/trade/{base}_{quote}?type=spot"
+
             if (only_positive and value['percentage'] >= threshold_change) or (not only_positive and value['percentage'] <= -threshold_change):
                 hot_coins.append({
                     'symbol': ticker,
                     'current_price': value['last'] if 'last' in value else None,
                     '24h_change': value['percentage'] if 'percentage' in value else None,
-                    'volume': value['baseVolume'] if 'baseVolume' in value else None
+                    'volume': value['baseVolume'] if 'baseVolume' in value else None,
+                    'spot_url': spot_url if spot_url else None,
                 })
 
-
-    print(limit)
-
     hot_coins = sorted(hot_coins, key=lambda x: x['24h_change'], reverse=only_positive)[:limit]
-
-    print("Hot coins found:", hot_coins)
 
     return hot_coins

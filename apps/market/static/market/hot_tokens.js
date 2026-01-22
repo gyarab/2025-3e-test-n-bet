@@ -2,10 +2,8 @@ async function setHotTokens(locator) {
     const div = document.getElementById(locator);
 
     function _getCsrfToken() {
-        return document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1];
+        return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
     }
-
-    console.log("Fetching hot tokens...");
 
     return fetch('/api/market/hot-tokens/', {
             method: 'POST',
@@ -30,10 +28,12 @@ async function setHotTokens(locator) {
                 let li = document.createElement('li');
                 li.className = "flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100";
                 li.innerHTML = `
-                    <span class="font-medium">${token.symbol}</span>
-                    <span class="${token['24h_change'] >= 0 ? 'text-green-500' : 'text-red-500'} font-semibold">
-                        ${token['24h_change'] >= 0 ? '+' : '-'}${token['24h_change'].toFixed(2)}%
-                    </span>
+                    <a href="${token.spot_url}" target="_blank" class="flex-1">
+                        <span class="font-medium">${token.symbol}</span>
+                        <span class="${token['24h_change'] >= 0 ? 'text-green-500' : 'text-red-500'} font-semibold">
+                            ${token['24h_change'] >= 0 ? '+' : '-'}${token['24h_change'].toFixed(2)}%
+                        </span>
+                    </a>
                 `;
                 ul.appendChild(li);
             });

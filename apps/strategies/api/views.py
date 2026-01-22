@@ -98,3 +98,35 @@ def save_strategy_view(request):
             "status": "error", 
             "message": "Nepodařilo se uložit strategii do DB."
         }, status=500)
+
+@csrf_protect
+@require_http_methods(["DELETE"])
+def delete_strategy_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "User not authenticated"}, status=401)
+
+    if not request.content_type == "application/json":
+        return JsonResponse({"status": "error", "message": "Invalid content type"}, status=415)
+
+    try:
+        data = json.loads(request.body)
+        strategy_id = data.get("strategy_id")
+        if not strategy_id:
+            return JsonResponse({"status": "error", "message": "Strategy ID is required"}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+
+    try:
+        strategy = Strategy.objects.get(id=strategy_id, creator=request.user)
+        strategy.delete()
+        return JsonResponse({"status": "success", "message": "Strategy successfully deleted"}, status=200)
+
+    except Strategy.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Strategy not found"}, status=404)
+
+    except Exception as err:
+        logger.error(f"Error deleting strategy: {err}", exc_info=True)
+        return JsonResponse({
+            "status": "error", 
+            "message": "Failed to delete strategy from DB."
+        }, status=500)
