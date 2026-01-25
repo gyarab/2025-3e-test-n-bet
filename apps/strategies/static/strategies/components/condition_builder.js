@@ -1,12 +1,12 @@
 import IndicatorSelector from './indicator_selector.js';
-import { conditionCardTemplate } from './condition_card_template.js';
+import { conditionCardTemplate } from '../condition_card_template.js';
 
 class ConditionBuilder {
-    constructor(selector, indicatorsData) {
-        this.wrapper = document.querySelector(selector);
+    constructor(root, indicatorsData) {
+        this.wrapper = root;
         this.indicatorsData = indicatorsData; 
+
         this.conditions = [];
-        this.index = 0;
 
         this.buildUI();
         this.bindEvents();
@@ -32,46 +32,55 @@ class ConditionBuilder {
         this.addBtn.addEventListener("click", () => this.addCondition());
     }
 
+    createConditionCard(name) {
+        const tpl = document.getElementById("condition-card-template");
+        const node = tpl.content.cloneNode(true);
+
+        const card = node.querySelector(".condition-card");
+        card.querySelector(".card-title").textContent = name;
+
+        return card;
+    }
+
     // Add a new condition card
-    addCondition() {
-        const card = document.createElement("div");
-        card.className = "p-4 bg-emerald-100 rounded-lg shadow-md overflow-hidden transform opacity-0 scale-90 transition-all duration-300";
-        card.id = `condition-card-${this.index}`;  
-        
+    addCondition() {   
         const cardName = `Condition ${this.conditions.length + 1}`;
-        card.innerHTML = conditionCardTemplate(cardName, this.index);
-        this.setRiskModelToggles(card, this.index);
+        const card = this.createConditionCard(cardName);
+        this.setRiskModelToggles(card);
 
         this.conditionList.appendChild(card);
 
+        // Trigger animation
         requestAnimationFrame(() => {
             card.classList.remove("opacity-0", "scale-90");
             card.classList.add("opacity-100", "scale-100");
         });
 
-        const indicatorId = `indicator-selector-${this.index}`;
-        const indicatorSelector = new IndicatorSelector(`#${indicatorId}`, this.indicatorsData);
+        const indicatorRoot = card.querySelector('[data-role="indicator-selector"]');
+        const indicatorSelector = new IndicatorSelector(indicatorRoot, this.indicatorsData);
         this.conditions.push({ card, indicatorSelector });
 
-        const removeId = `remove-condition-btn-${this.index}`;
-        const removeBtn = card.querySelector(`#${removeId}`);
-        removeBtn.addEventListener("click", () => this.removeCondition(card.id));
+        const removeBtn = card.querySelector(`[data-role="remove-btn"]`);
+        removeBtn.addEventListener("click", () => this.removeCondition(card));
 
-        this.index += 1;
-  
         this.toggleConditionControls();
     }
 
     // Set up risk model toggles for a condition card (hide/show % input based on type)
-    setRiskModelToggles(card, index) {
-        const stopLossType = card.querySelector(`#stop-loss-type-${index}`);
-        const stopLossPct = card.querySelector(`#stop-loss-pct-${index}`);
+    setRiskModelToggles(card) {
+        const stopLoss = card.querySelector('[data-role="stop-loss"]');
+        const takeProfit = card.querySelector('[data-role="take-profit"]');
+        const positionSize = card.querySelector('[data-role="position-size"]');
 
-        const takeProfitType = card.querySelector(`#take-profit-type-${index}`);
-        const takeProfitPct = card.querySelector(`#take-profit-pct-${index}`);
 
-        const positionSizeType = card.querySelector(`#position-size-type-${index}`);
-        const positionSizePct = card.querySelector(`#position-size-pct-${index}`);
+        const stopLossType = stopLoss.querySelector('select');
+        const stopLossPct = stopLoss.querySelector('input');
+
+        const takeProfitType = takeProfit.querySelector('select');
+        const takeProfitPct = takeProfit.querySelector('input');
+
+        const positionSizeType = positionSize.querySelector('select');
+        const positionSizePct = positionSize.querySelector('input');
 
         stopLossPct.parentElement.style.display = stopLossType.value === 'relative' ? 'none' : 'block';
         takeProfitPct.parentElement.style.display = takeProfitType.value === 'relative' ? 'none' : 'block';
@@ -91,35 +100,25 @@ class ConditionBuilder {
     }
 
     // Remove a condition card
-    removeCondition(cardId) {
+    removeCondition(card) {
         const index = this.conditions.findIndex(
-            c => c.card.id === cardId
+            c => c.card === card
         );
 
         if (index === -1) return;
 
-        const { card } = this.conditions[index];
-
         card.classList.remove("opacity-100", "scale-100");
         card.classList.add("opacity-0", "scale-90");
 
-        card.addEventListener(
-            "transitionend",
-            () => {
-                card.remove();
-                this.conditions.splice(index, 1);
-
-                this.conditions.forEach((c, i) => {
-                    c.card.querySelector("span").textContent = `Condition ${i + 1}`;
-                });
-
-                this.toggleConditionControls();
-            },
-            { once: true }
-        );     
+        card.addEventListener("transitionend",() => {
+            card.remove();
+            this.conditions.splice(index, 1);
+            this.renumberConditions();
+            this.toggleConditionControls();
+        }, { once: true });     
     }
 
-    // Toggle condition controls based on number of conditions, adjust margin
+    // Toggle visibility of condition controls based on conditions count
     toggleConditionControls() {
         if (this.conditions.length === 0) {
             this.conditionControls.classList.remove("mb-4");
@@ -129,12 +128,22 @@ class ConditionBuilder {
         }
     }
 
+    // Renumber condition cards after removal
+    renumberConditions() {
+        this.conditions.forEach((c, i) => {
+            c.card.querySelector("span").textContent = `Condition ${i + 1}`;
+        });
+    }   
+
     // Clear all conditions
     clear() {
         this.conditions.forEach(({ card }) => card.remove());
         this.conditions = [];
-        this.index = 0;
         this.toggleConditionControls();
+    }
+
+    collectConditionsData() {
+        // Collect data from all condition cards
     }
 }
 

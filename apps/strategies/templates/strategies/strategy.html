@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}Strategy{% endblock %}
 
@@ -27,5 +28,10 @@
         document.getElementById('strategy_builder').classList.remove('hidden');
     });
   </script>
+
+  {% include 'strategies/components/_condition_card.html' %}
+  {% include 'strategies/components/_indicator_card.html' %}
+  <script type="module" src="{% static 'strategies/pages/strategy.js' %}"></script>
 {% endblock %}
+
 

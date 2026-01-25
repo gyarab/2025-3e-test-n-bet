@@ -22,7 +22,9 @@
             <label for="indicators" class="block text-sm font-medium text-gray-700">Conditions</label>
         </div>
         
-        {% include 'strategies/_condition_builder.html' %}
+        <div id="condition-builder-root" class="border rounded-lg p-3 bg-white shadow">
+            <!-- Condition builder will be rendered here by condition_builder.js -->
+        </div>
 
         <div>
             <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Save Strategy</button>   

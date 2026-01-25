@@ -1,8 +1,6 @@
-import { indicatorCardTemplate } from "./indicator_card_template.js";
-
 class IndicatorSelector {
-    constructor(selector, indicatorsData) {
-        this.wrapper = document.querySelector(selector);
+    constructor(root, indicatorsData) {
+        this.wrapper = root;
 
         const options = indicatorsData.indicators.map(i => i.name);
         this.possible_options = options;
@@ -19,9 +17,7 @@ class IndicatorSelector {
     buildUI() {
         this.wrapper.innerHTML = `
             <input name="indicator-input" class="indicator-input border p-2 w-full rounded mb-2" placeholder="Add new indicator...">
-
             <div class="indicator-list bg-white border rounded shadow mb-2 hidden max-h-40 overflow-auto"></div>
-
             <div class="indicator-cards"></div>
         `;
 
@@ -146,6 +142,17 @@ class IndicatorSelector {
         items.forEach(i => i.classList.remove("bg-gray-200"));
     }
 
+    createIndicatorCard(name, value) {
+        const tpl = document.getElementById("indicator-card-template");
+        const node = tpl.content.cloneNode(true);
+
+        const card = node.querySelector(".indicator-card");
+        card.querySelector(".indicator-title").textContent = name;
+        card.dataset.value = value;
+
+        return card;
+    }
+
     // Adding inidcator after it being chosen
     addIndicator(value) {
         if (this.selected.has(value)) 
@@ -157,12 +164,8 @@ class IndicatorSelector {
 
         this.selected.add(value);
 
-        const card = document.createElement("div");
-        card.dataset.value = value;
-        card.className = "overflow-hidden transform opacity-0 scale-80 max-h-0 mb-3 transition-all duration-500 ease-out p-3 bg-teal-300 rounded border cursor-pointer";
-
-        card.innerHTML = indicatorCardTemplate(value.replace("_", " "));
-
+        const card = this.createIndicatorCard(value.replace("_", " "), value);
+        
         this.cards.appendChild(card);
         
         // Because card was just added, we need to wait for the next frame to trigger the transition
@@ -288,7 +291,6 @@ class IndicatorSelector {
 
         card.addEventListener("transitionend", () => {
             card.remove();
-            const all = this.cards.children;
             this.reloadTheInitialList();
         });
     }

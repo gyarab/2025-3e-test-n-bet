@@ -1,12 +1,9 @@
-{% load static %}
+import ConditionBuilder from '../components/condition_builder.js';
 
-<div id="condition-builder" class="border rounded-lg p-3 bg-white shadow">
-    <!-- Condition builder will be rendered here by condition_builder.js -->
-</div>
+document.addEventListener("DOMContentLoaded", () => {
+    const conditionBuilderRoot = document.getElementById('condition-builder-root');
+    if (!conditionBuilderRoot) return;
 
-<script type="module">
-    import { initConditionBuilder } from "{% static 'strategies/main.js' %}";
-    
     let indicatorsData = [];
 
     fetch('/api/strategies/indicators/')
@@ -20,8 +17,8 @@
         .then(data => {
             indicatorsData = data.indicators;
 
-            const conditionBuilder = initConditionBuilder(
-                    '#condition-builder',
+            const conditionBuilder = new ConditionBuilder(
+                    conditionBuilderRoot,
                     indicatorsData
                 );
 
@@ -30,4 +27,4 @@
                     conditionBuilder.clear();
                 });
         });
-</script>
+});
