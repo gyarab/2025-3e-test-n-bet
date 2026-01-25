@@ -1,8 +1,10 @@
+import Indicator from './indicator.js';
+
 class IndicatorSelector {
     constructor(root, indicatorsData) {
         this.wrapper = root;
 
-        const options = indicatorsData.indicators.map(i => i.name);
+        const options = indicatorsData.indicators.map(i => new Indicator(i.name, i.parameters));
         this.possible_options = options;
         this.current_options = options;
         this.selected = new Set();
@@ -34,7 +36,7 @@ class IndicatorSelector {
         this.list.innerHTML = "";
         
         const optionsToShow = this.current_options.filter(opt => 
-            opt.toLowerCase().includes(q)
+            opt.getName().toLowerCase().includes(q)
         );
         
         if (optionsToShow.length === 0) {
@@ -151,6 +153,10 @@ class IndicatorSelector {
         card.dataset.value = value;
 
         return card;
+    }
+
+    getIndicatorByValue(value) {
+        //TODO: change the way to work with indicators
     }
 
     // Adding inidcator after it being chosen
@@ -293,6 +299,15 @@ class IndicatorSelector {
             card.remove();
             this.reloadTheInitialList();
         });
+    }
+
+    getSelectedIndicators() {
+        return Array.from(this.selected);
+    }
+
+    getIndicatorsData() {
+        const selectedIndicators = Array.from(this.selected);
+        const data = selectedIndicators.map(indName => {
     }
 }
 

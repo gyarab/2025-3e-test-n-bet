@@ -1,5 +1,4 @@
 import IndicatorSelector from './indicator_selector.js';
-import { conditionCardTemplate } from '../condition_card_template.js';
 
 class ConditionBuilder {
     constructor(root, indicatorsData) {
@@ -143,7 +142,10 @@ class ConditionBuilder {
     }
 
     collectConditionsData() {
-        // Collect data from all condition cards
+        return this.conditions.map(({ indicatorSelector }) =>
+            indicatorSelector.getSelectedIndicators().map(ind =>
+            )
+        );
     }
 }
 

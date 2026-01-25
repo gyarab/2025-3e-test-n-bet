@@ -4,8 +4,6 @@ import json
 from .models import Strategy
 
 def strategy(request):
-    json_path = os.path.join('apps', 'strategies', 'static', 'strategies', 'strategy_builder', 'indicators.json')
-
     return render(request, "strategies/strategy.html", {
         'strategies': Strategy.objects.all()
     })

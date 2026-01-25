@@ -51,7 +51,7 @@ def get_indicator_list(request):
     View to retrieve the list of available indicators from a static JSON file.
     """
     try:
-        json_path = os.path.join('apps', 'strategies', 'static', 'strategies', 'strategy_builder', 'indicators.json')
+        json_path = os.path.join('apps', 'strategies', 'static', 'strategies', 'indicators.json')
         with open(json_path, 'r') as f:
             indicators = json.load(f)
 
