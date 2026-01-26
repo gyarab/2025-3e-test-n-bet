@@ -4,12 +4,9 @@ class IndicatorSelector {
     constructor(root, indicatorsData) {
         this.wrapper = root;
 
-        const options = indicatorsData.indicators.map(i => new Indicator(i.name, i.parameters));
-        this.possible_options = options;
-        this.current_options = options;
-        this.selected = new Set();
-
-        this.indicatorsData = indicatorsData.indicators;
+        this.indicators = indicatorsData.indicators.map(i => new Indicator(i.name, i.parameters)); // All available indicators
+        this.available_indicators = this.indicators; // Available to select
+        this.selected_indicators = new Set(); // Selected
 
         this.buildUI();
         this.bindEvents();
@@ -30,12 +27,12 @@ class IndicatorSelector {
         this.updateList();
     }
 
-    // Changes the list's content based on the input
+    // Changes the list's html content based on the input
     updateList() {
         const q = this.input.value.toLowerCase();
         this.list.innerHTML = "";
         
-        const optionsToShow = this.current_options.filter(opt => 
+        const optionsToShow = this.available_indicators.filter(opt => 
             opt.getName().toLowerCase().includes(q)
         );
         
@@ -50,11 +47,28 @@ class IndicatorSelector {
         optionsToShow.forEach(opt => {
             const el = document.createElement("div");
             el.className = "p-2 hover:bg-gray-100 cursor-pointer";
-            el.dataset.value = opt;
-            el.textContent = opt;
+            el.dataset.value = this.getIndicatorId(opt);
+            el.textContent = opt.getName();
             this.list.appendChild(el);
         });
     }
+
+
+    // Reloads the choice-list. Must be called after each operation
+    reloadTheInitialList() {
+        let updated = []
+
+        for (const opt of this.indicators) {  
+            if (!this.isSelected(opt)) {
+                updated.push(opt)
+            }
+        }
+
+        this.available_indicators = updated
+
+        this.updateList();
+    }
+    
 
     // Adds open/close list events 
     bindEvents() {
@@ -77,7 +91,7 @@ class IndicatorSelector {
         this.list.addEventListener("click", (e) => {
             e.stopPropagation();
             if (!e.target.dataset.value) return;
-            this.addIndicator(e.target.dataset.value);
+            this.addIndicatorById(e.target.dataset.value);
 
             if (!this.wrapper.contains(e.target)) {
                 this.list.classList.add("hidden");
@@ -144,33 +158,33 @@ class IndicatorSelector {
         items.forEach(i => i.classList.remove("bg-gray-200"));
     }
 
-    createIndicatorCard(name, value) {
+    createIndicatorCard(name, id) {
         const tpl = document.getElementById("indicator-card-template");
         const node = tpl.content.cloneNode(true);
 
         const card = node.querySelector(".indicator-card");
         card.querySelector(".indicator-title").textContent = name;
-        card.dataset.value = value;
+        card.dataset.id = id;
 
         return card;
     }
 
-    getIndicatorByValue(value) {
-        //TODO: change the way to work with indicators
-    }
+    
 
     // Adding inidcator after it being chosen
-    addIndicator(value) {
-        if (this.selected.has(value)) 
-            return;
-
-        if (value === undefined || value === null || value === "") {
+    addIndicatorById(id) {
+        if (id === undefined || id === null || id === "") {
             return;
         }
 
-        this.selected.add(value);
+        const indicator = this.getIndicatorById(id);
 
-        const card = this.createIndicatorCard(value.replace("_", " "), value);
+        if (this.isSelected(indicator)) 
+            return;
+
+        this.addIndicatorToSelected(indicator);
+
+        const card = this.createIndicatorCard(indicator.getName(), id);
         
         this.cards.appendChild(card);
         
@@ -182,7 +196,7 @@ class IndicatorSelector {
 
         const settings = card.querySelector(".settings");
         const parametersContainer = card.querySelector(".parameters");
-        this.addParameterToIndicator(parametersContainer, value);
+        this.addParameterToIndicator(parametersContainer, id);
 
         const header = card.querySelector(".card-header");
         const removeBtn = card.querySelector(".remove-card");
@@ -222,14 +236,17 @@ class IndicatorSelector {
         removeBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             e.preventDefault();
-            this.removeIndicator(value);
+            this.removeIndicator(id);
         });
 
         this.reloadTheInitialList()
     }
 
     // Adds parameter inputs based on the indicator's parameters
-    addParameterToIndicator(settings, indicator_name) {
+    addParameterToIndicator(settings, id) {
+        const indicator = this.getIndicatorById(id);
+        const indicatorName = indicator.getName();
+
         function capitalizeWords(str) {
             return str
                 .split("_") 
@@ -237,9 +254,9 @@ class IndicatorSelector {
                 .join(" ");
         };
 
-        this.indicatorsData.forEach(indicator => {
-            if (indicator.name === indicator_name) {
-                indicator.parameters.forEach(param => {
+        this.indicators.forEach(indicator => {
+            if (indicator.getName() === indicatorName) {
+                indicator.getParameters().forEach(param => {
                     const container = document.createElement("div");
 
                     const label = document.createElement("label");
@@ -255,6 +272,12 @@ class IndicatorSelector {
                     input.placeholder = param.default;  
                     input.value = param.default;
                     
+                    // Update indicator parameter value on input change
+                    input.addEventListener('input', () => {
+                        indicator.setValue(param.name, parseFloat(input.value));
+                    });
+
+                    // Ensuring the value stays within bounds
                     input.addEventListener('blur', () => {
                         input.value = Math.min(input.max, Math.max(input.min, input.value));
                     });
@@ -267,28 +290,19 @@ class IndicatorSelector {
         });
     }
 
-    // Reloads the choice-list. Must be called after each operation
-    reloadTheInitialList() {
-        let updated = []
 
-        for (const opt of this.possible_options) {
-            const isSelected = this.selected.has(opt)
-            
-            if (!isSelected) {
-                updated.push(opt)
-            }
+    // Removes the indicator based on its data-value
+    removeIndicatorById(id) {
+        if (id === undefined || id === null || id === "") {
+            return;
         }
 
-        this.current_options = updated
+        const indicator = this.getIndicatorById(id);
 
-        this.updateList();
-    }
+        this.removeIndicatorFromSelected(indicator);
 
-    // Removes the indicator
-    removeIndicator(value) {
-        this.selected.delete(value);
         const card = this.cards.querySelector(
-            `[data-value="${value}"]`
+            `[data-value="${id}"]`
         );
         if (!card) return;
         
@@ -301,13 +315,42 @@ class IndicatorSelector {
         });
     }
 
-    getSelectedIndicators() {
-        return Array.from(this.selected);
+    removeIndicatorFromSelected(ind) {
+        this.selected_indicators.delete(ind);
     }
 
-    getIndicatorsData() {
-        const selectedIndicators = Array.from(this.selected);
-        const data = selectedIndicators.map(indName => {
+    // Returns indicator by its id
+    getIndicatorById(id) {
+        return this.indicators[id];
+    }
+
+    // Returns indicator's id
+    getIndicatorId(indicator) {
+        return this.indicators.findIndex(opt => opt === indicator);
+    }
+
+    // Checks if indicator is already selected
+    isSelected(indicator) {
+        return this.selected_indicators.has(indicator);
+    }
+
+    // Adds indicator to selected set
+    addIndicatorToSelected(ind) {
+        this.selected_indicators.add(ind);
+    }
+    
+    // Returns array of selected indicators
+    getSelectedIndicators() {
+        return Array.from(this.selected_indicators);
+    }
+
+    // Returns data of selected indicators
+    getSelectedIndicatorsData() {
+        const selectedIndicators = Array.from(this.selected_indicators);
+        const data = selectedIndicators.map(ind => {
+            return ind.getIndicatorData();
+        });
+        return data;
     }
 }
 

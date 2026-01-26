@@ -1,10 +1,9 @@
-import ConditionBuilder from '../components/condition_builder.js';
+import StrategyBuilder from '../components/strategy_builder.js';
+
 
 document.addEventListener("DOMContentLoaded", () => {
-    const conditionBuilderRoot = document.getElementById('condition-builder-root');
-    if (!conditionBuilderRoot) return;
-
-    let indicatorsData = [];
+    const strategyBuilderRoot = document.getElementById('strategy-builder');
+    if (!strategyBuilderRoot) return;
 
     fetch('/api/strategies/indicators/')
         .then(res => {
@@ -15,16 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return res.json();
         })
         .then(data => {
-            indicatorsData = data.indicators;
-
-            const conditionBuilder = new ConditionBuilder(
-                    conditionBuilderRoot,
-                    indicatorsData
-                );
-
-            document.getElementById('hide-strategy-builder')
-                ?.addEventListener('click', () => {
-                    conditionBuilder.clear();
-                });
+            const strategyBuilder = new StrategyBuilder(strategyBuilderRoot, data.indicators);
         });
 });
+

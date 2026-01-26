@@ -9,6 +9,13 @@ class ConditionBuilder {
 
         this.buildUI();
         this.bindEvents();
+        
+        this.stopLossType = 'percentage';
+        this.takeProfitType = 'percentage';
+        this.positionSizeType = 'percentage';
+        this.stopLossValue = 2.5;
+        this.takeProfitValue = 5.0;
+        this.positionSizeValue = 1.0;
     }
 
     buildUI() {
@@ -71,7 +78,6 @@ class ConditionBuilder {
         const takeProfit = card.querySelector('[data-role="take-profit"]');
         const positionSize = card.querySelector('[data-role="position-size"]');
 
-
         const stopLossType = stopLoss.querySelector('select');
         const stopLossPct = stopLoss.querySelector('input');
 
@@ -87,14 +93,20 @@ class ConditionBuilder {
 
         stopLossType.addEventListener('change', () => {
             stopLossPct.parentElement.style.display = stopLossType.value === 'relative' ? 'none' : 'block';
+            this.stopLossType = stopLossType.value;
+            this.stopLossValue = parseFloat(stopLossPct.value);
         });
 
         takeProfitType.addEventListener('change', () => {
             takeProfitPct.parentElement.style.display = takeProfitType.value === 'relative' ? 'none' : 'block';
+            this.takeProfitType = takeProfitType.value;
+            this.takeProfitValue = parseFloat(takeProfitPct.value);
         });
 
         positionSizeType.addEventListener('change', () => {
             positionSizePct.parentElement.style.display = positionSizeType.value === 'relative' ? 'none' : 'block';
+            this.positionSizeType = positionSizeType.value;
+            this.positionSizeValue = parseFloat(positionSizePct.value);
         });
     }
 
@@ -141,11 +153,45 @@ class ConditionBuilder {
         this.toggleConditionControls();
     }
 
-    collectConditionsData() {
-        return this.conditions.map(({ indicatorSelector }) =>
-            indicatorSelector.getSelectedIndicators().map(ind =>
-            )
-        );
+    getActionData() {
+        const signalType = this.wrapper.querySelector('.signal-select').value;
+
+        const settings = {
+            stop_loss: {
+                type: this.stopLossType,
+                percentage: this.stopLossValue
+            },
+            take_profit: {
+                type: this.takeProfitType,
+                percentage: this.takeProfitValue
+            },
+            position_size: {
+                type: this.positionSizeType,
+                percentage: this.positionSizeValue
+            }
+        }
+
+        return {
+            buy_signal: signalType == "LONG" ? settings : null,
+            short_signal: signalType == "SHORT" ? settings : null,
+        };
+    }
+
+
+    getConditionsData() {
+        const conditionsArray = [];
+
+        this.conditions.map(({ indicatorSelector }) => {
+            conditionsArray.push({
+                signal_models: {
+                    indicators: indicatorSelector.getSelectedIndicatorsData(),
+                    prediction_models: [] // Future feature
+                },
+                action: this.getActionData(),
+            });  
+        });
+
+        return conditionsArray;
     }
 }
 

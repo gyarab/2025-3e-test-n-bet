@@ -1,0 +1,37 @@
+{% load static %}
+
+<div id="strategy-builder">
+    <button class="create-strategy-btn bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mb-4 w-full">Create New Strategy</button>
+
+    <div class="bg-white p-6 rounded-lg shadow-md strategy-builder-wrapper space-y-6">
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold mb-4">Strategy Builder</h2>
+            <button type="button" class="hide-strategy-builder-btn bg-gray-500 hover:bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md transition-colors duration-200">
+                <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="15" y1="5" x2="5" y2="15" />
+                    <line x1="5" y1="5" x2="15" y2="15" />
+                </svg>
+            </button>
+        </div>
+
+        <form class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Strategy Name</label>
+                <input type="text" name="strategy-name" class="strategy-name-input mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" required>
+            </div>
+            <div>
+                <label for="indicators" class="block text-sm font-medium text-gray-700">Conditions</label>
+            </div>
+            
+            <div class="condition-builder-root border rounded-lg p-3 bg-white shadow">
+                <!-- Condition builder will be rendered here by condition_builder.js -->
+            </div>
+
+            <div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Save Strategy</button>   
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>

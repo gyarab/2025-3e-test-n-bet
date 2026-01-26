@@ -4,7 +4,9 @@ import json
 from .models import Strategy
 
 def strategy(request):
-    return render(request, "strategies/strategy.html", {
+    for s in Strategy.objects.all():
+        print(f"Strategy: {s.name}, Parameters: {json.dumps(s.parameters, indent=2)}")
+    return render(request, "strategies/pages/strategy.html", {
         'strategies': Strategy.objects.all()
     })
 
