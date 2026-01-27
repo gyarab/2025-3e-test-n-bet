@@ -8,6 +8,8 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_protect
 
 from apps.strategies.models import Strategy
+from apps.strategies.serializers import serialize_strategy
+from apps.strategies.services.strategy_service import get_available_strategies_for_user, get_indicators
 
 logger = logging.getLogger(__name__)
 
@@ -22,22 +24,9 @@ def get_strategy_view(request):
         return JsonResponse({"status": "error", "message": "Authentication required"}, status=401)
 
     try:
-        strategies = strategies = Strategy.objects.filter(
-            Q(creator=request.user) | Q(creator__isnull=True)
-        ).order_by("id")
+        strategies = get_available_strategies_for_user(request.user)
 
-        data = [
-            {
-                "id": s.id,
-                "name": s.name,
-                "creator_id": s.creator_id,
-                "base_strategy_id": s.base_strategy_id,
-                "parameters": s.parameters,
-                "is_default": s.is_default,
-                "created_at": s.created_at.isoformat(),
-            }
-            for s in strategies
-        ]
+        data = [serialize_strategy(s) for s in strategies]
 
         return JsonResponse({"status": "success", "strategies": data})
 
@@ -51,15 +40,13 @@ def get_indicator_list(request):
     View to retrieve the list of available indicators from a static JSON file.
     """
     try:
-        json_path = os.path.join('apps', 'strategies', 'static', 'strategies', 'indicators.json')
-        with open(json_path, 'r') as f:
-            indicators = json.load(f)
-
+        indicators = get_indicators()
         return JsonResponse({"status": "success", "indicators": indicators})
 
     except Exception as e:
         logger.error(f"Error retrieving indicators: {e}", exc_info=True)
         return JsonResponse({"status":"error","message": "Internal server error"}, status=500)
+
 
 @csrf_protect
 @require_http_methods(["POST"])
@@ -99,7 +86,7 @@ def save_strategy_view(request):
         
         return JsonResponse({
             "status": "success", 
-            "strategy_id": create_strategy.id,
+            "strategy_id": create_strategy.pk,
             "message": "Strategy successfully saved"
         }, status=201)
 

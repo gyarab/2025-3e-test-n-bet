@@ -108,6 +108,13 @@ class StrategyBuilder {
             }
         });
     }
+
+
+    onSavedSuccess() {
+        const event = new CustomEvent("strategy:added", { detail: null });
+
+        window.dispatchEvent(event);
+    }
 }
 
 export default StrategyBuilder;

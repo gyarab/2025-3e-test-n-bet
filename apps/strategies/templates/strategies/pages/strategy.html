@@ -8,6 +8,8 @@
 {% block content %}
   {% include 'strategies/components/_strategy_builder.html' %}
 
+  {% include 'strategies/components/_strategy_list.html' %}
+
   <div>
     {% for strategy in strategies %}
       {% include 'strategies/components/_strategy_card.html' with strategy=strategy %}
@@ -18,6 +20,8 @@
 
   {% include 'strategies/components/_condition_card.html' %}
   {% include 'strategies/components/_indicator_card.html' %}
+
+  {{ strategies|json_script:"strategies-data" }}
 
   <script type="module" src="{% static 'strategies/pages/strategy.js' %}"></script>
 {% endblock %}

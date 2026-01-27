@@ -1,25 +1,32 @@
 class Indicator {
     constructor(name, params) {
         this.name = name;
-        this.parameters = new Set();
 
-        params.forEach(item => {
-            this.parameters.add({
-                max: item.max,
-                min: item.min,
-                default: item.default,
-                name: item.name,
-                value: item.default
-            });
-        });
+        this.parameters = params.map(item => ({
+            max: item.max || null,
+            min: item.min || null,
+            default: item.default || null,
+            name: item.name,
+            value: item.value ?? item.default,
+        }));
+    }
+
+    static fromJSON(data) {
+        const name = data.name;
+        const parameters= data.parameters;
+        const paramArray = Object.entries(parameters).map(([key, value]) => ({
+            name: key,
+            value: value,
+        }));
+        return new Indicator(name, paramsArray);
     }
 
     getNamesOfParameters() {
-        paramNames = this.parameters.map(param => param.name??null);
+        return this.parameters.map(param => param.name??null);
     }
 
     getName() {
-        return this.name.replace("_", " ");
+        return this.name.replaceAll("_", " ");
     }
 
     getParameters() {
@@ -49,6 +56,8 @@ class Indicator {
         const param = this.parameters.find(p => p.name === paramName);
         return param ? param.value : null;
     }
+
+
 }
 
 export default Indicator;
