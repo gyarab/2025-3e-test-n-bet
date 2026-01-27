@@ -315,6 +315,7 @@ class IndicatorSelector {
         });
     }
 
+    // Removes indicator from selected set
     removeIndicatorFromSelected(ind) {
         this.selected_indicators.delete(ind);
     }

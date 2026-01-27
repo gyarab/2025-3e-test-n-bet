@@ -19,17 +19,7 @@ class StrategyBuilder {
         this.init();
     }
     
-
-    hide() {
-        this.wrapper.classList.add('hidden');
-    }
-
-
-    show() {
-        this.wrapper.classList.remove('hidden');
-    }
-
-
+    // Initial setup of the StrategyBuilder component
     init() {
         this.wrapper.classList.add('hidden');
         this.root.querySelector('.create-strategy-btn').addEventListener('click', () => {
@@ -37,29 +27,21 @@ class StrategyBuilder {
         });
     }
 
-
-    initConditionBuilder(conditionBuilderRoot, indicatorsData) {
-        return new ConditionBuilder(
-            conditionBuilderRoot,
-            indicatorsData
-        );
-    }
-
-
+    // Setup all event listeners
     setupEventListeners() {
         this.setupCreateButton();
         this.setupHideButton();
         this.setupSaveForm();
     }
 
-
+    // Handle create button click
     setupCreateButton() {
         this.createBtn?.addEventListener('click', () => {
             this.show();
         });
     }
 
-
+    // Handle hide button click
     setupHideButton() {
         this.hideBtn?.addEventListener('click', () => {
             this.conditionBuilder.clear();
@@ -68,16 +50,13 @@ class StrategyBuilder {
         });
     }
 
-
+    // Handle form submission to save strategy
     setupSaveForm() {
         this.saveForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const name = this.strategyNameInput.value;
-            
             const parameters = this.conditionBuilder.getConditionsData();
-            console.log('Collected Parameters:', parameters);
-
             const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
             try {
@@ -98,6 +77,7 @@ class StrategyBuilder {
 
                 if (response.ok) {
                     alert('Strategy saved successfully!');
+                    this.onSavedSuccess();
                     this.hide();
                 } else {
                     alert('Error: ' + result.message);
@@ -109,10 +89,27 @@ class StrategyBuilder {
         });
     }
 
+    // Initialize the ConditionBuilder component
+    initConditionBuilder(conditionBuilderRoot, indicatorsData) {
+        return new ConditionBuilder(
+            conditionBuilderRoot,
+            indicatorsData
+        );
+    }
 
+    // Hide the StrategyBuilder component
+    hide() {
+        this.wrapper.classList.add('hidden');
+    }
+
+    // Show the StrategyBuilder component
+    show() {
+        this.wrapper.classList.remove('hidden');
+    }
+
+    // Triggered after successful save. Dispatches a global event.
     onSavedSuccess() {
         const event = new CustomEvent("strategy:added", { detail: null });
-
         window.dispatchEvent(event);
     }
 }

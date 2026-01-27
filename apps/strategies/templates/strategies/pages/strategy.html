@@ -6,20 +6,12 @@
 {% block main_class %}p-6 grid grid-cols-1 gap-4{% endblock %}
 
 {% block content %}
-  {% include 'strategies/components/_strategy_builder.html' %}
-
-  {% include 'strategies/components/_strategy_list.html' %}
-
-  <div>
-    {% for strategy in strategies %}
-      {% include 'strategies/components/_strategy_card.html' with strategy=strategy %}
-    {% empty %}
-      <p>No strategies available.</p>
-    {% endfor %}
-  </div>
-
-  {% include 'strategies/components/_condition_card.html' %}
-  {% include 'strategies/components/_indicator_card.html' %}
+  {% include 'strategies/components/strategy_builder.html' %}
+  {% include 'strategies/components/strategy_list.html' %}
+  
+  {% include 'strategies/components/condition_card.html' %}
+  {% include 'strategies/components/indicator_card.html' %}
+  {% include 'strategies/components/strategy_card.html' %}
 
   {{ strategies|json_script:"strategies-data" }}
 

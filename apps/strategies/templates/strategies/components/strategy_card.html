@@ -1,9 +1,11 @@
 <template id="strategy-card-template">
     <div class="strategy-card bg-white p-6 rounded-lg shadow-md mb-4" data-value="">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="strategy-title text-xl font-bold text-gray-800"></h2>
+            <h2 class="strategy-title text-xl font-bold text-gray-800">
+                <!-- Strategy title -->
+            </h2>
             <div class="flex gap-2">
-                <button type="button" class="edit-button bg-blue-600 text-white py-1.5 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors">Edit</button>
+                <div class="edit-button bg-gray-600 text-white py-1.5 px-3 rounded-md text-sm hover:bg-gray-600 transition-colors">Edit</div>
                 <button type="button" class="delete-button bg-red-600 text-white py-1.5 px-3 rounded-md text-sm hover:bg-red-700 transition-colors">Delete</button>
             </div>
         </div>
@@ -13,10 +15,11 @@
                 <span class="base-strategy-title"></span>
             </p>
 
-
             <div class="space-y-4 strategy-parameters">
                 <p class="font-medium text-gray-700">Conditions</p>     
-                <ul class="condition-list"></ul>
+                <ul class="condition-list">
+                    <!-- List of conditions will be rendered here -->
+                </ul>
             </div>
 
             <p class="no-parameters italic text-gray-400">No parameters defined</p>
@@ -25,61 +28,55 @@
     </div>
 </template>
 
-<template id="condition-for-strategy-template">
-    <div class="border border-gray-200 rounded-md p-4 bg-gray-50 space-y-3 param-container">
+<template id="parameters-for-strategy-template">
+    <div class="border border-gray-200 rounded-md p-4 bg-gray-50 space-y-3 condition-container">
         <div>
             <p class="font-semibold text-gray-700 mb-1">Indicators</p>
-            <ul class="space-y-1 text-sm indicator-items-list"></ul>  
+            <ul class="space-y-1 text-sm indicator-items-list">
+                <!-- Indicator items will be rendered here -->
+            </ul>  
             <p class="space-y-1 text-sm italic text-gray-400 no-indicators">No indicators</p>                      
         </div>
 
-        {% if condition.action.buy_signal %}
-        <div>
+        <div class="action-buy-signal">
             <p class="text-sm font-semibold text-green-700 mb-1">Buy signal</p>
             <div class="flex gap-4 text-xs text-gray-700">
                 <div>
-                    SL: {{ condition.action.buy_signal.stop_loss.percentage }}%
+                    SL: <span class="stop-loss-percentage"></span>
                 </div>
                 <div>
-                    TP: {{ condition.action.buy_signal.take_profit.percentage }}%
+                    TP: <span class="take-profit-percentage"></span>
                 </div>
                 <div>
-                    Size: {{ condition.action.buy_signal.position_size.percentage }}%
+                    Size: <span class="position-size-percentage"></span>
                 </div>
             </div>
         </div>
-        {% endif %}
-
-        {% if condition.action.short_signal %}
-        <div>
+        <div class="action-short-signal">
             <p class="text-sm font-semibold text-red-700 mb-1">Short signal</p>
             <div class="flex gap-4 text-xs text-gray-700">
                 <div>
-                    SL: {{ condition.action.short_signal.stop_loss.percentage }}%
+                    SL: <span class="stop-loss-percentage"></span>
                 </div>
                 <div>
-                    TP: {{ condition.action.short_signal.take_profit.percentage }}%
+                    TP: <span class="take-profit-percentage"></span>
                 </div>
                 <div>
-                    Size: {{ condition.action.short_signal.position_size.percentage }}%
+                    Size: <span class="position-size-percentage"></span>
                 </div>
             </div>
         </div>
-        {% endif %}
 
     </div>
 </template>
 
 <template id="indicator-for-strategy-template">
     <li class="flex gap-4 indicator-container">
-        <span class="font-medium indicator-title"></span>
-        <span class="text-gray-500 indicator-parameters"></span>
+        <span class="font-medium indicator-title">
+            <!-- Indicator title -->
+        </span>
+        <span class="text-gray-500 indicator-parameters">
+            <!-- Indicator parameters -->
+        </span>
     </li>
 </template>
-
-
-<script type="module">
-    document.addEventListener('DOMContentLoaded', () => {
-        
-    });
-</script>

@@ -7,6 +7,9 @@ def get_available_strategies_for_user(user) -> list[Strategy]:
     """
     Returns user-created strategies + default strategies. Does not include errors.
     """
+    if not user.is_authenticated:
+        return Strategy.objects.filter(creator__isnull=True).order_by("id")
+    
     return Strategy.objects.filter(
         Q(creator=user) | Q(creator__isnull=True)
     ).order_by("id")

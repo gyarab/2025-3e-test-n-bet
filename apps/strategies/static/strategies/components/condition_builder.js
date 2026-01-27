@@ -153,6 +153,7 @@ class ConditionBuilder {
         this.toggleConditionControls();
     }
 
+    // Get action (buy/sell) data for a condition
     getActionData() {
         const signalType = this.wrapper.querySelector('.signal-select').value;
 
@@ -177,7 +178,7 @@ class ConditionBuilder {
         };
     }
 
-
+    // Get all conditions data in serializable format
     getConditionsData() {
         const conditionsArray = [];
 
