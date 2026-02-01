@@ -43,14 +43,26 @@ jobs:
 
       - name: Run migrations
         env:
-          POSTGRES_DB: test_n_bet
-          POSTGRES_USER: team_user
-          POSTGRES_PASSWORD: tajneheslo
+          SECRET_KEY: 'ci-test-secret-key-not-for-production'
+          DEBUG: 'False'
+          DB_NAME: test_n_bet
+          DB_USER: team_user
+          DB_PASSWORD: tajneheslo
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_SSL: 'False'
+          ALLOWED_HOSTS: 'localhost,127.0.0.1'
         run: python manage.py migrate
 
       - name: Run tests
         env:
-          POSTGRES_DB: test_n_bet
-          POSTGRES_USER: team_user
-          POSTGRES_PASSWORD: tajneheslo
+          SECRET_KEY: 'ci-test-secret-key-not-for-production'
+          DEBUG: 'False'
+          DB_NAME: test_n_bet
+          DB_USER: team_user
+          DB_PASSWORD: tajneheslo
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_SSL: 'False'
+          ALLOWED_HOSTS: 'localhost,127.0.0.1'
         run: python manage.py test
