@@ -12,25 +12,29 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import environ
 from psycopg2 import OperationalError
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Initialize environment variables
+env = environ.Env(
+    DEBUG=(bool, False),
+    DB_SSL=(bool, True)
+)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8z7ujy6&1+6f+1=^uv8uz&&fq+=l@=id+(e4$1zj+i4e9%06zk'
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-8z7ujy6&1+6f+1=^uv8uz&&fq+=l@=id+(e4$1zj+i4e9%06zk')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1'
-]
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
 
 # Application definition
@@ -103,20 +107,6 @@ LOGIN_URL = '/registration/login/'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-
-
-# Initialise environment variables
-
-from pathlib import Path
-import environ
-import os
-
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-
-DB_SSL = env.bool('DB_SSL', default=True)
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -126,7 +116,7 @@ DATABASES = {
         'HOST': env('DB_HOST', default='testnbet-testnbet.j.aivencloud.com'),
         'PORT': env('DB_PORT', default='12601'),
         'OPTIONS': {
-             'sslmode': 'require' if DB_SSL else 'disable',
+             'sslmode': 'require' if env.bool('DB_SSL', default=True) else 'disable',
         },
     }
 }
