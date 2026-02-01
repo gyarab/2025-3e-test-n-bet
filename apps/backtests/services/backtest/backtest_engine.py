@@ -97,15 +97,15 @@ class BacktestEngine():
             if isinstance(signal, tuple):
                 signal = signal[0]
 
-            # TODO: prevent multiple opposite trades in the same moment
-            # (Need to open new trade only after previous is closed)
+            # TODO: Prevent multiple opposite trades in the same moment.
+            # Need to open new trade only after previous is closed.
 
             # Only trade when signal changes from previous state
             if signal != 'HOLD' and signal != self.previous_signal:
                 # Get stop loss and take profit from risk model
                 stop_loss = self.trade_risk_model.get_stop_loss()
-                # TODO: make take_profit dynamic based on strategy calling
-                # "CLOSE" and not only the risk model
+                # TODO: Make take_profit dynamic based on strategy calling
+                # "CLOSE" and not only the risk model.
                 take_profit = self.trade_risk_model.get_take_profit()
 
                 # Calculate position quantity
