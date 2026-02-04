@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}Backtests{% endblock %}
+
+{% block main_class %}p-6 grid grid-cols-1 gap-4{% endblock %}
+
+{% block content %}
+  {% include 'backtests/components/backtest_runner.html ' %}
+
+  {% include 'backtests/components/backtest_results_card.html' %}
+  {% include 'backtests/components/strategy_card.html' %}
+  {% include 'backtests/components/strategy_description_card.html' %}
+
+  {{ strategies|json_script:"strategies-data" }}
+
+  <script type="module" src="{% static 'backtests/pages/backtests.js' %}"></script>
+{% endblock %}
+

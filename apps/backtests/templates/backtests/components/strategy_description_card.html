@@ -1,0 +1,64 @@
+<template id="strategy-description-template">
+    <div class="strategy-description">
+        <div class="p-4 bg-white rounded-2xl shadow-md transition-shadow duration-200 cursor-pointer border border-gray-100">
+            <div class="card-header flex justify-between items-center">
+                <h2 class="strategy-name text-md font-semibold"></h2>
+            </div>
+
+            <div class="settings overflow-y-auto h-full mt-4">
+                <div class="signal-models">
+                    <!-- Signal Model cards go here -->
+                </div>
+
+                <p class="no-signal-models text-gray-400 hidden">
+                    No signal models available
+                </p>
+
+                <hr class="my-2">
+
+                <div class="action-models">
+                    <!-- Buy / Sell signals go here -->
+                </div>
+
+                <p class="no-action-models text-gray-400 hidden">
+                    No action models available
+                </p>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="signal-model-template">
+    <div class="border border-gray-200 rounded-lg p-2 mb-2 bg-gray-50 signal-model">
+        <h4 class="signal-model-name font-semibold text-gray-700"></h4>
+        <ul class="signal-model-parameters ml-4 text-gray-600">
+            <!-- Parameters will be rendered here -->
+        </ul>
+    </div>
+</template>
+
+<template id="action-signal-template">
+    <div class="border border-gray-200 rounded-lg p-2 mb-2 bg-white action-signal">
+        <h4 class="action-title font-semibold text-gray-700"></h4>
+        <ul class="ml-4 text-gray-600">
+            <li>
+                Stop Loss:
+                <span class="stop-loss-type"></span>
+                -
+                <span class="stop-loss-percentage"></span>
+            </li>
+            <li>
+                Take Profit:
+                <span class="take-profit-type"></span>
+                -
+                <span class="take-profit-percentage"></span>
+            </li>
+            <li>
+                Position Size:
+                <span class="position-size-type"></span>
+                -
+                <span class="position-size-percentage"></span>
+            </li>
+        </ul>
+    </div>
+</template>

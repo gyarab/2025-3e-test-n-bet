@@ -1,11 +1,9 @@
-export function strategyCardTemplate(strategyName) {
-    return `
+<template id="strategy-card-backtest-template">
+    <div class="strategy-card-unique overflow-hidden transform opacity-0 scale-80 max-h-0 transition-all duration-500 ease-out cursor-pointer">
         <div class="p-4 bg-white rounded-2xl transition-shadow duration-200 cursor-pointer border border-gray-100">
             <div class="card-header flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <span class="flex items-center justify-center px-4 py-2 bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide">
-                        ${strategyName}
-                    </span>
+                    <span class="strategy-name flex items-center justify-center px-4 py-2 bg-teal-100 text-teal-700 font-semibold rounded-full capitalize tracking-wide"></span>
                 </div>
                 <button type="button" class="remove-card bg-gray-500 hover:bg-gray-600 rounded-full w-6 h-6 flex items-center justify-center shadow-md transition-colors duration-200">
                     <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -15,5 +13,5 @@ export function strategyCardTemplate(strategyName) {
                 </button>
             </div>
         </div>
-    `;
-}
+    </div>
+</template>

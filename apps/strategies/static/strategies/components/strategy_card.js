@@ -12,7 +12,6 @@ class StrategyCard {
         }
         
         this.id = strategy.id;
-        console.log(this.strategy); 
 
         if (!Array.isArray(this.strategy.parameters)) {
             this.strategy.parameters = [];
@@ -150,7 +149,6 @@ class StrategyCard {
         deleteButton.forEach(button => {
             button.addEventListener('click', async (e) => {
                 if (confirm('Are you sure you want to delete this strategy?')) {
-                    console.log('Deleting strategy with ID:', this.id);
                     this.delete();
                 }
             });
