@@ -6,6 +6,7 @@ from apps.strategies.services.base.base_indicator import BaseIndicator
 from apps.strategies.services.base.base_signal import BaseSignal
 from apps.strategies.services.core.trade_risk_model import TradeRiskModel
 
+
 class BaseStrategy(BaseSignal, ABC):
     """
     Abstract base class for all trading strategies.
@@ -13,9 +14,7 @@ class BaseStrategy(BaseSignal, ABC):
     """
 
     # Inicializace Binance
-    exchange = ccxt.binance({
-        'enableRateLimit': True
-    })
+    exchange = ccxt.binance({"enableRateLimit": True})
 
     @abstractmethod
     def get_signal_from_coin(self, coin: str, interval: str) -> str:
@@ -32,7 +31,9 @@ class BaseStrategy(BaseSignal, ABC):
         pass
 
     @abstractmethod
-    def get_signal_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> str | tuple[str, TradeRiskModel]:
+    def get_signal_from_candles(
+        self, candles: list[dict[str, float]] | pd.DataFrame
+    ) -> str | tuple[str, TradeRiskModel]:
         """
         Return the latest signal based on the strategy for given candles.
 

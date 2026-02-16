@@ -3,6 +3,7 @@ from typing import Union
 import ccxt
 import pandas as pd
 
+
 class BaseIndicator(ABC):
     """
     Abstract base class for all indicators
@@ -10,7 +11,9 @@ class BaseIndicator(ABC):
     """
 
     @abstractmethod
-    def get_list_from_candles(self, candles: list[dict[str, float]] | pd.DataFrame) -> list[float]:
+    def get_list_from_candles(
+        self, candles: list[dict[str, float]] | pd.DataFrame
+    ) -> list[float]:
         """
         Return a list of indicator values (e.g., RSI list, SMA list) for given candles.
 
@@ -37,7 +40,9 @@ class BaseIndicator(ABC):
         pass
 
     @abstractmethod
-    def calculate(self, candles: list[dict[str, float]], *args) -> Union[float, tuple[float, ...]]:
+    def calculate(
+        self, candles: list[dict[str, float]], *args
+    ) -> Union[float, tuple[float, ...]]:
         """
         Returns a result after indicator's calculations on the set of candles based on indicator's parametrs
         """

@@ -6,9 +6,9 @@ class IndicatorStrategy(AtomicStrategy):
     Class to define Indicator based Strategies that can be used to craft a bigger one's, e.g. SMAStrategy, ..etc.
     Made to distinguish between Indicator based strategies and Prediction Model based ones.
     """
-    
+
     @classmethod
-    def _from_json(cls, json_data: dict) -> 'IndicatorStrategy':
+    def _from_json(cls, json_data: dict) -> "IndicatorStrategy":
         """
         Create an IndicatorStrategy instance from JSON data.
 
@@ -20,7 +20,9 @@ class IndicatorStrategy(AtomicStrategy):
             }
         }
         """
-        name = json_data.get("name", "Unnamed Indicator Strategy").strip().replace(" ", "")
+        name = (
+            json_data.get("name", "Unnamed Indicator Strategy").strip().replace(" ", "")
+        )
         print("IndicatorStrategy name from json:", name)
         for subclass in cls.__subclasses__():
             print("Checking subclass:", subclass.__name__)

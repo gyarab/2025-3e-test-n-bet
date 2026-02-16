@@ -23,7 +23,9 @@ except Exception as e:
     )
 
 
-def generate_synthetic_candles(n: int, start_price: float = 100.0, seed: int = 42) -> List[Dict]:
+def generate_synthetic_candles(
+    n: int, start_price: float = 100.0, seed: int = 42
+) -> List[Dict]:
     """
     Create deterministic synthetic OHLCV candles using a seeded random walk.
     Returns list of dicts with keys: open, high, low, close, volume
@@ -45,13 +47,15 @@ def generate_synthetic_candles(n: int, start_price: float = 100.0, seed: int = 4
         hi = max(open_p, close) * (1 + abs(random.gauss(0, 0.001)))
         lo = min(open_p, close) * (1 - abs(random.gauss(0, 0.001)))
         volume = max(1.0, random.gauss(1000, 200))
-        candles.append({
-            "open": round(open_p, 8),
-            "high": round(hi, 8),
-            "low": round(lo, 8),
-            "close": round(close, 8),
-            "volume": round(volume, 8)
-        })
+        candles.append(
+            {
+                "open": round(open_p, 8),
+                "high": round(hi, 8),
+                "low": round(lo, 8),
+                "close": round(close, 8),
+                "volume": round(volume, 8),
+            }
+        )
     return candles
 
 
@@ -73,15 +77,25 @@ def test_backtest_with_two_sma_indicators_runs_on_1000_candles():
     rsi_strat = RSIStrategy.from_parametrs()
 
     # 3) Construct StrategyCondition combining both indicators. Provide buy/sell risk models.
-    buy_risk = TradeRiskModel(stop_loss_pct=2.0, stop_loss_type="fixed", take_profit_pct=4.0, take_profit_type="fixed")
-    sell_risk = TradeRiskModel(stop_loss_pct=2.0, stop_loss_type="fixed", take_profit_pct=4.0, take_profit_type="fixed")
+    buy_risk = TradeRiskModel(
+        stop_loss_pct=2.0,
+        stop_loss_type="fixed",
+        take_profit_pct=4.0,
+        take_profit_type="fixed",
+    )
+    sell_risk = TradeRiskModel(
+        stop_loss_pct=2.0,
+        stop_loss_type="fixed",
+        take_profit_pct=4.0,
+        take_profit_type="fixed",
+    )
 
     condition = StrategyCondition(
         strategy_list=[sma_strat, rsi_strat],
         buy_risk_model=buy_risk,
         sell_risk_model=sell_risk,
         do_action_if_buy=True,
-        do_action_if_sell=True
+        do_action_if_sell=True,
     )
 
     # 4) Build StrategyEngine with this single condition
@@ -90,7 +104,12 @@ def test_backtest_with_two_sma_indicators_runs_on_1000_candles():
 
     # 5) Create BacktestEngine and inject candles (note: BacktestEngine.__init__ in snippet
     # does not assign self.candles, so set it explicitly here)
-    backtest = BacktestEngine(strategy=engine, trade_risk_model=TradeRiskModel(), candles=None, initial_balance=1000.0)
+    backtest = BacktestEngine(
+        strategy=engine,
+        trade_risk_model=TradeRiskModel(),
+        candles=None,
+        initial_balance=1000.0,
+    )
     # assign candles directly (workaround for the missing assignment in __init__)
     backtest.candles = candles
 
@@ -128,7 +147,9 @@ def test_backtest_with_live_binance_if_requested(monkeypatch):
     This is disabled by default for CI stability.
     """
     if os.getenv("USE_LIVE_BINANCE") not in ("1", "true", "True"):
-        pytest.skip("Live Binance test not requested (set USE_LIVE_BINANCE=1 to enable)")
+        pytest.skip(
+            "Live Binance test not requested (set USE_LIVE_BINANCE=1 to enable)"
+        )
 
     # import the function from your market service
     try:

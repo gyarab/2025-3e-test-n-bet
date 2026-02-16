@@ -13,9 +13,8 @@ def register(request):
         login(request, user)
         return redirect("login")
 
-    return render(request, "registration/register.html", {
-        "form": form
-    })
+    return render(request, "registration/register.html", {"form": form})
+
 
 def login_view(request):
     form = CustomUserLoginForm(request, data=request.POST or None)
@@ -23,12 +22,10 @@ def login_view(request):
     if request.method == "POST" and form.is_valid():
         login(request, form.get_user())
         return redirect("/home")
-    
-    
-    return render(request, "registration/login.html", {
-        "form": form
-    })
-    
+
+    return render(request, "registration/login.html", {"form": form})
+
+
 def logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out.")

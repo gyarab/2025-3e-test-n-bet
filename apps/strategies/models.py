@@ -1,20 +1,18 @@
 from django.db import models
 from django.conf import settings
 
-class Strategy(models.Model):   
+
+class Strategy(models.Model):
     name = models.CharField(max_length=100)
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
     )
     base_strategy = models.ForeignKey(
-        'self',
+        "self",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='derived_strategies'
+        related_name="derived_strategies",
     )
     parameters = models.JSONField(default=dict, blank=True)
     is_default = models.BooleanField(default=False)

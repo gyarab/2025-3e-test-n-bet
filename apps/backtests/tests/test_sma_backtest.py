@@ -6,6 +6,7 @@ from apps.strategies.services.core.strategy_engine import StrategyEngine
 from apps.strategies.services.core.strategy_condition import StrategyCondition
 from apps.backtests.services.backtest_engine import BacktestEngine
 
+
 def generate_uptrend_candles(n: int, start_price: float = 100.0, step: float = 1.0):
     """
     Generate a deterministic uptrend to trigger SMA BUY signal.
@@ -19,15 +20,12 @@ def generate_uptrend_candles(n: int, start_price: float = 100.0, step: float = 1
         high = close + 0.5
         low = open_p - 0.5
         volume = 1000
-        candles.append({
-            "open": open_p,
-            "high": high,
-            "low": low,
-            "close": close,
-            "volume": volume
-        })
+        candles.append(
+            {"open": open_p, "high": high, "low": low, "close": close, "volume": volume}
+        )
         price = close
     return candles
+
 
 def test_backtest_sma_long_trade_executed():
     """
@@ -50,7 +48,7 @@ def test_backtest_sma_long_trade_executed():
         buy_risk_model=risk_model,
         sell_risk_model=risk_model,  # optional for this test
         do_action_if_buy=True,
-        do_action_if_sell=False
+        do_action_if_sell=False,
     )
 
     # Strategy engine with this single condition
@@ -58,7 +56,9 @@ def test_backtest_sma_long_trade_executed():
     engine.add_condition(condition)
 
     # Backtest engine
-    backtest = BacktestEngine(strategy=engine, trade_risk_model=risk_model, candles=None, initial_balance=1000)
+    backtest = BacktestEngine(
+        strategy=engine, trade_risk_model=risk_model, candles=None, initial_balance=1000
+    )
     backtest.candles = candles  # inject our deterministic candles
 
     # Run backtest
@@ -72,7 +72,7 @@ def test_backtest_sma_long_trade_executed():
         # Trade result could be -1 if last candle didn't close trade, but we can check exit price exists if closed
         if result != -1:
             assert isinstance(result, (int, float))
-    
+
     # Final balance should be numeric
     assert isinstance(final_balance, (int, float))
     print("Final balance:", final_balance)

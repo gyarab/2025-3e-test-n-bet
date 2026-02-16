@@ -7,4 +7,5 @@ class AtomicStrategy(BaseStrategy):
     Atomic Strategies are the building blocks for more complex strategies (called strategy conditions).
     Atomic Strategies contain either one indicator or one prediction model, but not more.
     """
+
     pass

@@ -9,7 +9,10 @@ from django.views.decorators.csrf import csrf_protect
 
 from apps.strategies.models import Strategy
 from apps.strategies.serializers import serialize_strategy
-from apps.strategies.services.strategy_service import get_available_strategies_for_user, get_indicators
+from apps.strategies.services.strategy_service import (
+    get_available_strategies_for_user,
+    get_indicators,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +24,9 @@ def get_strategy_view(request):
     Retrieves both user-created and default strategies.
     """
     if not request.user.is_authenticated:
-        return JsonResponse({"status": "error", "message": "Authentication required"}, status=401)
+        return JsonResponse(
+            {"status": "error", "message": "Authentication required"}, status=401
+        )
 
     try:
         strategies = get_available_strategies_for_user(request.user)
@@ -32,7 +37,9 @@ def get_strategy_view(request):
 
     except Exception as e:
         logger.error(f"Error retrieving strategies: {e}", exc_info=True)
-        return JsonResponse({"status": "error", "message": "Internal server error"}, status=500)
+        return JsonResponse(
+            {"status": "error", "message": "Internal server error"}, status=500
+        )
 
 
 def get_indicator_list(request):
@@ -45,7 +52,9 @@ def get_indicator_list(request):
 
     except Exception as e:
         logger.error(f"Error retrieving indicators: {e}", exc_info=True)
-        return JsonResponse({"status":"error","message": "Internal server error"}, status=500)
+        return JsonResponse(
+            {"status": "error", "message": "Internal server error"}, status=500
+        )
 
 
 @csrf_protect
@@ -63,10 +72,14 @@ def save_strategy_view(request):
     }
     """
     if not request.user.is_authenticated:
-        return JsonResponse({"status": "error", "message": "User not authenticated"}, status=401)
+        return JsonResponse(
+            {"status": "error", "message": "User not authenticated"}, status=401
+        )
 
     if not request.content_type == "application/json":
-        return JsonResponse({"status": "error", "message": "Invalid content type"}, status=415)
+        return JsonResponse(
+            {"status": "error", "message": "Invalid content type"}, status=415
+        )
 
     try:
         data = json.loads(request.body)
@@ -81,50 +94,65 @@ def save_strategy_view(request):
             creator=request.user,
             base_strategy_id=data.get("base_strategy_id"),
             parameters=data.get("parameters", {}),
-            is_default=False
+            is_default=False,
         )
-        
-        return JsonResponse({
-            "status": "success", 
-            "strategy_id": create_strategy.pk,
-            "message": "Strategy successfully saved"
-        }, status=201)
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "strategy_id": create_strategy.pk,
+                "message": "Strategy successfully saved",
+            },
+            status=201,
+        )
 
     except Exception as err:
         logger.error(f"Error saving strategy: {err}", exc_info=True)
-        return JsonResponse({
-            "status": "error", 
-            "message": "Nepodařilo se uložit strategii do DB."
-        }, status=500)
+        return JsonResponse(
+            {"status": "error", "message": "Nepodařilo se uložit strategii do DB."},
+            status=500,
+        )
+
 
 @csrf_protect
 @require_http_methods(["DELETE"])
 def delete_strategy_view(request):
     if not request.user.is_authenticated:
-        return JsonResponse({"status": "error", "message": "User not authenticated"}, status=401)
+        return JsonResponse(
+            {"status": "error", "message": "User not authenticated"}, status=401
+        )
 
     if not request.content_type == "application/json":
-        return JsonResponse({"status": "error", "message": "Invalid content type"}, status=415)
+        return JsonResponse(
+            {"status": "error", "message": "Invalid content type"}, status=415
+        )
 
     try:
         data = json.loads(request.body)
         strategy_id = data.get("strategy_id")
         if not strategy_id:
-            return JsonResponse({"status": "error", "message": "Strategy ID is required"}, status=400)
+            return JsonResponse(
+                {"status": "error", "message": "Strategy ID is required"}, status=400
+            )
     except json.JSONDecodeError:
         return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
 
     try:
         strategy = Strategy.objects.get(id=strategy_id, creator=request.user)
         strategy.delete()
-        return JsonResponse({"status": "success", "message": "Strategy successfully deleted"}, status=200)
+        return JsonResponse(
+            {"status": "success", "message": "Strategy successfully deleted"},
+            status=200,
+        )
 
     except Strategy.DoesNotExist:
-        return JsonResponse({"status": "error", "message": "Strategy not found"}, status=404)
+        return JsonResponse(
+            {"status": "error", "message": "Strategy not found"}, status=404
+        )
 
     except Exception as err:
         logger.error(f"Error deleting strategy: {err}", exc_info=True)
-        return JsonResponse({
-            "status": "error", 
-            "message": "Failed to delete strategy from DB."
-        }, status=500)
+        return JsonResponse(
+            {"status": "error", "message": "Failed to delete strategy from DB."},
+            status=500,
+        )

@@ -23,12 +23,12 @@ class SMAIndicator(BaseIndicator):
             return -1
 
         # Převod na DataFrame
-        df = pd.DataFrame(candles, columns=['close'])
-        df['SMA'] = df['close'].rolling(window).mean()
-        value = df['SMA'].iloc[-1]
+        df = pd.DataFrame(candles, columns=["close"])
+        df["SMA"] = df["close"].rolling(window).mean()
+        value = df["SMA"].iloc[-1]
 
-        return round(float(value),3) if pd.notna(value) else -1
-    
+        return round(float(value), 3) if pd.notna(value) else -1
+
     def calculate(self, candles, window=10) -> float:
         return self.calculate_sma(candles, window=window)
 
@@ -39,7 +39,7 @@ class SMAIndicator(BaseIndicator):
         Args:
             candles (list[dict]): List of dictionaries, each containing:
                 - open, high, low, close, volume
-        
+
             window (int): Period for SMA. If None, uses short_window.
         Returns:
             list[float]: List of SMA values, with None for initial periods without enough data
@@ -51,26 +51,28 @@ class SMAIndicator(BaseIndicator):
             return []
 
         for candle in candles:
-            if 'close' not in candle:
+            if "close" not in candle:
                 return []
-        
+
         temp_candles = candles.copy()
         sma_list = []
 
-        for i in range (len(temp_candles)):
+        for i in range(len(temp_candles)):
             if not temp_candles or len(temp_candles) < window:
                 sma_list.append(None)
             else:
                 sma_list.append(self.calculate_sma(temp_candles, window))
             temp_candles = temp_candles[:-1]
 
-        return sma_list[::-1]  # Reverzní seznam, aby odpovídal původnímu pořadí   
+        return sma_list[::-1]  # Reverzní seznam, aby odpovídal původnímu pořadí
 
-    def get_list_from_coin(self, coin: str, interval: str, candle_amount: int = 20, window: int = None) -> list[float]:
+    def get_list_from_coin(
+        self, coin: str, interval: str, candle_amount: int = 20, window: int = None
+    ) -> list[float]:
         """
         Calculate Simple Moving Average (SMA) list from a coin and interval.
 
-        Args:   
+        Args:
             coin (str): Symbol, e.g., 'BTC/USDT'
             interval (str): Time interval, e.g., '1h', '1d'
             candle_amount (int): Number of candles to fetch, default is 20
@@ -82,5 +84,4 @@ class SMAIndicator(BaseIndicator):
             window = self.window
 
         candles = get_binance_ohlcv(coin, interval, candle_amount)
-        return self.get_list_from_candles(candles, window) 
-    
+        return self.get_list_from_candles(candles, window)

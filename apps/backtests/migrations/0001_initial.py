@@ -10,44 +10,104 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('strategies', '0001_initial'),
+        ("strategies", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Asset',
+            name="Asset",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('symbol', models.CharField(max_length=20, unique=True)),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("symbol", models.CharField(max_length=20, unique=True)),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='Backtest',
+            name="Backtest",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_date', models.DateField(blank=True, null=True)),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('initial_capital', models.DecimalField(decimal_places=2, max_digits=15)),
-                ('position_size', models.DecimalField(blank=True, decimal_places=8, max_digits=15, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('result', models.JSONField(blank=True, null=True)),
-                ('asset', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='backtests.asset')),
-                ('strategy', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='strategies.strategy')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("start_date", models.DateField(blank=True, null=True)),
+                ("end_date", models.DateField(blank=True, null=True)),
+                (
+                    "initial_capital",
+                    models.DecimalField(decimal_places=2, max_digits=15),
+                ),
+                (
+                    "position_size",
+                    models.DecimalField(
+                        blank=True, decimal_places=8, max_digits=15, null=True
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True, null=True)),
+                ("result", models.JSONField(blank=True, null=True)),
+                (
+                    "asset",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="backtests.asset",
+                    ),
+                ),
+                (
+                    "strategy",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="strategies.strategy",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Trade',
+            name="Trade",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('time', models.DateTimeField()),
-                ('price', models.DecimalField(decimal_places=8, max_digits=15)),
-                ('is_buy', models.BooleanField(help_text='True = BUY, False = SELL')),
-                ('quantity', models.DecimalField(decimal_places=8, default=0, max_digits=15)),
-                ('profit', models.DecimalField(decimal_places=2, max_digits=15)),
-                ('backtest', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='trades', to='backtests.backtest')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("time", models.DateTimeField()),
+                ("price", models.DecimalField(decimal_places=8, max_digits=15)),
+                ("is_buy", models.BooleanField(help_text="True = BUY, False = SELL")),
+                (
+                    "quantity",
+                    models.DecimalField(decimal_places=8, default=0, max_digits=15),
+                ),
+                ("profit", models.DecimalField(decimal_places=2, max_digits=15)),
+                (
+                    "backtest",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="trades",
+                        to="backtests.backtest",
+                    ),
+                ),
             ],
         ),
     ]

@@ -14,3 +14,4 @@ media/
 .env
 .env_copy
 
+node_modules

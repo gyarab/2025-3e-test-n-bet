@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import ccxt
 import pandas as pd
 
+
 class BasePredictionModel(ABC):
     """
     Abstract base class for all prediction models. Not implemented yet.

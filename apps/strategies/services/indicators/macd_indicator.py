@@ -5,7 +5,9 @@ from apps.strategies.services.base.base_indicator import BaseIndicator
 
 
 class MACDIndicator(BaseIndicator):
-    def __init__(self, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9):
+    def __init__(
+        self, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9
+    ):
         """
         Args:
             fast_period (int): Period for fast EMA (default 12)
@@ -30,13 +32,13 @@ class MACDIndicator(BaseIndicator):
             return []
 
         for candle in candles:
-            if 'close' not in candle:
+            if "close" not in candle:
                 return []
-        
+
         df = pd.DataFrame(candles)
-        ema_fast = df['close'].ewm(span=self.fast_period, adjust=False).mean()
-        ema_slow = df['close'].ewm(span=self.slow_period, adjust=False).mean()
-        macd_line = ema_fast - ema_slow 
+        ema_fast = df["close"].ewm(span=self.fast_period, adjust=False).mean()
+        ema_slow = df["close"].ewm(span=self.slow_period, adjust=False).mean()
+        macd_line = ema_fast - ema_slow
 
         return macd_line.round(3).tolist()
 
@@ -44,7 +46,7 @@ class MACDIndicator(BaseIndicator):
         """
         Calculate MACD line list from a coin and interval.
 
-        Args:   
+        Args:
             coin (str): Symbol, e.g., 'BTC/USDT'
             interval (str): Time interval, e.g., '1h', '1d'
             candle_amount (int): Number of candles to fetch, default is 20
@@ -53,9 +55,11 @@ class MACDIndicator(BaseIndicator):
         """
 
         candles = get_binance_ohlcv(coin, interval, candle_amount)
-        return self.get_list_from_candles(candles) 
-    
-    def calculate_macd(self, candles: list[dict[str, float]]) -> tuple[float, float, float]:
+        return self.get_list_from_candles(candles)
+
+    def calculate_macd(
+        self, candles: list[dict[str, float]]
+    ) -> tuple[float, float, float]:
         """
         Calculate MACD line, signal line, and histogram for the last candle.
 
@@ -69,7 +73,7 @@ class MACDIndicator(BaseIndicator):
             return -1, -1, -1  # not enough data
 
         df = pd.DataFrame(candles)
-        close = df['close']
+        close = df["close"]
 
         ema_fast = close.ewm(span=self.fast_period, adjust=False).mean()
         ema_slow = close.ewm(span=self.slow_period, adjust=False).mean()
@@ -78,7 +82,11 @@ class MACDIndicator(BaseIndicator):
         signal_line = macd_line.ewm(span=self.signal_period, adjust=False).mean()
         histogram = macd_line - signal_line
 
-        return round(macd_line.iloc[-1], 3), round(signal_line.iloc[-1], 3), round(histogram.iloc[-1], 3)
+        return (
+            round(macd_line.iloc[-1], 3),
+            round(signal_line.iloc[-1], 3),
+            round(histogram.iloc[-1], 3),
+        )
 
     def calculate(self, candles) -> tuple[float, float, float]:
         return self.calculate_macd(candles)
