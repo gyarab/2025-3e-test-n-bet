@@ -9,17 +9,26 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
+    env:
+          DB_NAME: test_n_bet_db
+          DB_USER: postgres
+          DB_PASSWORD: admin
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_SSL: False
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: False
+    services: 
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: team_user
-          POSTGRES_PASSWORD: tajneheslo
-          POSTGRES_DB: test_n_bet
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: admin
+          POSTGRES_DB: test_n_bet_db
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U team_user"
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -39,18 +48,10 @@ jobs:
 
       - name: Wait for PostgreSQL
         run: |
-          until pg_isready -h localhost -p 5432 -U team_user; do sleep 1; done
+          until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done
 
       - name: Run migrations
-        env:
-          POSTGRES_DB: test_n_bet
-          POSTGRES_USER: team_user
-          POSTGRES_PASSWORD: tajneheslo
         run: python manage.py migrate
 
       - name: Run tests
-        env:
-          POSTGRES_DB: test_n_bet
-          POSTGRES_USER: team_user
-          POSTGRES_PASSWORD: tajneheslo
         run: python manage.py test
