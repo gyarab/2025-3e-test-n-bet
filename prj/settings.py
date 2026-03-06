@@ -20,7 +20,8 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+if os.path.exists(os.path.join(BASE_DIR, ".env")):
+    environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -94,16 +95,6 @@ WSGI_APPLICATION = "prj.wsgi.application"
 ASGI_APPLICATION = "prj.asgi.application"
 
 LOGIN_URL = "/registration/login/"
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-
-# Initialise environment variables
-
-
-
 
 DB_SSL = env.bool("DB_SSL", default=True)
 

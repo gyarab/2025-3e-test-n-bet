@@ -1,5 +1,6 @@
 <div class="bg-white rounded-2xl shadow p-5">
     <h2 class="text-lg font-semibold mb-3">Recent Backtests</h2>
+    {% if recent_backtests %}
     <table class="w-full text-sm text-left">
         <thead class="text-gray-500 border-b">
         <tr>
@@ -11,27 +12,46 @@
         </tr>
         </thead>
         <tbody class="divide-y">
+        {% for backtest in recent_backtests %}
         <tr>
-            <td>Momentum Alpha</td>
-            <td>Jan–Oct 2025</td>
-            <td class="text-green-600">+14.8%</td>
-            <td>1.32</td>
-            <td>7.4%</td>
+            <td>{{ backtest.strategy.name }}</td>
+            <td>
+                {% if backtest.start_date and backtest.end_date %}
+                    {{ backtest.start_date|date:"M d, Y" }} – {{ backtest.end_date|date:"M d, Y" }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                {% if backtest.result %}
+                    {% with ret=backtest.result.return_percent %}
+                        <span class="{% if ret >= 0 %}text-green-600{% else %}text-red-500{% endif %}">
+                            {{ ret|floatformat:1 }}%
+                        </span>
+                    {% endwith %}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                {% if backtest.result and backtest.result.sharpe %}
+                    {{ backtest.result.sharpe|floatformat:2 }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                {% if backtest.result and backtest.result.max_drawdown %}
+                    {{ backtest.result.max_drawdown|floatformat:1 }}%
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
         </tr>
-        <tr>
-            <td>Mean Reversion Pro</td>
-            <td>Jan–Oct 2025</td>
-            <td class="text-green-600">+9.2%</td>
-            <td>1.10</td>
-            <td>10.1%</td>
-        </tr>
-        <tr>
-            <td>Volatility Crusher</td>
-            <td>Jan–Oct 2025</td>
-            <td class="text-red-500">-2.3%</td>
-            <td>0.68</td>
-            <td>15.9%</td>
-        </tr>
+        {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <p class="text-gray-500">No recent backtests found.</p>
+    {% endif %}
 </div>
