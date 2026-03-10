@@ -1,10 +1,7 @@
 from django.shortcuts import render
-import os
-import json
 
 from apps.strategies.services.strategy_service import get_available_strategies_for_user
 from apps.strategies.serializers import serialize_strategy
-from .models import Strategy
 
 
 def strategy(request):

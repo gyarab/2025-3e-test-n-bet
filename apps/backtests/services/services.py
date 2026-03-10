@@ -1,12 +1,14 @@
+from typing import Optional
+
 from django.core.exceptions import PermissionDenied
 
 from apps.strategies.services.core.strategy_engine import StrategyEngine
 from apps.strategies.models import Strategy
 from apps.market.services import get_binance_ohlcv
-from apps.strategies.services.core.trade_risk_model import TradeRiskModel
-from .backtest.backtest_engine import BacktestEngine
+from apps.backtests.models import Backtest
+from apps.backtests.services.backtest.backtest_engine import BacktestEngine
 from ccxt.base.errors import RequestTimeout
-from ccxt.base.errors import RequestTimeout
+from django.db.models import Q
 
 
 def run_backtest(
@@ -77,3 +79,28 @@ def run_backtest(
         ),
         "trades": [trade.get_json() for trade in self_trades],
     }
+
+
+def get_backtest(user, id: int) -> Optional[Backtest]:
+    if not user.is_authenticated:
+        return None
+
+    return (
+        Backtest.objects
+        .select_related("asset", "strategy")
+        .prefetch_related("trades")
+        .filter(user=user, id=id)
+        .first()
+    )
+
+def get_available_backtests(user) -> dict:
+    if not user.is_authenticated:
+        return None
+
+    return (
+        Backtest.objects
+        .select_related("asset", "strategy")
+        .prefetch_related("trades")
+        .filter(user=user)
+        .order_by("id")
+    )

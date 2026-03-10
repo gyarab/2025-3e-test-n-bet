@@ -3,7 +3,13 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-  {% include 'market/_tradingview_graph.html' %}
-  {% include 'market/_hot_tokens.html' %}
-  {% include 'backtests/components/recent_backtests.html' %}
+  <div class="tradingview-widget-container col-span-1 lg:col-span-2 row-span-2 h-96">
+    {% include 'market/components/tradingview_graph.html' %}
+  </div>
+  <div class="col-span-1 row-span-2">
+    {% include 'market/components/hot_tokens.html' %}
+  </div>
+  <div class="col-span-3 row-span-2">
+    {% include 'backtests/components/recent_backtests.html' %}
+  </div>
 {% endblock %}

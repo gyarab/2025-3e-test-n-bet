@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}Backtest Details{% endblock %}
+
+{% block main_class %}p-6 grid grid-cols-1 gap-4{% endblock %}
+
+{% block content %}
+  {% include 'backtests/components/backtest_details.html' %}
+  {{ backtest|json_script:"backtest-data" }}
+  
+  <script type="module" src="{% static 'backtests/pages/backtest_detail.js' %}"></script>
+{% endblock %}
+

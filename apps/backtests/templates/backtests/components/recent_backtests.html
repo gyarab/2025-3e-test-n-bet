@@ -1,57 +1,103 @@
-<div class="bg-white rounded-2xl shadow p-5">
-    <h2 class="text-lg font-semibold mb-3">Recent Backtests</h2>
-    {% if recent_backtests %}
-    <table class="w-full text-sm text-left">
-        <thead class="text-gray-500 border-b">
-        <tr>
-            <th class="pb-2">Strategy</th>
-            <th class="pb-2">Period</th>
-            <th class="pb-2">Return</th>
-            <th class="pb-2">Sharpe</th>
-            <th class="pb-2">Max DD</th>
-        </tr>
-        </thead>
-        <tbody class="divide-y">
-        {% for backtest in recent_backtests %}
-        <tr>
-            <td>{{ backtest.strategy.name }}</td>
-            <td>
-                {% if backtest.start_date and backtest.end_date %}
-                    {{ backtest.start_date|date:"M d, Y" }} – {{ backtest.end_date|date:"M d, Y" }}
-                {% else %}
-                    N/A
-                {% endif %}
-            </td>
-            <td>
-                {% if backtest.result %}
-                    {% with ret=backtest.result.return_percent %}
-                        <span class="{% if ret >= 0 %}text-green-600{% else %}text-red-500{% endif %}">
-                            {{ ret|floatformat:1 }}%
-                        </span>
-                    {% endwith %}
-                {% else %}
-                    N/A
-                {% endif %}
-            </td>
-            <td>
-                {% if backtest.result and backtest.result.sharpe %}
-                    {{ backtest.result.sharpe|floatformat:2 }}
-                {% else %}
-                    N/A
-                {% endif %}
-            </td>
-            <td>
-                {% if backtest.result and backtest.result.max_drawdown %}
-                    {{ backtest.result.max_drawdown|floatformat:1 }}%
-                {% else %}
-                    N/A
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="bg-white rounded-2xl shadow-lg p-6">
+
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold flex items-center gap-2">
+            <span class="w-2 h-6 bg-teal-500 rounded"></span>
+            Recent Backtests
+        </h2>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'backtests:index' %}" 
+           class="text-sm text-teal-600 hover:text-teal-700 font-medium">
+           Run Backtest
+        </a>
+        {% endif %}
+    </div>
+
+
+    {% if not user.is_authenticated %}
+        <div class="text-center py-8">
+            <p class="text-gray-600 mb-4">Login to see your backtests.</p>
+            <a href="{% url 'login' %}" 
+               class="bg-teal-500 hover:bg-teal-600 text-white px-5 py-2 rounded-lg shadow-sm transition">
+               Login
+            </a>
+        </div>
+
+    {% elif not recent_backtests %}
+        <div class="text-center py-8">
+            <p class="text-gray-600 mb-4">You haven't run any backtests yet.</p>
+            <a href="{% url 'backtests:index' %}" 
+               class="bg-teal-500 hover:bg-teal-600 text-white px-5 py-2 rounded-lg shadow-sm transition">
+               Run your first backtest
+            </a>
+        </div>
+
     {% else %}
-        <p class="text-gray-500">No recent backtests found.</p>
+        <div class="overflow-x-auto rounded-xl border border-gray-100">
+            <table class="w-full text-sm">
+
+                <!-- Header -->
+                <thead class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                    <tr>
+                        <th class="px-4 py-3 text-left">Token</th>
+                        <th class="px-4 py-3 text-left">Timeframe</th>
+                        <th class="px-4 py-3 text-left">Initial</th>
+                        <th class="px-4 py-3 text-left">Final</th>
+                        <th class="px-4 py-3 text-left">P/L</th>
+                        <th class="px-4 py-3 text-left">Trades</th>
+                        <th class="px-4 py-3 text-left">Wins</th>
+                        <th class="px-4 py-3 text-left">Losses</th>
+                        <th class="px-4 py-3 text-left">Open</th>
+                    </tr>
+                </thead>
+
+                <!-- Body -->
+                <tbody class="divide-y">
+                    {% for backtest in recent_backtests %}
+                    <tr class="hover:bg-gray-50 cursor-pointer transition"
+                        onclick="window.location.href='/backtests/{{ backtest.id }}/'">
+                        <td class="px-4 py-3 font-medium">
+                            <span class="bg-gray-100 px-2 py-1 rounded-md text-xs">
+                                {{ backtest.asset.symbol }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-gray-600">
+                            {{ backtest.result.timeframe }}
+                        </td>
+                        <td class="px-4 py-3 text-gray-700">
+                            {{ backtest.result.initial_balance|floatformat:2 }}
+                        </td>
+                        <td class="px-4 py-3 font-medium text-gray-800">
+                            {{ backtest.result.final_balance|floatformat:2 }}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if backtest.result.profit_loss >= 0 %}
+                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded-md text-xs font-semibold">
+                                    +{{ backtest.result.profit_loss|floatformat:2 }}
+                                </span>
+                            {% else %}
+                                <span class="bg-red-100 text-red-600 px-2 py-1 rounded-md text-xs font-semibold">
+                                    {{ backtest.result.profit_loss|floatformat:2 }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">{{ backtest.result.total_trades }}</td>
+                        <td class="px-4 py-3 text-green-600 font-medium">
+                            {{ backtest.result.total_wins }}
+                        </td>
+                        <td class="px-4 py-3 text-red-500 font-medium">
+                            {{ backtest.result.total_losses }}
+                        </td>
+                        <td class="px-4 py-3 text-gray-500">
+                            {{ backtest.result.not_closed_trades }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
     {% endif %}
+
 </div>
