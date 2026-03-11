@@ -184,6 +184,7 @@ export default class BacktestRunner {
             asset_id: this.lastUsedParams.asset_id,
             initial_capital: this.lastUsedParams.initial_capital,
             position_size: this.lastUsedParams.position_size,
+            timeframe: this.lastUsedParams.timeframe,
             start_date: this.lastBacktestData.start_date || new Date().toISOString().split('T')[0], 
             end_date: this.lastBacktestData.end_date || new Date().toISOString().split('T')[0],
             result: this.lastBacktestData

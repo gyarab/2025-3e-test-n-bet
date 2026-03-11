@@ -108,11 +108,13 @@ class TradeEngine:
     def get_json(self) -> dict:
         return {
             "entry_price": self.entry_price,
-            "exit_price": self.exit_price,
+            "exit_price": self.exit_price if not self.status else None,
+            "entry_time": self.candles[0]["time"],
+            "exit_time": self.candles[-1]["time"] if not self.status else None,
             "quantity": self.quantity,
-            "trade_type": "BUY" if self.trade_type else "SELL",
+            "trade_type": 1 if self.trade_type else 0, # 1 for buy, 0 for sell
             "stop_loss": self.stop_loss,
             "take_profit": self.take_profit,
-            "status": "OPEN" if self.status else "CLOSED",
-            "result": self.get_result() if not self.status else "NOT CLOSED",
+            "status": 1 if self.status else 0, # 1 for open, 0 for closed
+            "result": self.get_result() if not self.status else None, # Profit/loss amount
         }

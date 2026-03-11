@@ -16,6 +16,7 @@ class Backtest(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE)
     asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    timeframe = models.CharField(max_length=20, null=True, blank=True)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     initial_capital = models.DecimalField(max_digits=15, decimal_places=2)
@@ -31,13 +32,21 @@ class Backtest(models.Model):
 
 class Trade(models.Model):
     backtest = models.ForeignKey(
-        Backtest, on_delete=models.CASCADE, related_name="trades"
+        Backtest,
+        on_delete=models.CASCADE,
+        related_name="trades"
     )
-    time = models.DateTimeField()
-    price = models.DecimalField(max_digits=15, decimal_places=8)
-    is_buy = models.BooleanField(help_text="True = BUY, False = SELL")
-    quantity = models.DecimalField(max_digits=15, decimal_places=8, default=0)
-    profit = models.DecimalField(max_digits=15, decimal_places=2)
+    trade_type = models.CharField(max_length=10, help_text="buy or sell")
+    entry_time = models.DateTimeField()
+    exit_time = models.DateTimeField(null=True, blank=True)
+    entry_price = models.DecimalField(max_digits=15, decimal_places=8)
+    exit_price = models.DecimalField(max_digits=15, decimal_places=8, null=True, blank=True)
+    quantity = models.DecimalField(max_digits=20, decimal_places=8)
+    stop_loss = models.DecimalField(max_digits=15, decimal_places=8, null=True, blank=True)
+    take_profit = models.DecimalField(max_digits=15, decimal_places=8, null=True, blank=True)
+    status = models.CharField(max_length=20, null=True, blank=True, help_text="open / closed")
+    result = models.DecimalField(max_digits=15, decimal_places=8,null=True, blank=True, help_text="profit or loss")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Trade {self.id} - P/L: {self.profit}"
+        return f"Trade {self.id} ({self.trade_type}) - P/L: {self.result}"

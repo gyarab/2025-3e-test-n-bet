@@ -31,8 +31,6 @@ def backtest_detail(request, backtest_id: int):
     if backtest:
         serialized_backtest = serialize_backtest(backtest)
 
-    print(serialized_backtest)
-
     return render(
         request,
         "backtests/pages/backtest_detail.html",

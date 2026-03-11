@@ -51,6 +51,11 @@
                 </div>
 
                 <div>
+                    <span class="text-gray-400">Timeframe:</span>
+                    {{ backtest.timeframe }}
+                </div>
+
+                <div>
                     <span class="text-gray-400">Initial Capital:</span>
                     {{ backtest.initial_capital }}
                 </div>
@@ -66,13 +71,6 @@
                     <span class="text-gray-400">Period:</span>
                     {{ backtest.start_date|slice:":10" }} → {{ backtest.end_date|slice:":10" }}
                 </div>
-                
-                {% if backtest.result %}
-                <div>
-                    <span class="text-gray-400">Timeframe:</span>
-                    {{ backtest.result.timeframe }}
-                </div>
-                {% endif %}
 
             </div>
 

@@ -6,7 +6,7 @@
         </h2>
 
         <span class="text-sm text-gray-500">
-            {{ backtest.asset.symbol }} • {{ backtest.result.timeframe }}
+            {{ backtest.asset.symbol }} • {{ backtest.timeframe }}
         </span>
     </div>
 
@@ -15,7 +15,7 @@
         <div class="bg-gradient-to-br from-teal-50 to-teal-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition">
             <div class="text-gray-500 text-sm mb-1">Token</div>
             <div class="text-xl font-bold text-gray-800">
-                {{ backtest.result.token }}
+                {{ backtest.asset.symbol }}
             </div>
         </div>
 
@@ -57,7 +57,7 @@
 
         <div class="bg-gray-50 p-5 rounded-xl border">
             <div class="text-xs uppercase text-gray-400 mb-1">Timeframe</div>
-            <div class="text-lg font-semibold">{{ backtest.result.timeframe }}</div>
+            <div class="text-lg font-semibold">{{ backtest.timeframe }}</div>
         </div>
 
     </div>
@@ -193,8 +193,6 @@
         </div>
     </div>
 
-
-    <!-- TRADES SUMMARY -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 
         <div class="bg-white border p-5 rounded-xl text-center shadow-sm">
@@ -262,7 +260,7 @@
 
                     <tbody class="text-sm divide-y">
 
-                        {% for trade in backtest.result.trades %}
+                        {% for trade in backtest.trades %}
                         <tr class="hover:bg-gray-50 transition">
 
                             <td class="py-3 px-4 font-semibold

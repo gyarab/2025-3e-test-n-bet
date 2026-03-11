@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
 from apps.backtests.services.services import run_backtest
-from apps.backtests.models import Backtest, Asset
+from apps.backtests.models import Backtest, Asset, Trade
 
 # from ccxt.base.errors import RequestTimeout
 
@@ -104,7 +104,7 @@ def save_backtest_view(request):
         "end_date": str (YYYY-MM-DD),
         "initial_capital": float,
         "position_size": float,
-        "result": dict
+        "result": dict (backtest result data), directly from run_backtest_view response
     }
 
     """
@@ -124,16 +124,47 @@ def save_backtest_view(request):
             symbol=token_symbol, defaults={"name": token_symbol}
         )
 
+        new_result = {
+            "initial_balance": data.get("initial_capital"),
+            "final_balance": data.get("result", {}).get("final_balance"),
+            "profit_loss": data.get("result", {}).get("profit_loss"),
+            "total_trades": data.get("result", {}).get("total_trades"),
+            "total_wins": data.get("result", {}).get("total_wins"),
+            "total_losses": data.get("result", {}).get("total_losses"),
+            "not_closed_trades": data.get("result", {}).get("not_closed_trades"),
+        }
+
+        
+
         backtest = Backtest.objects.create(
             user=request.user,
             strategy_id=data.get("strategy_id"),
             asset=asset_obj,
-            result=data.get("result", {}),
+            result=new_result,
             start_date=data.get("start_date"),
             end_date=data.get("end_date"),
             initial_capital=data.get("initial_capital"),
             position_size=data.get("position_size"),
         )
+
+        trades = [
+            Trade(
+                backtest=backtest,
+                entry_price=t.get("entry_price"),
+                exit_price=t.get("exit_price"),
+                entry_time=t.get("entry_time"),
+                exit_time=t.get("exit_time"),
+                quantity=t.get("quantity"),
+                trade_type=t.get("trade_type"),
+                stop_loss=t.get("stop_loss"),
+                take_profit=t.get("take_profit"),
+                status=t.get("status"),
+                result=t.get("result"),
+            )
+            for t in data.get("result", {}).get("trades", [])
+        ]
+
+        Trade.objects.bulk_create(trades)
 
         return JsonResponse(
             {

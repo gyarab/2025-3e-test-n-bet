@@ -1,26 +1,56 @@
 [
   {
     "model": "backtests.Trade",
-    "pk": 1,
+    "pk": 3,
     "fields": {
-      "backtest": 1,
-      "time": "2025-02-01T10:00:00Z",
-      "price": 20000,
-      "quantity": 0.1,
-      "is_buy": true,
-      "profit": 50
+      "backtest": 4,
+      "trade_type": "buy",
+      "entry_time": "2026-03-02T10:00:00Z",
+      "exit_time": "2026-03-02T14:00:00Z",
+      "entry_price": "100.00",
+      "exit_price": "110.00",
+      "quantity": "50.0",
+      "stop_loss": "95.0",
+      "take_profit": "115.0",
+      "status": "closed",
+      "result": "500.0",
+      "created_at": "2026-03-11T12:00:00Z"
     }
   },
   {
     "model": "backtests.Trade",
-    "pk": 2,
+    "pk": 4,
     "fields": {
-      "backtest": 1,
-      "time": "2025-03-01T10:00:00Z",
-      "price": 25000,
-      "quantity": 0.2,
-      "is_buy": false,
-      "profit": 100
+      "backtest": 4,
+      "trade_type": "sell",
+      "entry_time": "2026-03-03T11:00:00Z",
+      "exit_time": "2026-03-03T15:00:00Z",
+      "entry_price": "120.00",
+      "exit_price": "115.00",
+      "quantity": "30.0",
+      "stop_loss": "125.0",
+      "take_profit": "110.0",
+      "status": "closed",
+      "result": "-150.0",
+      "created_at": "2026-03-11T12:00:00Z"
+    }
+  },
+  {
+    "model": "backtests.Trade",
+    "pk": 5,
+    "fields": {
+      "backtest": 4,
+      "trade_type": "buy",
+      "entry_time": "2026-03-04T09:30:00Z",
+      "exit_time": "2026-03-04T12:30:00Z",
+      "entry_price": "115.00",
+      "exit_price": "120.00",
+      "quantity": "20.0",
+      "stop_loss": "110.0",
+      "take_profit": "125.0",
+      "status": "closed",
+      "result": "100.0",
+      "created_at": "2026-03-11T12:00:00Z"
     }
   }
 ]
