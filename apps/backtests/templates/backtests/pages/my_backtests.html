@@ -7,8 +7,9 @@
 {% block main_class %}p-6 grid grid-cols-1 gap-4{% endblock %}
 
 {% block content %}
+  {% include 'backtests/components/backtest_list.html' %}
 
-  
+  {{ backtests|json_script:"backtests-data" }}
 
   <script type="module" src="{% static 'backtests/pages/my_backtests.js' %}"></script>
 {% endblock %}

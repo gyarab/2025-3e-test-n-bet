@@ -1,0 +1,98 @@
+<div class="bg-white rounded-3xl shadow-lg p-8">
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+        My Backtests
+    </h2>
+
+    {% if backtests %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for backtest in backtests %}
+
+        <a href="my-backtests/{{ backtest.id }}"
+           class="block bg-gray-50 border rounded-2xl p-6 shadow-sm hover:shadow-md hover:bg-white transition">
+
+            <div class="flex justify-between items-center mb-4">
+
+                <div class="font-semibold text-lg text-gray-800">
+                    Backtest #{{ backtest.id }}
+                </div>
+
+                {% if backtest.result %}
+                    {% if backtest.result.profit_loss >= 0 %}
+                        <span class="text-green-600 font-semibold text-sm">
+                            +{{ backtest.result.profit_loss }}
+                        </span>
+                    {% else %}
+                        <span class="text-red-500 font-semibold text-sm">
+                            {{ backtest.result.profit_loss }}
+                        </span>
+                    {% endif %}
+                {% else %}
+                    <span class="text-gray-400 text-sm italic">
+                        No result
+                    </span>
+                {% endif %}
+
+            </div>
+
+
+            <div class="text-sm text-gray-600 space-y-1">
+
+                <div>
+                    <span class="text-gray-400">Asset:</span>
+                    {{ backtest.asset.symbol }}
+                </div>
+
+                <div>
+                    <span class="text-gray-400">Strategy:</span>
+                    {{ backtest.strategy.name }}
+                </div>
+
+                <div>
+                    <span class="text-gray-400">Initial Capital:</span>
+                    {{ backtest.initial_capital }}
+                </div>
+
+                {% if backtest.result %}
+                <div>
+                    <span class="text-gray-400">Trades:</span>
+                    {{ backtest.result.total_trades }}
+                </div>
+                {% endif %}
+
+                <div>
+                    <span class="text-gray-400">Period:</span>
+                    {{ backtest.start_date|slice:":10" }} → {{ backtest.end_date|slice:":10" }}
+                </div>
+                
+                {% if backtest.result %}
+                <div>
+                    <span class="text-gray-400">Timeframe:</span>
+                    {{ backtest.result.timeframe }}
+                </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="mt-4 text-blue-600 text-sm font-medium">
+                View Backtest →
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="text-gray-500 text-center py-12">
+        No backtests available.
+    </div>
+
+    {% endif %}
+
+</div>

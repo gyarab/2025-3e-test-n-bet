@@ -1,6 +1,5 @@
 <div class="backtest-detail bg-white rounded-3xl shadow-lg p-8 space-y-8">
 
-    <!-- Header -->
     <div class="flex items-center justify-between border-b pb-4">
         <h2 class="text-2xl font-bold text-gray-800">
             Backtest #{{ backtest.id }}
@@ -11,8 +10,6 @@
         </span>
     </div>
 
-
-    <!-- PERFORMANCE SUMMARY -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 
         <div class="bg-gradient-to-br from-teal-50 to-teal-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition">
@@ -49,17 +46,9 @@
                 {{ backtest.result.profit_loss }}
             </div>
         </div>
-
     </div>
 
-
-    <!-- BACKTEST INFO -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <div class="bg-gray-50 p-5 rounded-xl border">
-            <div class="text-xs uppercase text-gray-400 mb-1">Asset</div>
-            <div class="text-lg font-semibold">{{ backtest.asset.symbol }}</div>
-        </div>
 
         <div class="bg-gray-50 p-5 rounded-xl border">
             <div class="text-xs uppercase text-gray-400 mb-1">Strategy</div>
@@ -126,6 +115,25 @@
                     <div class="ml-4 text-red-500 text-sm mt-2">
                         SHORT Signal: {{ param.action.short_signal }}
                     </div>
+
+                    <ul class="list-disc ml-5 text-gray-600 space-y-1">
+                        <li>
+                            Stop Loss:
+                            {{ param.action.short_signal.stop_loss.type }}
+                            {{ param.action.short_signal.stop_loss.percentage }}%
+                        </li>
+
+                        <li>
+                            Take Profit:
+                            {{ param.action.short_signal.take_profit.type }}
+                            {{ param.action.short_signal.take_profit.percentage }}%
+                        </li>
+
+                        <li>
+                            Position Size:
+                            {{ param.action.short_signal.position_size.percentage }}%
+                        </li>
+                    </ul>
                     {% endif %}
 
                 </div>
@@ -140,16 +148,33 @@
                     </div>
 
                     {% if param.signal_models.indicators %}
-                    <ul class="list-disc ml-6 text-sm text-gray-600 space-y-1">
+                    <div class="ml-4 text-sm space-y-3">
 
                         {% for ind in param.signal_models.indicators %}
-                        <li>
-                            <span class="font-medium">{{ ind.name }}</span>
-                            — {{ ind.parameters }}
-                        </li>
+
+                            <div class="text-sm space-y-1">
+
+                                <div class="font-medium text-blue-600">
+                                    {{ ind.name }}
+                                </div>
+
+                                {% if ind.parameters %}
+                                <ul class="list-disc ml-5 text-gray-600 space-y-1">
+
+                                    {% for key, value in ind.parameters.items %}
+                                    <li>
+                                        {{ key|slugify|cut:"-"|title }}: {{ value }}
+                                    </li>
+                                    {% endfor %}
+
+                                </ul>
+                                {% endif %}
+
+                            </div>
+
                         {% endfor %}
 
-                    </ul>
+                    </div>
                     {% endif %}
 
                     {% if param.signal_models.prediction_models %}
@@ -212,7 +237,7 @@
             </h3>
 
             <span class="text-sm text-blue-600 hover:underline">
-                Toggle
+                Open
             </span>
 
         </div>
@@ -253,7 +278,11 @@
                             <td class="py-3 px-4">{{ trade.entry_price }}</td>
 
                             <td class="py-3 px-4">
-                                {{ trade.exit_price if trade.exit_price else '-' }}
+                                {% if trade.exit_price %}
+                                    {{ trade.exit_price }}
+                                {% else %}
+                                    -
+                                {% endif %}
                             </td>
 
                             <td class="py-3 px-4">{{ trade.quantity }}</td>
@@ -298,13 +327,9 @@
                     </tbody>
 
                 </table>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 
