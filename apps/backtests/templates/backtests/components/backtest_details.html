@@ -1,4 +1,6 @@
-<div class="backtest-detail bg-white rounded-3xl shadow-lg p-8 space-y-8">
+{% load static %}
+
+<div id="backtest-detail" class="backtest-detail bg-white rounded-3xl shadow-lg p-8 space-y-8">
 
     <div class="flex items-center justify-between border-b pb-4">
         <h2 class="text-2xl font-bold text-gray-800">
@@ -222,6 +224,8 @@
         </div>
 
     </div>
+
+    {% include "backtests/components/backtest_graph.html" %}
 
 
     <!-- TRADES TABLE -->

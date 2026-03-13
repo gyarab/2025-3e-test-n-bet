@@ -40,6 +40,7 @@ def serialize_backtest(backtest: Backtest) -> dict[str, Any]:
         "initial_capital": float(backtest.initial_capital),
         "position_size": float(backtest.position_size) if backtest.position_size else None,
         "created_at": backtest.created_at.isoformat() if backtest.created_at else None,
+        "candles_amount": backtest.candles_amount,
         "result": backtest.result,
         "trades": [serialize_trade(t) for t in backtest.trades.all()],
     }

@@ -12,5 +12,7 @@ function initBacktestDetail() {
         return;
     }
 
-    const backtestDetail = BacktestDetail();
+    const root = document.getElementById("backtest-detail");
+
+    const backtestDetail = BacktestDetail(root, backtestData);
 }

@@ -99,15 +99,19 @@ def save_backtest_view(request):
     Expects a JSON body with the following structure:
     {
         "strategy_id": int,
-        "asset_id": str,
-        "start_date": str (YYYY-MM-DD),
-        "end_date": str (YYYY-MM-DD),
+        "token_symbol": str,
+        "timeframe": str,
+        "start_date": str (ISO format),
+        "end_date": str (ISO format),
         "initial_capital": float,
         "position_size": float,
-        "result": dict (backtest result data), directly from run_backtest_view response
+        "candles_amount": int,
+        "created_at": str (ISO format),
+        "result": dict (Results from backtest run api)
     }
-
+    Returns a JSON response with the saved backtest ID and a success message.
     """
+
     if not request.user.is_authenticated:
         return JsonResponse(
             {"status": "error", "message": "User not authenticated"}, status=401
@@ -118,7 +122,7 @@ def save_backtest_view(request):
         if isinstance(data, list) and len(data) > 0:
             data = data[0]
 
-        token_symbol = data.get("asset_id")
+        token_symbol = data.get("token_symbol")
 
         asset_obj, created = Asset.objects.get_or_create(
             symbol=token_symbol, defaults={"name": token_symbol}
@@ -134,17 +138,18 @@ def save_backtest_view(request):
             "not_closed_trades": data.get("result", {}).get("not_closed_trades"),
         }
 
-        
-
         backtest = Backtest.objects.create(
             user=request.user,
-            strategy_id=data.get("strategy_id"),
+            strategy=data.get("strategy_id"),
             asset=asset_obj,
-            result=new_result,
+            timeframe=data.get("timeframe"),
             start_date=data.get("start_date"),
             end_date=data.get("end_date"),
             initial_capital=data.get("initial_capital"),
             position_size=data.get("position_size"),
+            candles_amount=data.get("candles_amount"),
+            created_at=data.get("created_at"),
+            result=new_result,
         )
 
         trades = [

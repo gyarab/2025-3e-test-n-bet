@@ -23,6 +23,7 @@ class Backtest(models.Model):
     position_size = models.DecimalField(
         max_digits=15, decimal_places=8, null=True, blank=True
     )
+    candles_amount = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(null=True, blank=True, auto_now_add=True)
     result = models.JSONField(null=True, blank=True)
 
