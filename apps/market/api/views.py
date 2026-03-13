@@ -43,3 +43,38 @@ def get_hot_tokens(request):
         return JsonResponse(
             {"status": "error", "message": f"Error: {str(err)}"}, status=500
         )
+
+@require_http_methods(["POST"])
+def get_candles(request):
+    """
+    API endpoint to retrieve candle data for a specific token.
+    Expects a JSON payload with parameters
+    """
+
+    # Limit payload size to 1MB
+    if len(request.body) > 1024 * 1024:
+        return JsonResponse(
+            {"status": "error", "message": "Payload too large"}, status=413
+        )
+    
+    try:
+        from apps.market.services import get_binance_ohlcv_and_timestamp
+
+        payload = json.loads(request.body) if request.body else {}
+        token = payload.get("token")
+        interval = payload.get("interval", "1h")
+        candle_amount = payload.get("candle_amount", 100)
+        
+        if not token:
+            return JsonResponse(
+                {"status": "error", "message": "token is required"}, status=400
+            )
+
+        candles = get_binance_ohlcv_and_timestamp(token, interval, candle_amount)
+
+        return JsonResponse({"status": "success", "candles": candles}, status=200)
+    except Exception as err:
+        logger.error(f"Error retrieving candle data: {err}", exc_info=True)
+        return JsonResponse(
+            {"status": "error", "message": f"Error: {str(err)}"}, status=500
+        )
