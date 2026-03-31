@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied
 
 from apps.strategies.services.core.strategy_engine import StrategyEngine
 from apps.strategies.models import Strategy
-from apps.market.services import get_binance_ohlcv
+from apps.market.services import get_binance_ohlcv_and_timestamp
 from apps.backtests.models import Backtest
 from apps.backtests.services.backtest.backtest_engine import BacktestEngine
 from ccxt.base.errors import RequestTimeout
@@ -43,7 +43,7 @@ def run_backtest(
 
     srategy_engine = StrategyEngine._from_parameters(strategy.parameters)
     try:
-        candles = get_binance_ohlcv(token, timeframe, candle_amount)
+        candles = get_binance_ohlcv_and_timestamp(token, timeframe, candle_amount)
     except RequestTimeout as e:
         raise RuntimeError("Market data timeout") from e
 

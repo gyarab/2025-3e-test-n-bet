@@ -236,7 +236,7 @@ class IndicatorSelector {
         removeBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             e.preventDefault();
-            this.removeIndicator(id);
+            this.removeIndicatorById(id);
         });
 
         this.reloadTheInitialList()
@@ -293,17 +293,22 @@ class IndicatorSelector {
 
     // Removes the indicator based on its data-value
     removeIndicatorById(id) {
+        console.log("Removing indicator with id:", id);
+
         if (id === undefined || id === null || id === "") {
             return;
         }
 
         const indicator = this.getIndicatorById(id);
 
+        console.log("Indicator to remove:", indicator);
+
         this.removeIndicatorFromSelected(indicator);
 
         const card = this.cards.querySelector(
-            `[data-value="${id}"]`
+            `[data-id="${id}"]`
         );
+        
         if (!card) return;
         
         card.classList.remove("opacity-100", "scale-100", "max-h-[500px]");

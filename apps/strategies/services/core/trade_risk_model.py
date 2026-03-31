@@ -11,8 +11,7 @@ class TradeRiskModel:
         take_profit_pct: float = 10,
         take_profit_type: str = "fixed",
         position_size_pct: float = 5,
-        position_size_type: str = "fixed",
-        candles: list[dict] = None,
+        position_size_type: str = "fixed"
     ):
         """
         Initialize the TradeRiskModel with default or specified parameters.
@@ -24,48 +23,26 @@ class TradeRiskModel:
             take_profit_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage, relative is based on stop-loss.
             position_size_pct (float): Used as a fixed percentage of the balance to calculate the quantity if 'fixed'. Used as max loss percentage to calculate the quantity if 'relative'.
             position_size_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage of account balance, relative adjusts based on loss percentage.
-            candles (list[dict]): List of OHLCV candles, where last candle is the entry candle. Required if stop_loss_type is 'relative'.
         """
-        self.stop_loss_pct = None
+        if stop_loss_type not in ["fixed", "relative"]:
+            raise ValueError("Invalid stop_loss_type. Use 'fixed' or 'relative'.")
+        
         self.stop_loss_type = stop_loss_type
-        self.take_profit_pct = None
+        self.stop_loss_pct = stop_loss_pct
+
+        if take_profit_type not in ["fixed", "relative"]:
+            raise ValueError("Invalid take_profit_type. Use 'fixed' or 'relative'.")
+        
         self.take_profit_type = take_profit_type
-        self.position_size_pct = None
+        self.take_profit_pct = take_profit_pct
+
+        if position_size_type not in ["fixed", "relative"]:
+            raise ValueError("Invalid position_size_type. Use 'fixed' or 'relative'")
+        
         self.position_size_type = position_size_type
+        self.position_size_pct = position_size_pct
 
-        self.set_stop_loss(
-            stop_loss_type=stop_loss_type, stop_loss_pct=stop_loss_pct, candles=candles
-        )
-        self.set_take_profit(
-            take_profit_type=take_profit_type, take_profit_pct=take_profit_pct
-        )
-        # If the position size type is relative, we need stop_loss to calculate it. Loss percentage is assumed to be equal to position_size_pct
-        self.set_position_size(
-            position_size_type=position_size_type,
-            position_size_pct=position_size_pct,
-            loss_percetage=position_size_pct,
-        )
-
-    def get_position_quantity(self, account_balance: float) -> float:
-        """
-        Calculate position quantity based on account balance and position size settings.
-
-        Args:
-            account_balance (float): Current account balance.
-
-        Returns:
-            float: Calculated position quantity in dollars.
-        """
-        quantity = (self.position_size_pct / 100) * account_balance
-
-        return round(quantity, 2)
-
-    def set_position_size(
-        self,
-        position_size_type: str = "fixed",
-        position_size_pct: float = 5,
-        loss_percetage: float = 2,
-    ) -> None:
+    def set_position_size(self) -> None:
         """
         Set the position size percentage and type.
         Args:
@@ -75,24 +52,21 @@ class TradeRiskModel:
             position_size_pct (float): Percentage for fixed position size. Ignored if type is 'relative'.
             loss_percetage (float): Percentage of account balance willing to risk per trade. Used if type is 'relative'.
         """
-        if position_size_type not in ["fixed", "relative", "sl-based"]:
-            raise ValueError("Invalid position_size_type. Use 'fixed' or 'relative'.")
 
-        if position_size_type == "fixed":
-            self.position_size_pct = position_size_pct
-            self.position_size_type = position_size_type
-        elif position_size_type == "relative":
+        # If the position size type is relative, we need stop_loss to calculate it. 
+        # For now, loss percentage is assumed to be equal to default position_size_pct when using 'relative' position sizing, but this can be adjusted to allow separate risk percentage.
+
+        loss_percetage = self.position_size_pct
+
+        if self.position_size_type == "relative":
             if not hasattr(self, "stop_loss_pct"):
                 raise ValueError(
                     "Set stop_loss before setting position_size with relative type."
                 )
             self.position_size_pct = loss_percetage / self.stop_loss_pct * 100
-            self.position_size_type = position_size_type
 
     def set_stop_loss(
         self,
-        stop_loss_type: str = "fixed",
-        stop_loss_pct: float = 5,
         candles: list[dict] = None,
     ) -> float:
         """
@@ -104,28 +78,20 @@ class TradeRiskModel:
         Returns:
             float: The stop-loss percentage.
         """
-        if stop_loss_type not in ["fixed", "relative"]:
+        if self.stop_loss_type not in ["fixed", "relative"]:
             raise ValueError("Invalid stop_loss_type. Use 'fixed' or 'relative'.")
 
-        if self.stop_loss_type == "fixed":
-            self.stop_loss_pct = stop_loss_pct
-            self.stop_loss_type = stop_loss_type
-        elif self.stop_loss_type == "relative":
+        if self.stop_loss_type == "relative":
             if candles is None:
                 raise ValueError(
                     "Candles data required for relative stop-loss calculation."
                 )
             self.stop_loss_pct = self._calculate_relative_stop_loss_percentage(candles)
-            self.stop_loss_type = stop_loss_type
-        else:
-            raise ValueError("Invalid stop_loss_type. Use 'fixed' or 'relative'.")
 
         return self.stop_loss_pct
 
     def set_take_profit(
         self,
-        take_profit_type: str = "fixed",
-        take_profit_pct: float = 5,
         multiplier: float = 2.0,
     ) -> float:
         """
@@ -137,31 +103,54 @@ class TradeRiskModel:
         Returns:
             float: The stop-loss percentage.
         """
-        if take_profit_type not in ["fixed", "relative"]:
-            raise ValueError("Invalid take_profit_type. Use 'fixed' or 'relative'.")
 
-        if self.stop_loss_type == "fixed":
-            self.take_profit_pct = take_profit_pct
-            self.take_profit_type = take_profit_type
-        elif self.stop_loss_type == "relative":
+        if self.stop_loss_type == "relative":
             if not hasattr(self, "stop_loss_pct"):
                 raise ValueError(
                     "Set stop_loss before setting take_profit with relative type."
                 )
             self.take_profit_pct = self.stop_loss_pct * multiplier
-            self.take_profit_type = take_profit_type
-        else:
-            raise ValueError("Invalid stop_loss_type. Use 'fixed' or 'relative'.")
 
         return self.stop_loss_pct
+    
+    def reload_values(self, candles: list[dict]):
+        """
+        Recalculate stop-loss and take-profit percentages based on the latest candle data.
 
-    def get_stop_loss(self) -> float:
+        Args:
+            candles (list[dict]): List of OHLCV candles, where last candle is the entry candle.
+        """
+        self.set_stop_loss(candles)
+        self.set_take_profit()
+        self.set_position_size()
+
+
+    def get_stop_loss(self, candles) -> float:
+        self.reload_values(candles)
         return self.stop_loss_pct
 
-    def get_take_profit(self) -> float:
+    def get_take_profit(self, candles) -> float:
+        self.reload_values(candles)
         return self.take_profit_pct
+    
+    def get_position_quantity(self, account_balance: float, candles: list[dict]) -> float:
+        """
+        Calculate position quantity based on account balance and position size settings.
 
-    def get_json(self) -> dict:  # Maybe change depending on the frontend
+        Args:
+            account_balance (float): Current account balance.
+
+        Returns:
+            float: Calculated position quantity in dollars.
+        """
+        self.reload_values(candles)
+
+        quantity = (self.position_size_pct / 100) * account_balance
+
+        return round(quantity, 2)
+
+
+    def get_json(self) -> dict:
         """
         Return a JSON-serializable dictionary representing the trade risk configuration.
         """
@@ -264,10 +253,30 @@ class TradeRiskModel:
         """
         Create a TradeRiskModel instance from a JSON dictionary.
 
+        Expected JSON structure:
+        {
+            "stop_loss": {"type": "percentage", "percentage": 1.5},
+            "take_profit": {"type": "percentage", "percentage": 3.0},
+            "position_size": {"type": "fixed", "percentage": 10.0}
+        }
+
         Args:
             json_data (dict): JSON dictionary with keys 'stop_loss', 'take_profit', and 'position_size'.
 
         Returns:
             TradeRiskModel: An instance of TradeRiskModel initialized with the provided parameters.
         """
-        pass
+        stop_loss_data = json_data.get("stop_loss", {})
+        take_profit_data = json_data.get("take_profit", {})
+        position_size_data = json_data.get("position_size", {})
+
+        print(f"Creating TradeRiskModel from JSON: {json_data}")
+
+        return cls(
+            stop_loss_type=stop_loss_data.get("type", "fixed"),
+            stop_loss_pct=stop_loss_data.get("percentage", 0.0),
+            take_profit_type=take_profit_data.get("type", "fixed"),
+            take_profit_pct=take_profit_data.get("percentage", 0.0),
+            position_size_type=position_size_data.get("type", "fixed"),
+            position_size_pct=position_size_data.get("percentage", 0.0),
+        )

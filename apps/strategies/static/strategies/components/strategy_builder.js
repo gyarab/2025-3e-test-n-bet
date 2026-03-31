@@ -46,7 +46,7 @@ class StrategyBuilder {
         this.hideBtn?.addEventListener('click', () => {
             this.conditionBuilder.clear();
             this.hide();
-            strategyNameInput.value = '';
+            this.strategyNameInput.value = '';
         });
     }
 
@@ -54,6 +54,16 @@ class StrategyBuilder {
     setupSaveForm() {
         this.saveForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (!this.checkIfCanSave()) {
+                alert('Please provide a strategy name, at least one condition, and select indicators for the conditions.');
+                return;
+            }
+
+            if (!await this.checkName()) {
+                alert('Strategy name already exists. Please choose a different name.');
+                return;
+            }
 
             const name = this.strategyNameInput.value;
             const parameters = this.conditionBuilder.getConditionsData();
@@ -89,6 +99,57 @@ class StrategyBuilder {
         });
     }
 
+    // Check if the strategy can be saved (has name, conditions, and selected indicators)
+    checkIfCanSave() {
+        const hasName = this.strategyNameInput.value.trim() !== '';
+        const hasConditions = this.conditionBuilder.conditions.length > 0;
+        let hasSelectedIndicator = false;
+
+        this.conditionBuilder.conditions.map(({ card, indicatorSelector }) => {
+            if (indicatorSelector.getSelectedIndicatorsData().length > 0) {
+                hasSelectedIndicator = true;
+                return;
+            }
+        });
+
+        if (hasName && hasConditions && hasSelectedIndicator) {
+            return true;
+        }
+        return false;
+    }
+
+    // Check if the strategy name is unique by fetching existing strategies and comparing names
+    async checkName() {
+        const name = this.strategyNameInput.value.trim();
+        
+        try {
+            const response = await fetch("/api/strategies/get/", {
+                method: "GET",
+                credentials: "same-origin",
+                headers: {
+                    "Accept": "application/json",
+                },
+            });
+
+            const data = response.json();
+
+            if (!response.ok) {
+                console.error(data.message || "Failed to fetch strategies");
+                return false;
+            }
+
+            const strategies = data.strategies || [];
+
+            console.log("Existing strategies:", strategies);
+
+            return !strategies.some(s => s.name === name);
+
+        } catch (error) {
+            console.error("Error fetching strategies:", error);
+            return false;
+        }
+    }
+
     // Initialize the ConditionBuilder component
     initConditionBuilder(conditionBuilderRoot, indicatorsData) {
         return new ConditionBuilder(
@@ -107,10 +168,17 @@ class StrategyBuilder {
         this.wrapper.classList.remove('hidden');
     }
 
-    // Triggered after successful save. Dispatches a global event.
+    // Triggered after successful save. Dispatches a global event to update the strategy list.
     onSavedSuccess() {
         const event = new CustomEvent("strategy:added", { detail: null });
         window.dispatchEvent(event);
+        this.reset();
+    }
+
+    reset() {
+        this.conditionBuilder.clear();
+        this.hide();
+        this.strategyNameInput.value = '';
     }
 }
 

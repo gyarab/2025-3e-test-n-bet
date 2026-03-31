@@ -9,13 +9,10 @@ class ConditionBuilder {
 
         this.buildUI();
         this.bindEvents();
-        
-        this.stopLossType = 'percentage';
-        this.takeProfitType = 'percentage';
-        this.positionSizeType = 'percentage';
-        this.stopLossValue = 2.5;
-        this.takeProfitValue = 5.0;
-        this.positionSizeValue = 1.0;
+
+        this.defaultTakeProfitPct = 5;
+        this.defaultStopLossPct = 2.5;
+        this.defaultPositionSizePct = 1;
     }
 
     buildUI() {
@@ -52,7 +49,7 @@ class ConditionBuilder {
     addCondition() {   
         const cardName = `Condition ${this.conditions.length + 1}`;
         const card = this.createConditionCard(cardName);
-        this.setRiskModelToggles(card);
+        this.setupRiskModel(card);
 
         this.conditionList.appendChild(card);
 
@@ -72,42 +69,72 @@ class ConditionBuilder {
         this.toggleConditionControls();
     }
 
+    setupRiskModelExpanding(card) {
+        const long_signal = card.querySelector(".long-signal");
+        const short_signal = card.querySelector(".short-signal");
+
+        function setupOpenClose(container) {
+            const expandIcon = container.querySelector(".arrow");
+            const settings = container.querySelector(".risk-model-content");
+
+            const toggleExpand = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+
+                expandIcon.classList.toggle("rotate-180");
+                expandIcon.classList.toggle("text-teal-900");
+
+                // Animate settings section
+                if (settings.classList.contains("max-h-0")) {
+                    // Expanding
+                    settings.classList.remove("max-h-0", "opacity-0");
+                    settings.classList.add("max-h-100", "opacity-100", "mt-3");
+                    settings.style.overflowY = "hidden";
+
+                    // Adding overflow auto after transition
+                    settings.addEventListener("transitionend", function handler() {
+                        settings.style.overflowY = "auto";
+                        settings.removeEventListener("transitionend", handler);
+                    });
+                } else {
+                    // Collapsing
+                    settings.classList.remove("max-h-100", "opacity-100", "mt-3");
+                    settings.classList.add("max-h-0", "opacity-0");
+                    settings.style.overflowY = "hidden";
+                }
+            };
+
+            expandIcon.addEventListener("click", toggleExpand);
+            container.querySelector("label").addEventListener("click", toggleExpand);
+        }
+
+        setupOpenClose(long_signal);
+        setupOpenClose(short_signal);
+    }
+
     // Set up risk model toggles for a condition card (hide/show % input based on type)
-    setRiskModelToggles(card) {
-        const stopLoss = card.querySelector('[data-role="stop-loss"]');
-        const takeProfit = card.querySelector('[data-role="take-profit"]');
-        const positionSize = card.querySelector('[data-role="position-size"]');
+    setupRiskModel(card) {
+        const stopLossElements = card.querySelectorAll('[data-role="stop-loss"]');
+        const takeProfitElements = card.querySelectorAll('[data-role="take-profit"]');
+        const positionSizeElements = card.querySelectorAll('[data-role="position-size"]');
 
-        const stopLossType = stopLoss.querySelector('select');
-        const stopLossPct = stopLoss.querySelector('input');
+        // Helper function to attach toggle behavior
+        function setupToggle(container) {
+            const selectEl = container.querySelector('select');
+            const inputEl = container.querySelector('input');
 
-        const takeProfitType = takeProfit.querySelector('select');
-        const takeProfitPct = takeProfit.querySelector('input');
+            inputEl.parentElement.style.display = selectEl.value === 'relative' ? 'none' : 'block';
 
-        const positionSizeType = positionSize.querySelector('select');
-        const positionSizePct = positionSize.querySelector('input');
+            selectEl.addEventListener('change', () => {
+                inputEl.parentElement.style.display = selectEl.value === 'relative' ? 'none' : 'block';
+            });
+        }
 
-        stopLossPct.parentElement.style.display = stopLossType.value === 'relative' ? 'none' : 'block';
-        takeProfitPct.parentElement.style.display = takeProfitType.value === 'relative' ? 'none' : 'block';
-        positionSizePct.parentElement.style.display = positionSizeType.value === 'relative' ? 'none' : 'block';
+        stopLossElements.forEach(setupToggle);
+        takeProfitElements.forEach(setupToggle);
+        positionSizeElements.forEach(setupToggle);
 
-        stopLossType.addEventListener('change', () => {
-            stopLossPct.parentElement.style.display = stopLossType.value === 'relative' ? 'none' : 'block';
-            this.stopLossType = stopLossType.value;
-            this.stopLossValue = parseFloat(stopLossPct.value);
-        });
-
-        takeProfitType.addEventListener('change', () => {
-            takeProfitPct.parentElement.style.display = takeProfitType.value === 'relative' ? 'none' : 'block';
-            this.takeProfitType = takeProfitType.value;
-            this.takeProfitValue = parseFloat(takeProfitPct.value);
-        });
-
-        positionSizeType.addEventListener('change', () => {
-            positionSizePct.parentElement.style.display = positionSizeType.value === 'relative' ? 'none' : 'block';
-            this.positionSizeType = positionSizeType.value;
-            this.positionSizeValue = parseFloat(positionSizePct.value);
-        });
+        this.setupRiskModelExpanding(card);
     }
 
     // Remove a condition card
@@ -153,28 +180,37 @@ class ConditionBuilder {
         this.toggleConditionControls();
     }
 
-    // Get action (buy/sell) data for a condition
-    getActionData() {
-        const signalType = this.wrapper.querySelector('.signal-select').value;
+    // Get action (buy/sell) signal model data for a condition
+    getActionData(card) {
+        const longSignalEl = card.querySelector(".long-signal");
+        const shortSignalEl = card.querySelector(".short-signal");
 
-        const settings = {
-            stop_loss: {
-                type: this.stopLossType,
-                percentage: this.stopLossValue
-            },
-            take_profit: {
-                type: this.takeProfitType,
-                percentage: this.takeProfitValue
-            },
-            position_size: {
-                type: this.positionSizeType,
-                percentage: this.positionSizeValue
+        const extractSettings = (signalEl) => {
+            return {
+                stop_loss: {
+                    type: signalEl.querySelector('[data-role="stop-loss"] select').value,
+                    percentage: signalEl.querySelector('[data-role="stop-loss"] input').value || this.defaultStopLossPct
+                },
+                take_profit: {
+                    type: signalEl.querySelector('[data-role="take-profit"] select').value,
+                    percentage: signalEl.querySelector('[data-role="take-profit"] input').value || this.defaultTakeProfitPct
+                },
+                position_size: {
+                    type: signalEl.querySelector('[data-role="position-size"] select').value,
+                    percentage: signalEl.querySelector('[data-role="position-size"] input').value || this.defaultPositionSizePct
+                }
             }
-        }
+        };
+        
+        const buy_settings = extractSettings(longSignalEl);
+        const short_settings = extractSettings(shortSignalEl);
+
+        console.log("Buy settings:", buy_settings);
+        console.log("Short settings:", short_settings);
 
         return {
-            buy_signal: signalType == "LONG" ? settings : null,
-            short_signal: signalType == "SHORT" ? settings : null,
+            buy_signal: buy_settings ? buy_settings : null,
+            short_signal: short_settings ? short_settings : null,
         };
     }
 
@@ -182,13 +218,16 @@ class ConditionBuilder {
     getConditionsData() {
         const conditionsArray = [];
 
-        this.conditions.map(({ indicatorSelector }) => {
+        this.conditions.map(({ card, indicatorSelector }) => {
+            if (indicatorSelector.getSelectedIndicatorsData().length === 0) {
+                return;
+            }
             conditionsArray.push({
                 signal_models: {
                     indicators: indicatorSelector.getSelectedIndicatorsData(),
                     prediction_models: [] // Future feature
                 },
-                action: this.getActionData(),
+                action: this.getActionData(card),
             });  
         });
 

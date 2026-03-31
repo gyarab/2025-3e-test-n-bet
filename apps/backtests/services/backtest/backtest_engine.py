@@ -4,8 +4,6 @@ from apps.strategies.services.core.strategy_engine import StrategyEngine
 
 
 class BacktestEngine:
-    # Finish implementing backtest class
-
     def __init__(
         self,
         strategy: StrategyEngine,
@@ -49,14 +47,14 @@ class BacktestEngine:
 
             if signal != "HOLD" and signal != self.previous_signal:
                 # Get stop loss and take profit from risk model
-                stop_loss = self.trade_risk_model.get_stop_loss()
+                stop_loss = self.trade_risk_model.get_stop_loss(candles=current_candles)
                 take_profit = (
-                    self.trade_risk_model.get_take_profit()
+                    self.trade_risk_model.get_take_profit(candles=current_candles)
                 )  # TODO: make take_profit dynamic based on strategy calling "CLOSE" and not only the risk model
 
                 # Calculate position quantity
                 quantity = self.trade_risk_model.get_position_quantity(
-                    self.current_balance
+                    self.current_balance, candles=current_candles
                 )
 
                 # Create and execute trade

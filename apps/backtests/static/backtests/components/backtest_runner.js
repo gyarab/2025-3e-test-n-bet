@@ -127,7 +127,7 @@ export default class BacktestRunner {
             this.lastUsedParams = {
                 strategy_id: strategy_id,
                 initial_capital: initial_balance,
-                asset_id: token,
+                token_symbol: token,
                 timeframe: timeframe,  
                 candle_amount: candle_amount
             };
@@ -181,7 +181,7 @@ export default class BacktestRunner {
 
         const payload = {
             strategy_id: this.lastUsedParams.strategy_id,
-            asset_id: this.lastUsedParams.asset_id,
+            token_symbol: this.lastUsedParams.token_symbol,
             initial_capital: this.lastUsedParams.initial_capital,
             position_size: this.lastUsedParams.position_size,
             timeframe: this.lastUsedParams.timeframe,

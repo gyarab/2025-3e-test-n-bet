@@ -27,6 +27,7 @@ function initStrategyList() {
     const strategyListRoot = document.getElementById('strategy-list-root');
     if (strategyListRoot) {
         const strategiesData = JSON.parse(document.getElementById('strategies-data').textContent);
+        console.log("Loaded strategies data:", strategiesData);
         new StrategyList(strategyListRoot, strategiesData);
     }
 }

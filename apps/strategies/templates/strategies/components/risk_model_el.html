@@ -1,0 +1,52 @@
+<div class="{{ class_name }} bg-gray-50 border border-gray-200 rounded-lg p-4 m-2">
+    <div class="flex w-full items-center space-x-3">
+        <label class="block {{ label_color }} font-semibold">{{ label }}</label>
+        <button class="left arrow">
+            <svg class="w-4 h-4 left text-teal-700 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="risk-model-content grid grid-cols-2 gap-3 max-h-0 opacity-0 overflow-hidden transform opacity-0 scale-80 max-h-0 transition-all duration-500 ease-out">
+        <div data-role="stop-loss" class="flex flex-col space-y-2 stop-loss-pair border border-gray-200 rounded px-3 py-2 bg-transparent shadow-sm">   
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Stop Loss Type:</label>
+                <select class="w-full border border-gray-300 rounded px-2 py-1">
+                    <option value="fixed">Fixed</option>
+                    <option value="relative">Relative</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Stop Loss %:</label>
+                <input type="number" step="0.01" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 2.5" default="2.5">
+            </div>
+        </div>
+        <div data-role="take-profit" class="flex flex-col space-y-2 take-profit-pair border border-gray-200 rounded px-3 py-2 bg-transparent shadow-sm">
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1"">Take Profit Type:</label>
+                <select class="w-full border border-gray-300 rounded px-2 py-1">
+                    <option value="fixed">Fixed</option>
+                    <option value="relative">Relative</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Take Profit %:</label>
+                <input type="number" step="0.01" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 5" default="5">
+            </div>
+        </div>
+        <div data-role="position-size" class="flex grid col-span-2 grid-cols-2 gap-10 position-size-pair border border-gray-200 rounded px-3 py-2 bg-transparent shadow-sm"> 
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Position Size Type:</label>
+                <select class="w-full border border-gray-300 rounded px-2 py-1">
+                    <option value="fixed">Fixed</option>
+                    <option value="relative">Relative</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Position Size %:</label>
+                <input type="number" step="0.01" class="w-full border border-gray-300 rounded px-2 py-1" placeholder="e.g. 1" default="1">
+            </div>
+        </div>
+    </div>
+</div>

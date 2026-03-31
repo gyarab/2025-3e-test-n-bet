@@ -124,9 +124,20 @@ def save_backtest_view(request):
 
         token_symbol = data.get("token_symbol")
 
+        if (token_symbol.endswith("USDT")):
+            token_symbol = token_symbol[:-4]
+
         asset_obj, created = Asset.objects.get_or_create(
             symbol=token_symbol, defaults={"name": token_symbol}
         )
+
+        strategy_id = data.get("strategy_id")
+        if not Strategy.objects.filter(id=strategy_id).exists():
+            return JsonResponse(
+                {"status": "error", "message": "Strategy not found"}, status=404
+            )
+        else:
+            strategy_obj = Strategy.objects.get(id=strategy_id)
 
         new_result = {
             "initial_balance": data.get("initial_capital"),
@@ -140,7 +151,7 @@ def save_backtest_view(request):
 
         backtest = Backtest.objects.create(
             user=request.user,
-            strategy=data.get("strategy_id"),
+            strategy=strategy_obj,
             asset=asset_obj,
             timeframe=data.get("timeframe"),
             start_date=data.get("start_date"),

@@ -1,5 +1,6 @@
 import Indicator from "./indicator.js";
 
+// Class representing a strategy card in the strategy list; displays strategy details and allows deletion
 class StrategyCard {
     constructor(root, strategy) {
         this.root = root;
@@ -145,13 +146,19 @@ class StrategyCard {
     // Setup event listeners for the card
     setupEvents() {
         const deleteButton = this.card.querySelectorAll('.delete-button');
-
+ 
+ 
         deleteButton.forEach(button => {
-            button.addEventListener('click', async (e) => {
-                if (confirm('Are you sure you want to delete this strategy?')) {
-                    this.delete();
-                }
-            });
+            if (this.strategy.creator_id == null) {
+                button.classList.add('hidden');
+            }
+            else {
+                button.addEventListener('click', async (e) => {
+                    if (confirm('Are you sure you want to delete this strategy?')) {
+                        this.delete();
+                    }
+                });
+            }
         });
     }
 

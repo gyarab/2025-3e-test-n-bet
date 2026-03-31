@@ -159,10 +159,15 @@ def get_hot_coins(
             market = exchange.markets[ticker]
             spot_url = None
 
+            if not market.get("active", False):
+                continue
+
             if "spot" in market and market["spot"]:
                 base = market["base"] if "base" in market else "BTC"
                 quote = market["quote"] if "quote" in market else "USDT"
                 spot_url = f"https://www.binance.com/en/trade/{base}_{quote}?type=spot"
+            else:
+                continue
 
             if (only_positive and value["percentage"] >= threshold_change) or (
                 not only_positive and value["percentage"] <= -threshold_change

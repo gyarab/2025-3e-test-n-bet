@@ -109,8 +109,8 @@ class TradeEngine:
         return {
             "entry_price": self.entry_price,
             "exit_price": self.exit_price if not self.status else None,
-            "entry_time": self.candles[0]["time"],
-            "exit_time": self.candles[-1]["time"] if not self.status else None,
+            "entry_time": self.candles[0]["open_time"],
+            "exit_time": self.candles[-1]["open_time"] if not self.status else None,
             "quantity": self.quantity,
             "trade_type": 1 if self.trade_type else 0, # 1 for buy, 0 for sell
             "stop_loss": self.stop_loss,
