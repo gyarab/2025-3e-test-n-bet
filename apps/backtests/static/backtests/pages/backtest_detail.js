@@ -1,4 +1,4 @@
-import BacktestDetail from "../components/backtest_detail";
+import BacktestDetail from "../components/backtest_detail.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     initBacktestDetail();
@@ -7,12 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
 function initBacktestDetail() {
     const backtestData = JSON.parse(document.getElementById('backtest-data').textContent);
 
-    if (!backtestData || !Array.isArray(backtestData)) {
+    console.log("Received backtest data:", backtestData);
+
+    if (!backtestData) {
         console.error("Invalid or missing strategies data");
         return;
     }
 
     const root = document.getElementById("backtest-detail");
 
-    const backtestDetail = BacktestDetail(root, backtestData);
+    const backtestDetail = new BacktestDetail(root, backtestData);
 }

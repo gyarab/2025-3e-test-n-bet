@@ -24,7 +24,7 @@
         <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition">
             <div class="text-gray-500 text-sm mb-1">Initial Balance</div>
             <div class="text-xl font-bold text-gray-800">
-                {{ backtest.result.initial_balance }}
+                {{ backtest.initial_capital }}
             </div>
         </div>
 
@@ -65,7 +65,6 @@
     </div>
 
 
-    <!-- STRATEGY PARAMETERS -->
     <div class="bg-gray-50 p-6 rounded-2xl border">
 
         <h3 class="font-semibold text-lg mb-5 text-gray-800">
@@ -85,7 +84,7 @@
                     </div>
 
                     {% if param.action.buy_signal %}
-                    <div class="ml-4 text-sm space-y-1">
+                    <div class="ml-4 text-sm space-y-1 mb-2">
 
                         <div class="font-medium text-green-600">
                             BUY Signal
@@ -95,17 +94,21 @@
                             <li>
                                 Stop Loss:
                                 {{ param.action.buy_signal.stop_loss.type }}
+                                -
                                 {{ param.action.buy_signal.stop_loss.percentage }}%
                             </li>
 
                             <li>
                                 Take Profit:
                                 {{ param.action.buy_signal.take_profit.type }}
+                                -
                                 {{ param.action.buy_signal.take_profit.percentage }}%
                             </li>
 
                             <li>
                                 Position Size:
+                                {{ param.action.buy_signal.position_size.type }}
+                                -
                                 {{ param.action.buy_signal.position_size.percentage }}%
                             </li>
                         </ul>
@@ -114,28 +117,34 @@
                     {% endif %}
 
                     {% if param.action.short_signal %}
-                    <div class="ml-4 text-red-500 text-sm mt-2">
-                        SHORT Signal: {{ param.action.short_signal }}
+                    <div class="ml-4 text-sm space-y-1">
+                        <div class="font-medium text-red-600">
+                            SHORT Signal
+                        </div>
+
+                        <ul class="list-disc ml-5 text-gray-600 space-y-1">
+                            <li>
+                                Stop Loss:
+                                {{ param.action.short_signal.stop_loss.type }}
+                                -
+                                {{ param.action.short_signal.stop_loss.percentage }}%
+                            </li>
+
+                            <li>
+                                Take Profit:
+                                {{ param.action.short_signal.take_profit.type }}
+                                -
+                                {{ param.action.short_signal.take_profit.percentage }}%
+                            </li>
+
+                            <li>
+                                Position Size:
+                                {{ param.action.short_signal.position_size.type }}
+                                -
+                                {{ param.action.short_signal.position_size.percentage }}%
+                            </li>
+                        </ul>
                     </div>
-
-                    <ul class="list-disc ml-5 text-gray-600 space-y-1">
-                        <li>
-                            Stop Loss:
-                            {{ param.action.short_signal.stop_loss.type }}
-                            {{ param.action.short_signal.stop_loss.percentage }}%
-                        </li>
-
-                        <li>
-                            Take Profit:
-                            {{ param.action.short_signal.take_profit.type }}
-                            {{ param.action.short_signal.take_profit.percentage }}%
-                        </li>
-
-                        <li>
-                            Position Size:
-                            {{ param.action.short_signal.position_size.percentage }}%
-                        </li>
-                    </ul>
                     {% endif %}
 
                 </div>
@@ -227,8 +236,6 @@
 
     {% include "backtests/components/backtest_graph.html" %}
 
-
-    <!-- TRADES TABLE -->
     <div class="bg-gray-50 p-6 rounded-2xl border">
 
         <div class="flex justify-between items-center cursor-pointer"

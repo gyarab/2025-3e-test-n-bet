@@ -1,5 +1,4 @@
 <div class="bg-white rounded-2xl shadow-lg p-6">
-
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold flex items-center gap-2">
             <span class="w-2 h-6 bg-teal-500 rounded"></span>
@@ -13,7 +12,6 @@
         </a>
         {% endif %}
     </div>
-
 
     {% if not user.is_authenticated %}
         <div class="text-center py-8">
@@ -36,8 +34,6 @@
     {% else %}
         <div class="overflow-x-auto rounded-xl border border-gray-100">
             <table class="w-full text-sm">
-
-                <!-- Header -->
                 <thead class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
                     <tr>
                         <th class="px-4 py-3 text-left">Token</th>
@@ -52,18 +48,17 @@
                     </tr>
                 </thead>
 
-                <!-- Body -->
                 <tbody class="divide-y">
                     {% for backtest in recent_backtests %}
-                    <tr class="hover:bg-gray-50 cursor-pointer transition"
-                        onclick="window.location.href='/backtests/{{ backtest.id }}/'">
+                    <tr class="row-link cursor-pointer"
+                        data-url="{% url 'backtests:detail' backtest_id=backtest.id %}">
                         <td class="px-4 py-3 font-medium">
                             <span class="bg-gray-100 px-2 py-1 rounded-md text-xs">
                                 {{ backtest.asset.symbol }}
                             </span>
                         </td>
                         <td class="px-4 py-3 text-gray-600">
-                            {{ backtest.result.timeframe }}
+                            {{ backtest.timeframe }}
                         </td>
                         <td class="px-4 py-3 text-gray-700">
                             {{ backtest.result.initial_balance|floatformat:2 }}
@@ -100,4 +95,12 @@
         </div>
     {% endif %}
 
+    <script>
+        document.querySelectorAll(".row-link").forEach(row => {
+            row.addEventListener("click", () => {
+                window.location.href = row.dataset.url;
+            });
+        });
+    </script>
 </div>
+

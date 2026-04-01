@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import logging
 
+from apps.backtests.models import Asset
+
 logger = logging.getLogger(__name__)
 
 
@@ -45,11 +47,22 @@ def get_hot_tokens(request):
         )
 
 @require_http_methods(["POST"])
-def get_candles(request):
+def get_candles(request, token_id: int):
     """
     API endpoint to retrieve candle data for a specific token.
-    Expects a JSON payload with parameters
+    Expects a JSON payload with parameters:
+    {
+        "interval": str (optional, default="1h"),
+        "candle_amount": int (optional, default=100),
+        "start_date": str (optional, ISO format date string)
+    }
     """
+
+    token = Asset.objects.filter(id=token_id).first()
+    if not token:
+        return JsonResponse(
+            {"status": "error", "message": "Token not found"}, status=404
+        )
 
     # Limit payload size to 1MB
     if len(request.body) > 1024 * 1024:
@@ -61,16 +74,27 @@ def get_candles(request):
         from apps.market.services import get_binance_ohlcv_and_timestamp
 
         payload = json.loads(request.body) if request.body else {}
-        token = payload.get("token")
+        token = token.symbol
+
         interval = payload.get("interval", "1h")
         candle_amount = payload.get("candle_amount", 100)
-        
+        start_date = payload.get("start_date")
+
         if not token:
             return JsonResponse(
                 {"status": "error", "message": "token is required"}, status=400
             )
+        
+        if start_date:
+            from datetime import datetime
+            try:
+                start_date = datetime.fromisoformat(start_date)
+            except ValueError:
+                return JsonResponse(
+                    {"status": "error", "message": "Invalid start_date format"}, status=400
+                )
 
-        candles = get_binance_ohlcv_and_timestamp(token, interval, candle_amount)
+        candles = get_binance_ohlcv_and_timestamp(token, interval, candle_amount, start_date=start_date)
 
         return JsonResponse({"status": "success", "candles": candles}, status=200)
     except Exception as err:

@@ -31,6 +31,9 @@ def backtest_detail(request, backtest_id: int):
     if backtest:
         serialized_backtest = serialize_backtest(backtest)
 
+    if not serialized_backtest:
+        return render(request, "backtests/pages/backtest_not_found.html")
+
     return render(
         request,
         "backtests/pages/backtest_detail.html",

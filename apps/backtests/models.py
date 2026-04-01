@@ -17,12 +17,9 @@ class Backtest(models.Model):
     strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE)
     asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
     timeframe = models.CharField(max_length=20, null=True, blank=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField(null=True, blank=True)
     initial_capital = models.DecimalField(max_digits=15, decimal_places=2)
-    position_size = models.DecimalField(
-        max_digits=15, decimal_places=8, null=True, blank=True
-    )
     candles_amount = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(null=True, blank=True, auto_now_add=True)
     result = models.JSONField(null=True, blank=True)

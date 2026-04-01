@@ -104,7 +104,6 @@ def save_backtest_view(request):
         "start_date": str (ISO format),
         "end_date": str (ISO format),
         "initial_capital": float,
-        "position_size": float,
         "candles_amount": int,
         "created_at": str (ISO format),
         "result": dict (Results from backtest run api)
@@ -123,7 +122,6 @@ def save_backtest_view(request):
             data = data[0]
 
         token_symbol = data.get("token_symbol")
-
         if (token_symbol.endswith("USDT")):
             token_symbol = token_symbol[:-4]
 
@@ -139,8 +137,56 @@ def save_backtest_view(request):
         else:
             strategy_obj = Strategy.objects.get(id=strategy_id)
 
-        new_result = {
-            "initial_balance": data.get("initial_capital"),
+        start_date = data.get("start_date")
+        end_date = data.get("end_date")
+        created_at = data.get("created_at")
+
+        if start_date and end_date and created_at:
+            from datetime import datetime
+            try:
+                start_date = datetime.fromisoformat(start_date)
+                end_date = datetime.fromisoformat(end_date)
+                created_at = datetime.fromisoformat(created_at)
+            except ValueError:
+                return JsonResponse(
+                    {"status": "error", "message": "Invalid time formats"}, status=400
+                )
+        else:
+            return JsonResponse(
+                {"status": "error", "message": "start_date, end_date and created_at are required"}, status=400
+            )
+            
+        candles_amount = data.get("candles_amount")
+        if candles_amount:
+            try:
+                candles_amount = int(candles_amount)
+            except ValueError:
+                return JsonResponse(
+                    {"status": "error", "message": "Invalid candles_amount"}, status=400
+                )
+        else: 
+            return JsonResponse(
+                {"status": "error", "message": "candles_amount is required"}, status=400
+            )
+        
+        timeframe = data.get("timeframe")
+        if timeframe:
+            if timeframe not in ["1m", "5m", "15m", "30m", "1h", "4h", "1d"]:
+                return JsonResponse(
+                    {"status": "error", "message": "Invalid timeframe"}, status=400
+                )
+        else:
+            return JsonResponse(
+                {"status": "error", "message": "timeframe is required"}, status=400
+            )
+        
+        initial_capital = data.get("initial_capital")
+        if initial_capital is None:
+            return JsonResponse(
+                {"status": "error", "message": "initial_capital is required"}, status=400
+            )
+
+        backtest_result = {
             "final_balance": data.get("result", {}).get("final_balance"),
             "profit_loss": data.get("result", {}).get("profit_loss"),
             "total_trades": data.get("result", {}).get("total_trades"),
@@ -153,14 +199,13 @@ def save_backtest_view(request):
             user=request.user,
             strategy=strategy_obj,
             asset=asset_obj,
-            timeframe=data.get("timeframe"),
-            start_date=data.get("start_date"),
-            end_date=data.get("end_date"),
-            initial_capital=data.get("initial_capital"),
-            position_size=data.get("position_size"),
-            candles_amount=data.get("candles_amount"),
-            created_at=data.get("created_at"),
-            result=new_result,
+            timeframe=timeframe,
+            start_date=start_date,
+            end_date=end_date,
+            initial_capital=initial_capital,
+            candles_amount=candles_amount,
+            created_at=created_at,
+            result=backtest_result,
         )
 
         trades = [
@@ -231,7 +276,6 @@ def get_user_backtest(request):
                 "start_date": b.start_date.isoformat() if b.start_date else None,
                 "end_date": b.end_date.isoformat() if b.end_date else None,
                 "initial_capital": b.initial_capital,
-                "position_size": b.position_size,
                 "created_at": b.created_at.isoformat() if b.created_at else None,
                 "trades": [
                     {

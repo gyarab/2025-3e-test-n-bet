@@ -4,5 +4,5 @@ from .views import get_candles
 
 urlpatterns = [
     urls.path("hot-tokens/", get_hot_tokens, name="hot-tokens"),
-    urls.path("<str:token_id>", get_candles, name="token-candles"),
+    urls.path("get-candles/<int:token_id>", get_candles, name="token-candles"),
 ]

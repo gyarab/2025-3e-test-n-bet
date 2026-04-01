@@ -15,6 +15,7 @@ export default class BacktestDetail {
 
     parseData(backtestData) {
         this.token = backtestData.asset.name;
+        this.token_id = backtestData.asset.id;
         this.timeframe = backtestData.timeframe;
         this.start_date = backtestData.start_date;
         this.end_date = backtestData.end_date;
@@ -24,7 +25,7 @@ export default class BacktestDetail {
 
     generateGraph(root) {
         if (root) {
-            this.graph = new BacktestGraph(root, this.token, this.timeframe, this.candles_amount);
+            this.graph = new BacktestGraph(root, this.token_id, this.timeframe, this.candles_amount, this.start_date, this.end_date, this.trades);
         }
     }
 }

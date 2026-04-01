@@ -183,10 +183,11 @@ export default class BacktestRunner {
             strategy_id: this.lastUsedParams.strategy_id,
             token_symbol: this.lastUsedParams.token_symbol,
             initial_capital: this.lastUsedParams.initial_capital,
-            position_size: this.lastUsedParams.position_size,
             timeframe: this.lastUsedParams.timeframe,
-            start_date: this.lastBacktestData.start_date || new Date().toISOString().split('T')[0], 
-            end_date: this.lastBacktestData.end_date || new Date().toISOString().split('T')[0],
+            start_date: this.lastBacktestData.start_date || new Date().toISOString(), 
+            end_date: this.lastBacktestData.end_date || new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            candles_amount: this.lastUsedParams.candle_amount,
             result: this.lastBacktestData
         };
 
