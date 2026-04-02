@@ -102,3 +102,62 @@ def get_candles(request, token_id: int):
         return JsonResponse(
             {"status": "error", "message": f"Error: {str(err)}"}, status=500
         )
+    
+
+@require_http_methods(["POST"])
+def get_candles_in_range(request, token_id: int):
+    """
+    API endpoint to retrieve candle data for a specific token within a date range.
+    Expects a JSON payload with parameters:
+    {
+        "interval": str (optional, default="1h"),
+        "start_date": str (required, ISO format date string),
+        "end_date": str (required, ISO format date string)
+    }
+    """
+
+    token = Asset.objects.filter(id=token_id).first()
+    if not token:
+        return JsonResponse(
+            {"status": "error", "message": "Token not found"}, status=404
+        )
+
+    # Limit payload size to 1MB
+    if len(request.body) > 1024 * 1024:
+        return JsonResponse(
+            {"status": "error", "message": "Payload too large"}, status=413
+        )
+    
+    try:
+        from apps.market.services import get_binance_ohlcv_and_timestamp_range
+
+        payload = json.loads(request.body) if request.body else {}
+        token = token.symbol
+
+        interval = payload.get("interval", "1h")
+        start_date = payload.get("start_date")
+        end_date = payload.get("end_date")
+
+        if not token:
+            return JsonResponse(
+                {"status": "error", "message": "token is required"}, status=400
+            )
+        
+        if start_date and end_date:
+            from datetime import datetime
+            try:
+                start_date = datetime.fromisoformat(start_date)
+                end_date = datetime.fromisoformat(end_date)
+            except ValueError:
+                return JsonResponse(
+                    {"status": "error", "message": "Invalid date time formats. ISO style is required."}, status=400
+                )
+
+        candles = get_binance_ohlcv_and_timestamp_range(token, interval, start_date=start_date, end_date=end_date)
+
+        return JsonResponse({"status": "success", "candles": candles}, status=200)
+    except Exception as err:
+        logger.error(f"Error retrieving candle data: {err}", exc_info=True)
+        return JsonResponse(
+            {"status": "error", "message": f"Error: {str(err)}"}, status=500
+        )

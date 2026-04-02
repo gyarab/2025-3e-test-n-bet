@@ -15,29 +15,25 @@ export default class BacktestGraph {
         this.end_date = end_date;
         this.trades = trades;
 
-        console.log("Initializing BacktestGraph with:", {
-            token_id,
-            timeframe,
-            candleAmount,
-            start_date,
-            end_date,
-            trades
-        });
-
-        this.getCandles(token_id, timeframe, candleAmount, start_date)
+        this.getCandles()
             .then(() => this.init())
             .catch(error => console.error("Error fetching candles:", error));
     }
     
     // Initialize the chart and plot candles
     init() {
-        console.log("Initializing chart with candles:", this.candles);
         this.chart = createChart(this.wrapper, {
             width: this.wrapper.clientWidth,
             height: this.wrapper.clientHeight,
         });
 
-        console.log(this.chart);
+        this.chart.applyOptions({
+            timeScale: {
+                visible: true,
+                timeVisible: true,
+                secondsVisible: false,
+            },
+        });
         
         this.candlestickSeries = this.chart.addSeries(CandlestickSeries);   
 
@@ -58,8 +54,7 @@ export default class BacktestGraph {
 
     // Set markers for trades on the chart
     setMarkers() {
-        const markers = this.trades.map(t => (
-            console.log ("Processing trade for marker:", t.entry_time),{
+        const markers = this.trades.map(t => ({
             time: Math.floor(new Date(t.entry_time).getTime() / 1000),
             position: t.trade_type === '1' ? "belowBar" : "aboveBar",
             color: t.trade_type === '1' ? "green" : "red",
@@ -102,7 +97,7 @@ export default class BacktestGraph {
 
     // Fetch candles from the API based on the provided parameters
     getCandles() {
-        return fetch("/api/market/get-candles/" + this.token_id, {
+        return fetch("/api/market/get-candles-in-range/" + this.token_id, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -110,8 +105,8 @@ export default class BacktestGraph {
             },
             body: JSON.stringify({
                 interval: this.timeframe,
-                candle_amount: this.candleAmount,
-                start_date: this.start_date
+                start_date: this.start_date,
+                end_date: this.end_date,
             })
         })
         .then(response => response.json())

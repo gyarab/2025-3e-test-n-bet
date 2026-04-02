@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function initBacktestDetail() {
     const backtestData = JSON.parse(document.getElementById('backtest-data').textContent);
 
-    console.log("Received backtest data:", backtestData);
-
     if (!backtestData) {
         console.error("Invalid or missing strategies data");
         return;
@@ -16,5 +14,13 @@ function initBacktestDetail() {
 
     const root = document.getElementById("backtest-detail");
 
+    if (!root) {
+        console.error("BacktestDetail root element not found");
+        return;
+    }
+
     const backtestDetail = new BacktestDetail(root, backtestData);
 }
+
+
+            

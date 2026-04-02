@@ -96,6 +96,35 @@ def get_binance_ohlcv_range(coin: str, interval: str, start_date: str, end_date:
     Returns:
         list: List of OHLCV data points within the specified date range
     """
+    ohlcv_and_time = get_binance_ohlcv_and_timestamp_range(coin, interval, start_date=start_date, end_date=end_date)
+    if not ohlcv_and_time:
+        return None
+
+    return [
+        {
+            "open": candle["open"],
+            "close": candle["close"],
+            "high": candle["high"],
+            "low": candle["low"],
+            "volume": candle["volume"],
+        }
+        for candle in ohlcv_and_time
+    ]
+
+
+def get_binance_ohlcv_and_timestamp_range(coin: str, interval: str, start_date: str, end_date: str):
+    """
+    Get OHLCV data with timestamps for a coin and interval from Binance using CCXT within a specified date range.
+    
+    Args:
+        coin (str): Symbol, e.g., 'BTC/USDT'
+        interval (str): Time interval, e.g., '1h', '1d'
+        start_date (str): Start date in ISO format, e.g., '2023-01-01T00:00:00Z'
+        end_date (str): End date in ISO format, e.g., '2023-01-31T23:59:59Z'
+
+    Returns:
+        list: List of OHLCV data points with timestamps within the specified date range
+    """
     coin = format_coin_symbol(coin)
 
     since = int(start_date.timestamp() * 1000)
@@ -118,8 +147,24 @@ def get_binance_ohlcv_range(coin: str, interval: str, start_date: str, end_date:
 
         since = ohlcv[-1][0] + 1  # move forward
 
-    return all_candles
+    formatted_candles = []
 
+    for candle in all_candles:
+        formatted_candles.append(
+            {
+                "open_time": datetime.fromtimestamp(candle[0] / 1000),
+                "close_time": datetime.fromtimestamp(
+                    candle[0] / 1000 + exchange.parse_timeframe(interval) * 1000
+                ),
+                "open": candle[1],
+                "high": candle[2],
+                "low": candle[3],
+                "close": candle[4],
+                "volume": candle[5],
+            }
+        )
+
+    return formatted_candles
 
 def format_coin_symbol(coin: str):
     """

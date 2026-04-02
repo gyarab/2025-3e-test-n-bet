@@ -236,10 +236,9 @@
 
     {% include "backtests/components/backtest_graph.html" %}
 
-    <div class="bg-gray-50 p-6 rounded-2xl border">
+    <div class="trades-table bg-gray-50 p-6 rounded-2xl border">
 
-        <div class="flex justify-between items-center cursor-pointer"
-             onclick="toggleTrades()">
+        <div class="trades-bar flex justify-between items-center cursor-pointer">
 
             <h3 class="font-semibold text-lg text-gray-800">
                 Trades
@@ -251,8 +250,7 @@
 
         </div>
 
-
-        <div id="trades-container" class="hidden mt-6">
+        <div class="trades-container overflow-hidden transform opacity-0 scale-80 max-h-0 transition-all duration-500 ease-out">
 
             <div class="overflow-x-auto">
 
@@ -340,11 +338,3 @@
         </div>
     </div>
 </div>
-
-
-<script>
-function toggleTrades() {
-    const el = document.getElementById("trades-container");
-    el.classList.toggle("hidden");
-}
-</script>
