@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from apps.strategies.services.core.strategy_engine import StrategyEngine
 from apps.strategies.models import Strategy
 from apps.market.services import get_binance_ohlcv_and_timestamp
+from apps.market.services import calculate_start_and_end_dates
 from apps.backtests.models import Backtest
 from apps.backtests.services.backtest.backtest_engine import BacktestEngine
 from ccxt.base.errors import RequestTimeout
@@ -53,6 +54,8 @@ def run_backtest(
 
     current_balance, self_trades = backtest.run()
 
+    start_date, end_date = calculate_start_and_end_dates(candles)
+
     return {
         "initial_balance": initial_balance,
         "final_balance": current_balance,
@@ -60,6 +63,8 @@ def run_backtest(
         "token": token,
         "timeframe": timeframe,
         "total_trades": len(self_trades),
+        "start_date": start_date,
+        "end_date": end_date,
         "total_wins": len(
             [
                 trade
@@ -79,7 +84,6 @@ def run_backtest(
         ),
         "trades": [trade.get_json() for trade in self_trades],
     }
-
 
 def get_backtest(user, id: int) -> Optional[Backtest]:
     if not user.is_authenticated:

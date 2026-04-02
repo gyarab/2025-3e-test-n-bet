@@ -1,5 +1,9 @@
-<div id="chart" style="height:500px;" class="trades-graph">
-        
+<div id="chart-wrapper" class="relative w-full h-[500px]">
+    <div id="chart" class="w-full h-full"></div>
+
+    <div id="tooltip"
+         class="hidden absolute z-50 bg-neutral-900 text-white text-xs p-2 rounded-md pointer-events-none">
+    </div>
 </div>
 
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>

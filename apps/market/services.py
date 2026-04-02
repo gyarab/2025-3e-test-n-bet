@@ -137,6 +137,25 @@ def format_coin_symbol(coin: str):
     return coin.upper() if "/" in coin else f"{coin.upper()[:-4]}/USDT"
 
 
+def calculate_start_and_end_dates(candles: list[dict]):
+    """
+    Calculate the start and end dates from a list of candles.
+
+    Args:
+        candles (list[dict]): List of candles, each containing 'open_time' and 'close_time' keys.
+
+    Returns:
+        tuple: A tuple containing the start date and end date as datetime objects.
+    """
+    if not candles:
+        return None, None
+
+    start_date = min(candle["open_time"] for candle in candles)
+    end_date = max(candle["close_time"] for candle in candles)
+
+    return start_date, end_date
+
+
 def get_live_binance_price(coin: str):
     """
     Get the current price of a coin from Binance using CCXT.

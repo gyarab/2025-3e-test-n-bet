@@ -158,6 +158,8 @@ export default class BacktestRunner {
             .then(data => {
                 this.lastBacktestData = data.result;
 
+                console.log("Received backtest result:", data.result);
+
                 // Display results 
                 this.backtestResults.buildUI(data.result);
 
@@ -184,8 +186,8 @@ export default class BacktestRunner {
             token_symbol: this.lastUsedParams.token_symbol,
             initial_capital: this.lastUsedParams.initial_capital,
             timeframe: this.lastUsedParams.timeframe,
-            start_date: this.lastBacktestData.start_date || new Date().toISOString(), 
-            end_date: this.lastBacktestData.end_date || new Date().toISOString(),
+            start_date: this.lastBacktestData.start_date, 
+            end_date: this.lastBacktestData.end_date,
             created_at: new Date().toISOString(),
             candles_amount: this.lastUsedParams.candle_amount,
             result: this.lastBacktestData
