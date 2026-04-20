@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Reset Password - Test & Bet{% endblock %}
+
+{% block navbar %}
+    {% include 'core/navbar.html' %}
+{% endblock %}
+
+{% block main_class %}p-6 max-w-md mx-auto{% endblock %}
+
+{% block content %}
+
+    <div class="bg-white w-full max-w-md rounded-lg shadow-md p-6 space-y-6">
+
+        <h2>Forgot your password?</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.email }}
+            <button type="submit">Send reset link</button>
+        </form>
+
+        <p class="text-sm text-gray-600 text-center">
+            Don’t have an account?
+            <a href="/registration/register" class="text-blue-600 hover:underline font-medium">Register here</a>
+        </p>
+
+    </div>
+
+{% endblock %}

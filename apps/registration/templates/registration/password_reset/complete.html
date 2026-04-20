@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Password Reset Complete - Test & Bet{% endblock %}
+
+{% block navbar %}
+    {% include 'core/navbar.html' %}
+{% endblock %}
+
+{% block main_class %}p-6 max-w-md mx-auto{% endblock %}
+
+{% block content %}
+
+<div class="bg-white max-w-md mx-auto p-6 rounded-lg shadow-md text-center">
+    <h2 class="text-xl font-bold">Password reset successful</h2>
+
+    <a href="/registration/login/" class="text-blue-600 underline mt-4 block">
+        Go to login
+    </a>
+</div>
+
+{% endblock %}

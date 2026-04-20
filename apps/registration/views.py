@@ -5,7 +5,7 @@ from .forms import CustomUserRegisterForm, CustomUserLoginForm
 from django.contrib.auth import authenticate, login, logout
 
 
-def register(request):
+def register_view(request):
     form = CustomUserRegisterForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
