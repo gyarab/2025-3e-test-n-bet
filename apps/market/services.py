@@ -18,6 +18,9 @@ def get_binance_ohlcv_and_timestamp(coin: str, interval: str, candle_amount: int
         dict: Basic info (open_time, open, high, low, close, volume, close_time) for the latest {candle_amount} candles
     """
     coin = format_coin_symbol(coin)
+
+    if not check_interval(interval):
+        raise ValueError("Invalid interval format. Accessible intervals: 1s, 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w")
     
     if candle_amount:
         try:
@@ -127,6 +130,9 @@ def get_binance_ohlcv_and_timestamp_range(coin: str, interval: str, start_date: 
     """
     coin = format_coin_symbol(coin)
 
+    if not check_interval(interval):
+        raise ValueError("Invalid interval format. Accessible intervals: 1s, 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w")
+
     since = int(start_date.timestamp() * 1000)
     all_candles = []
 
@@ -181,6 +187,16 @@ def format_coin_symbol(coin: str):
     
     return coin.upper() if "/" in coin else f"{coin.upper()[:-4]}/USDT"
 
+def check_interval(interval: str) -> bool:
+    """
+    Checks if the interval is correct.
+    Accessible: 1s, 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w
+
+    Returns:
+        bool: True if the interval is correct, False otherwise.
+    """
+    valid_intervals = ["1s", "1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w"]
+    return interval in valid_intervals
 
 def calculate_start_and_end_dates(candles: list[dict]):
     """

@@ -18,7 +18,7 @@
         {% csrf_token %}
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Username or Email</label>
             <input type="text" name="username" value="{{ form.username.value|default:'' }}" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
             {% if form.username.errors %}
             <p class="text-sm text-red-600 mt-1">

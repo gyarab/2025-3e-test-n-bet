@@ -45,7 +45,7 @@
                     text-red-500
                 {% endif %}
             ">
-                {{ backtest.result.profit_loss }}
+                {{ backtest.result.profit_loss|default:0 }}
             </div>
         </div>
     </div>
@@ -208,27 +208,27 @@
 
         <div class="bg-white border p-5 rounded-xl text-center shadow-sm">
             <div class="text-gray-500 text-sm">Total Trades</div>
-            <div class="text-xl font-bold">{{ backtest.result.total_trades }}</div>
+            <div class="text-xl font-bold">{{ backtest.result.total_trades|default:0 }}</div>
         </div>
 
         <div class="bg-white border p-5 rounded-xl text-center shadow-sm">
             <div class="text-gray-500 text-sm">Wins</div>
             <div class="text-xl font-bold text-green-600">
-                {{ backtest.result.total_wins }}
+                {{ backtest.result.total_wins|default:0 }}
             </div>
         </div>
 
         <div class="bg-white border p-5 rounded-xl text-center shadow-sm">
             <div class="text-gray-500 text-sm">Losses</div>
             <div class="text-xl font-bold text-red-500">
-                {{ backtest.result.total_losses }}
+                {{ backtest.result.total_losses|default:0 }}
             </div>
         </div>
 
         <div class="bg-white border p-5 rounded-xl text-center shadow-sm">
             <div class="text-gray-500 text-sm">Open Trades</div>
             <div class="text-xl font-bold text-gray-600">
-                {{ backtest.result.not_closed_trades }}
+                {{ backtest.result.not_closed_trades|default:0 }}
             </div>
         </div>
 

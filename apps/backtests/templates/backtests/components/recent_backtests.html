@@ -77,15 +77,15 @@
                                 </span>
                             {% endif %}
                         </td>
-                        <td class="px-4 py-3">{{ backtest.result.total_trades }}</td>
+                        <td class="px-4 py-3">{{ backtest.result.total_trades|default:0 }}</td>
                         <td class="px-4 py-3 text-green-600 font-medium">
-                            {{ backtest.result.total_wins }}
+                            {{ backtest.result.total_wins|default:0 }}
                         </td>
                         <td class="px-4 py-3 text-red-500 font-medium">
-                            {{ backtest.result.total_losses }}
+                            {{ backtest.result.total_losses|default:0 }}
                         </td>
                         <td class="px-4 py-3 text-gray-500">
-                            {{ backtest.result.not_closed_trades }}
+                            {{ backtest.result.not_closed_trades|default:0 }}
                         </td>
                     </tr>
                     {% endfor %}
