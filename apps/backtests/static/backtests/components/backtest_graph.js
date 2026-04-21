@@ -3,11 +3,14 @@ import { createChart, CandlestickSeries, createSeriesMarkers } from "https://esm
 
 export default class BacktestGraph {
     constructor(root, token_id, timeframe, candleAmount, start_date, end_date, trades) {
+
+        console.log("BacktestGraph constructor called with:")
         if (!root) {
             throw new Error("BacktestGraph: Root element not provided");
         }
 
         this.wrapper = root;
+        this.a = 1;
         this.token_id = token_id;
         this.timeframe = timeframe;
         this.candleAmount = candleAmount;
@@ -18,10 +21,13 @@ export default class BacktestGraph {
         this.getCandles()
             .then(() => this.init())
             .catch(error => console.error("Error fetching candles:", error));
+
+        
     }
     
     // Initialize the chart and plot candles
     init() {
+        console.log("Initializing chart with candles:", this.candles);
         this.chart = createChart(this.wrapper, {
             width: this.wrapper.clientWidth,
             height: this.wrapper.clientHeight,
@@ -40,10 +46,10 @@ export default class BacktestGraph {
         // Map API candles to LightweightCharts format
         const formattedCandles = this.candles.map(c => ({
             time: Math.floor(new Date(c.open_time).getTime() / 1000),
-            open: c.open,
-            high: c.high,
-            low: c.low,
-            close: c.close,
+            open: Number(c.open),
+            high: Number(c.high),
+            low: Number(c.low),
+            close: Number(c.close),
         }));
 
         this.candlestickSeries.setData(formattedCandles); 
@@ -115,6 +121,7 @@ export default class BacktestGraph {
                 throw new Error(data.message);
             }
             this.candles = data.candles;
+            console.log(this.candles[0]);
         });
     }
 

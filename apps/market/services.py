@@ -128,6 +128,7 @@ def get_binance_ohlcv_and_timestamp_range(coin: str, interval: str, start_date: 
     Returns:
         list: List of OHLCV data points with timestamps within the specified date range
     """
+
     coin = format_coin_symbol(coin)
 
     if not check_interval(interval):
@@ -147,7 +148,7 @@ def get_binance_ohlcv_and_timestamp_range(coin: str, interval: str, start_date: 
             candle_time = candle[0]
 
             if candle_time > int(end_date.timestamp() * 1000):
-                return all_candles
+                break
 
             all_candles.append(candle)
 

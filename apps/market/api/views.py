@@ -134,8 +134,6 @@ def get_candles_in_range(request, token_id: int):
         payload = json.loads(request.body) if request.body else {}
         token = token.symbol
 
-        print(f"Received payload: {payload}")
-
         interval = payload.get("interval", "1h")
         start_date = payload.get("start_date")
         end_date = payload.get("end_date")
@@ -156,7 +154,7 @@ def get_candles_in_range(request, token_id: int):
                 )
         
         candles = get_binance_ohlcv_and_timestamp_range(token, interval, start_date=start_date, end_date=end_date)
-
+        
         return JsonResponse({"status": "success", "candles": candles}, status=200)
     except Exception as err:
         logger.error(f"Error retrieving candle data: {err}", exc_info=True)

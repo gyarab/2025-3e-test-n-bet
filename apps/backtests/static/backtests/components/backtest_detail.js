@@ -45,14 +45,11 @@ export default class BacktestDetail {
         const toggleExpand = (e) => {
             e.stopPropagation();
             e.preventDefault();
-
-            const isHidden = trades_container.classList.contains("hidden");
-            toggleText.textContent = isHidden ? "Open" : "Close";
-
+            
             // Animate settings section
             if (trades_container.classList.contains("max-h-0")) {
                 // Expanding
-                trades_container.classList.remove("max-h-0", "opacity-0");
+                trades_container.classList.remove("max-h-0", "opacity-0", "hidden");
                 trades_container.classList.add("max-h-100", "opacity-100", "mt-6");
                 trades_container.style.overflowY = "hidden";
 
@@ -64,9 +61,13 @@ export default class BacktestDetail {
             } else {
                 // Collapsing
                 trades_container.classList.remove("max-h-100", "opacity-100", "mt-6");
-                trades_container.classList.add("max-h-0", "opacity-0");
+                trades_container.classList.add("max-h-0", "opacity-0", "hidden");
                 trades_container.style.overflowY = "hidden";
             }
+
+            const isHidden = trades_container.classList.contains("hidden");
+
+            toggleText.textContent = isHidden ? "Open" : "Close";
         };
 
         trades_bar.addEventListener("click", toggleExpand);
