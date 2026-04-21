@@ -24,6 +24,7 @@ class TradeRiskModel:
             position_size_pct (float): Used as a fixed percentage of the balance to calculate the quantity if 'fixed'. Used as max loss percentage to calculate the quantity if 'relative'.
             position_size_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage of account balance, relative adjusts based on loss percentage.
         """
+
         if stop_loss_type not in ["fixed", "relative"]:
             raise ValueError("Invalid stop_loss_type. Use 'fixed' or 'relative'.")
         

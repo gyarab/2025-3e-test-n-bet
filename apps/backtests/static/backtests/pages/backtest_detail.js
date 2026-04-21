@@ -12,6 +12,8 @@ function initBacktestDetail() {
         return;
     }
 
+    console.log("Backtest data:", backtestData);
+
     const root = document.getElementById("backtest-detail");
 
     if (!root) {

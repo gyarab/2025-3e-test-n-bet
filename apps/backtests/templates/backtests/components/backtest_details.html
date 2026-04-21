@@ -24,14 +24,14 @@
         <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition">
             <div class="text-gray-500 text-sm mb-1">Initial Balance</div>
             <div class="text-xl font-bold text-gray-800">
-                {{ backtest.initial_capital }}
+                {{ backtest.initial_capital|floatformat:2 }}
             </div>
         </div>
 
         <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition">
             <div class="text-gray-500 text-sm mb-1">Final Balance</div>
             <div class="text-xl font-bold text-gray-800">
-                {{ backtest.result.final_balance }}
+                {{ backtest.result.final_balance|floatformat:2 }}
             </div>
         </div>
 
@@ -45,7 +45,7 @@
                     text-red-500
                 {% endif %}
             ">
-                {{ backtest.result.profit_loss|default:0 }}
+                {{ backtest.result.profit_loss|default:0|floatformat:2 }}
             </div>
         </div>
     </div>
@@ -272,27 +272,29 @@
                         {% for trade in backtest.trades %}
                         <tr class="hover:bg-gray-50 transition">
 
-                            <td class="py-3 px-4 font-semibold
-                                {% if trade.trade_type == 'buy' %}
-                                    text-green-600
-                                {% else %}
-                                    text-red-500
+                            <td class="py-3 px-4 font-semibold 
+                                {% if trade.trade_type == '1' %} text-green-600 
+                                {% else %} text-red-500 
                                 {% endif %}
                             ">
-                                {{ trade.trade_type|upper }}
+                                {% if trade.trade_type == '1' %}
+                                    LONG
+                                {% else %}
+                                    SHORT
+                                {% endif %}
                             </td>
 
-                            <td class="py-3 px-4">{{ trade.entry_price }}</td>
+                            <td class="py-3 px-4">{{ trade.entry_price|floatformat:2 }}</td>
 
                             <td class="py-3 px-4">
                                 {% if trade.exit_price %}
-                                    {{ trade.exit_price }}
+                                    {{ trade.exit_price|floatformat:2 }}
                                 {% else %}
                                     -
                                 {% endif %}
                             </td>
 
-                            <td class="py-3 px-4">{{ trade.quantity }}</td>
+                            <td class="py-3 px-4">{{ trade.quantity|floatformat:2 }}</td>
 
                             <td class="py-3 px-4">
 
@@ -300,11 +302,11 @@
 
                                     {% if trade.result > 0 %}
                                         <span class="text-green-600 font-medium">
-                                            {{ trade.result }}
+                                            {{ trade.result|floatformat:2 }}
                                         </span>
                                     {% else %}
                                         <span class="text-red-500 font-medium">
-                                            {{ trade.result }}
+                                            {{ trade.result|floatformat:2 }}
                                         </span>
                                     {% endif %}
 
@@ -316,7 +318,7 @@
 
                             <td class="py-3 px-4">
 
-                                {% if trade.status %}
+                                {% if trade.status == "1" %}
                                     <span class="text-yellow-600 font-medium">
                                         Open
                                     </span>

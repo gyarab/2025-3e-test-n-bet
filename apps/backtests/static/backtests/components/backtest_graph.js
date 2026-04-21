@@ -78,9 +78,16 @@ export default class BacktestGraph {
                 return;
             }
 
+            console.log("Crosshair moved:", param);
+
             const trade = this.trades.find(t =>
                 Math.floor(new Date(t.entry_time).getTime() / 1000) === param.time
             );
+
+            for (const t of this.trades) {
+                console.log("Checking trade:", t, "against time:", param.time);
+                console.log(Math.floor(new Date(t.entry_time).getTime() / 1000), "vs", param.time);
+            }
 
             if (!trade) {
                 tooltip.classList.add("hidden");
