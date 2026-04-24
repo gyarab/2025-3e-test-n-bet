@@ -157,8 +157,6 @@ export default class BacktestRunner {
             })
             .then(data => {
                 this.lastBacktestData = data.result;
-                
-                console.log("Backtest run completed with result:", data);
 
                 // Display results 
                 this.backtestResults.buildUI(data.result);

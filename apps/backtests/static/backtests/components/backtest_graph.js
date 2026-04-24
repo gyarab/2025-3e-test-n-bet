@@ -4,7 +4,6 @@ import { createChart, CandlestickSeries, createSeriesMarkers } from "https://esm
 export default class BacktestGraph {
     constructor(root, token_id, timeframe, candleAmount, start_date, end_date, trades) {
 
-        console.log("BacktestGraph constructor called with:")
         if (!root) {
             throw new Error("BacktestGraph: Root element not provided");
         }
@@ -27,7 +26,6 @@ export default class BacktestGraph {
     
     // Initialize the chart and plot candles
     init() {
-        console.log("Initializing chart with candles:", this.candles);
         this.chart = createChart(this.wrapper, {
             width: this.wrapper.clientWidth,
             height: this.wrapper.clientHeight,
@@ -78,16 +76,9 @@ export default class BacktestGraph {
                 return;
             }
 
-            // console.log("Crosshair moved:", param);
-
             const trade = this.trades.find(t =>
                 Math.floor(new Date(t.entry_time).getTime() / 1000) === param.time
             );
-
-            for (const t of this.trades) {
-             //   console.log("Checking trade:", t, "against time:", param.time);
-               // console.log(Math.floor(new Date(t.entry_time).getTime() / 1000), "vs", param.time);
-            }
 
             if (!trade) {
                 tooltip.classList.add("hidden");
@@ -128,8 +119,6 @@ export default class BacktestGraph {
                 throw new Error(data.message);
             }
             this.candles = data.candles;
-            console.log(this.candles[24]);
-            console.log(this.trades[0]);
         });
     }
 

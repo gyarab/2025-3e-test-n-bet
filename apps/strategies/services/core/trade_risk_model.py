@@ -271,8 +271,6 @@ class TradeRiskModel:
         take_profit_data = json_data.get("take_profit", {})
         position_size_data = json_data.get("position_size", {})
 
-        print(f"Creating TradeRiskModel from JSON: {json_data}")
-
         return cls(
             stop_loss_type=stop_loss_data.get("type", "fixed"),
             stop_loss_pct=stop_loss_data.get("percentage", 0.0),

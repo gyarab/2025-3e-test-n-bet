@@ -109,8 +109,8 @@ class StrategyCard {
             else {
                 buySignalContainer.classList.add("hidden");
             }
-            if (param.action.short_signal) {
-                const shortSignal = param.action.short_signal;
+            if (param.action.sell_signal) {
+                const shortSignal = param.action.sell_signal;
                 shortSignalContainer.querySelector(".stop-loss-percentage").textContent = shortSignal.stop_loss.type + ", " + shortSignal.stop_loss.percentage + "%";
                 shortSignalContainer.querySelector(".take-profit-percentage").textContent = shortSignal.take_profit.type + ", " + shortSignal.take_profit.percentage + "%";
                 shortSignalContainer.querySelector(".position-size-percentage").textContent = shortSignal.position_size.type + ", " + shortSignal.position_size.percentage + "%";

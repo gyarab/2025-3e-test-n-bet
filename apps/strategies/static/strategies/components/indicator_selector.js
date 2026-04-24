@@ -293,15 +293,11 @@ class IndicatorSelector {
 
     // Removes the indicator based on its data-value
     removeIndicatorById(id) {
-        console.log("Removing indicator with id:", id);
-
         if (id === undefined || id === null || id === "") {
             return;
         }
 
         const indicator = this.getIndicatorById(id);
-
-        console.log("Indicator to remove:", indicator);
 
         this.removeIndicatorFromSelected(indicator);
 

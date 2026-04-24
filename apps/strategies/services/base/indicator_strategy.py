@@ -12,7 +12,7 @@ class IndicatorStrategy(AtomicStrategy):
         """
         Create an IndicatorStrategy instance from JSON data.
 
-        Get json data structure:
+        Expects JSON data structure:
         {
             "name": "Strategy Name"
             "parameters": {
@@ -23,8 +23,8 @@ class IndicatorStrategy(AtomicStrategy):
         name = (
             json_data.get("name", "Unnamed Indicator Strategy").strip().replace(" ", "")
         )
-        print("IndicatorStrategy name from json:", name)
+
         for subclass in cls.__subclasses__():
-            print("Checking subclass:", subclass.__name__)
-            if subclass.__name__ == name:
+            # It needs to evaluate the name without "Strategy" suffix to match the class name, e.g. "SMA" for "SMAStrategy"
+            if subclass.__name__ == name or subclass.__name__.replace("Strategy", "") == name:
                 return subclass._from_json(json_data.get("parameters", {}))

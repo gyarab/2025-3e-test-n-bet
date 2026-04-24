@@ -28,8 +28,6 @@ def get_binance_ohlcv_and_timestamp(coin: str, interval: str, candle_amount: int
         except ValueError:
             candle_amount = 500
 
-    print(f"Fetching {candle_amount} candles for {coin} at interval {interval} starting from {start_date if start_date else 'most recent'}")
-
     since = None
     if start_date:
         since = int(start_date.timestamp() * 1000)
@@ -136,8 +134,6 @@ def get_binance_ohlcv_and_timestamp_range(coin: str, interval: str, start_date: 
 
     if not check_interval(interval):
         raise ValueError("Invalid interval format. Accessible intervals: 1s, 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w")
-
-    print(f"Fetching candles for {coin} at interval {interval} from {start_date} to {end_date}")
 
     since = int(start_date.timestamp() * 1000)
     all_candles = []    

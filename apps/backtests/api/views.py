@@ -65,8 +65,6 @@ def run_backtest_view(request):
     # Run backtest
     try:
         strategy = Strategy.objects.get(id=strategy_id)
-        print(f"Running backtest for strategy ID {strategy_id} with parameters: {payload}")
-        print(strategy)
         result = run_backtest(
             user=request.user,
             strategy=strategy,

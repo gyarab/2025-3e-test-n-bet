@@ -46,7 +46,7 @@ class RSIStrategy(IndicatorStrategy):
     def _from_json(cls, json_data: dict) -> "RSIStrategy":
         """
         Create an RSIStrategy instance from JSON data.
-        Get json data structure:
+        Expects JSON data structure:
         {
             "period": 14,
             "oversold": 30,

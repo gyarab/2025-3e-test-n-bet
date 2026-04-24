@@ -48,7 +48,7 @@ class SMAStrategy(IndicatorStrategy):
     def _from_json(cls, json_data: dict) -> "SMAStrategy":
         """
         Create an SMAStrategy instance from JSON data.
-        Get json data structure:
+        Expects JSON data structure:
         {
             "short_window": 10,
             "long_window": 30

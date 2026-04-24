@@ -12,7 +12,7 @@ class PredictionModelStrategy(AtomicStrategy):
         """
         Create an PredictionModelStrategy instance from JSON data.
 
-        Get json data structure:
+        Expects JSON data structure:
         {
             "name": "Strategy Name"
             "parameters": {

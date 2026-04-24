@@ -14,8 +14,6 @@ export default class BacktestResults {
     buildUI(backtestData) {
         this.backtestData = backtestData;
 
-        console.log("Building BacktestResults UI with data:", backtestData);
-
         const cardTemplate = document.getElementById("backtest-results-card-template");
         const node = cardTemplate.content.cloneNode(true);
         const card = node.querySelector(".backtest-results");

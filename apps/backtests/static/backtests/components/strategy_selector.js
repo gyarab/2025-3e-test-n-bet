@@ -248,23 +248,14 @@ export default class StrategySelector {
             }
 
             if (param.action?.buy_signal || param.action?.sell_signal) {
-                const isBuy = !!param.action?.buy_signal;
-                const action = isBuy ? param.action.buy_signal : param.action.sell_signal;
-                const title = isBuy ? "Buy Signal" : "Sell Signal";
-
-                const actionNode = actionSignalTemplate.content.cloneNode(true);
-                actionNode.querySelector(".action-title").textContent = title;
-                
-                actionNode.querySelector(".stop-loss-type").textContent = action.stop_loss.type;
-                actionNode.querySelector(".stop-loss-percentage").textContent = action.stop_loss.percentage ? action.stop_loss.percentage + "%" : "-";
-
-                actionNode.querySelector(".take-profit-type").textContent = action.take_profit.type;
-                actionNode.querySelector(".take-profit-percentage").textContent = action.take_profit.percentage ? action.take_profit.percentage + "%" : "-";
-
-                actionNode.querySelector(".position-size-type").textContent = action.position_size.type;
-                actionNode.querySelector(".position-size-percentage").textContent = action.position_size.percentage ? action.position_size.percentage + "%" : "-";
-                
-                card.querySelector(".action-models").appendChild(actionNode);
+                if (param.action?.buy_signal) {
+                    const actionNodeBuy = this.generateRiskModelDescription(param, actionSignalTemplate, true);
+                    card.querySelector(".action-models").appendChild(actionNodeBuy);
+                }
+                if (param.action?.sell_signal) {
+                    const actionNodeSell = this.generateRiskModelDescription(param, actionSignalTemplate, false);
+                    card.querySelector(".action-models").appendChild(actionNodeSell);
+                }
             }
             else {
                 card.querySelector(".no-action-models").classList.remove("hidden");
@@ -276,6 +267,27 @@ export default class StrategySelector {
         if (this.descriptionPlaceholder) {
             this.descriptionPlaceholder.classList.add("hidden");
         }
+    }
+
+    // Generates the HTML for the risk model description based on the provided parameters
+    generateRiskModelDescription(param, actionSignalTemplate, isBuy) {
+        const action = isBuy ? param.action.buy_signal : param.action.sell_signal;
+        const title = isBuy ? "Buy Signal" : "Sell Signal";
+
+        const actionNode = actionSignalTemplate.content.cloneNode(true);
+
+        actionNode.querySelector(".action-title").textContent = title;
+        
+        actionNode.querySelector(".stop-loss-type").textContent = action.stop_loss.type;
+        actionNode.querySelector(".stop-loss-percentage").textContent = action.stop_loss.percentage ? action.stop_loss.percentage + "%" : "-";
+
+        actionNode.querySelector(".take-profit-type").textContent = action.take_profit.type;
+        actionNode.querySelector(".take-profit-percentage").textContent = action.take_profit.percentage ? action.take_profit.percentage + "%" : "-";
+
+        actionNode.querySelector(".position-size-type").textContent = action.position_size.type;
+        actionNode.querySelector(".position-size-percentage").textContent = action.position_size.percentage ? action.position_size.percentage + "%" : "-";
+        
+        return actionNode;
     }
 
     // Reloads the choice-list. Must be called after each operation

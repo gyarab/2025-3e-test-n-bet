@@ -203,14 +203,11 @@ class ConditionBuilder {
         };
         
         const buy_settings = extractSettings(longSignalEl);
-        const short_settings = extractSettings(shortSignalEl);
-
-        console.log("Buy settings:", buy_settings);
-        console.log("Short settings:", short_settings);
+        const sell_settings = extractSettings(shortSignalEl);
 
         return {
             buy_signal: buy_settings ? buy_settings : null,
-            short_signal: short_settings ? short_settings : null,
+            sell_signal: sell_settings ? sell_settings : null,
         };
     }
 

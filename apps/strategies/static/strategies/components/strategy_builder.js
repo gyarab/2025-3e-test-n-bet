@@ -140,8 +140,6 @@ class StrategyBuilder {
 
             const strategies = data.strategies || [];
 
-            console.log("Existing strategies:", strategies);
-
             return !strategies.some(s => s.name === name);
 
         } catch (error) {

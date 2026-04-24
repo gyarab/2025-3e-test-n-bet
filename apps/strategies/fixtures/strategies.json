@@ -11,7 +11,7 @@
                 "signal_models": {
                     "indicators": [
                     {
-                        "name": "SMA Strategy",
+                        "name": "SMA",
                         "parameters": {
                             "short_window": 10,
                             "long_window": 30
@@ -35,7 +35,7 @@
                             "percentage": 10.0
                         }
                     },
-                    "short_signal": {
+                    "sell_signal": {
                         "stop_loss": {
                             "type": "fixed",
                             "percentage": 1.5
@@ -68,7 +68,7 @@
                 "signal_models": {
                     "indicators": [
                     {
-                        "name": "RSI Strategy",
+                        "name": "RSI",
                         "parameters": {
                             "oversold": 30,
                             "overbought": 70
@@ -92,7 +92,7 @@
                             "percentage": 10.0
                         }
                     },
-                    "short_signal": {
+                    "sell_signal": {
                         "stop_loss": {
                             "type": "fixed",
                             "percentage": 1.5
@@ -125,7 +125,7 @@
                 "signal_models": {
                     "indicators": [
                     {
-                        "name": "MACD Strategy",
+                        "name": "MACD",
                         "parameters": {
                             "fast_period": 12,
                             "slow_period": 26,
@@ -150,7 +150,7 @@
                             "percentage": 10.0
                         }
                     },
-                    "short_signal": {
+                    "sell_signal": {
                         "stop_loss": {
                             "type": "fixed",
                             "percentage": 1.5
