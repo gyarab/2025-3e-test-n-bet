@@ -59,7 +59,7 @@ class MACDStrategy(IndicatorStrategy):
     def _from_json(cls, json_data: dict) -> "MACDStrategy":
         """
         Create an MACDStrategy instance from JSON data.
-        Get json data structure:
+        Expects JSON data structure:
         {
             "fast_period": 12,
             "slow_period": 26,
@@ -96,9 +96,9 @@ class MACDStrategy(IndicatorStrategy):
         if macd_line_1 is None or macd_line_2 is None:
             return "NOT ENOUGH DATA"
 
-        if macd_line_1 <= signal_line_1 and macd_line_2 > signal_line_2:
+        if macd_line_1 <= signal_line_1: # and macd_line_2 > signal_line_2:
             return "BUY"
-        elif macd_line_1 >= signal_line_1 and macd_line_2 < signal_line_2:
+        elif macd_line_1 >= signal_line_1: # and macd_line_2 < signal_line_2:
             return "SELL"
         else:
             return "HOLD"

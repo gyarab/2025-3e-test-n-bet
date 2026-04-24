@@ -121,7 +121,7 @@
                     </div>
                     {% endif %}
 
-                    {% if param.action.short_signal %}
+                    {% if param.action.sell_signal %}
                     <div class="ml-4 text-sm space-y-1">
                         <div class="font-medium text-red-600">
                             SHORT Signal
@@ -130,23 +130,23 @@
                         <ul class="list-disc ml-5 text-gray-600 space-y-1">
                             <li>
                                 Stop Loss:
-                                {{ param.action.short_signal.stop_loss.type }}
+                                {{ param.action.sell_signal.stop_loss.type }}
                                 -
-                                {{ param.action.short_signal.stop_loss.percentage }}%
+                                {{ param.action.sell_signal.stop_loss.percentage }}%
                             </li>
 
                             <li>
                                 Take Profit:
-                                {{ param.action.short_signal.take_profit.type }}
+                                {{ param.action.sell_signal.take_profit.type }}
                                 -
-                                {{ param.action.short_signal.take_profit.percentage }}%
+                                {{ param.action.sell_signal.take_profit.percentage }}%
                             </li>
 
                             <li>
                                 Position Size:
-                                {{ param.action.short_signal.position_size.type }}
+                                {{ param.action.sell_signal.position_size.type }}
                                 -
-                                {{ param.action.short_signal.position_size.percentage }}%
+                                {{ param.action.sell_signal.position_size.percentage }}%
                             </li>
                         </ul>
                     </div>

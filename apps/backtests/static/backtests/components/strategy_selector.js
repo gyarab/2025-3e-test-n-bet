@@ -47,7 +47,7 @@ export default class StrategySelector {
     updateList() {
         const q = this.input.value.toLowerCase();
         this.list.innerHTML = "";
-        
+
         const optionsToShow = this.current_options.filter(opt => 
             opt[1].toLowerCase().includes(q)
         );
@@ -294,8 +294,8 @@ export default class StrategySelector {
     reloadTheInitialList() {
         let updated = []
 
-        for (const opt of this.possible_options) {       
-            if (this.selected != opt) {
+        for (const opt of this.possible_options) {   
+            if (this.selected != opt[1]) {
                 updated.push(opt)
             }
         }

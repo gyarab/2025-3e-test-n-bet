@@ -90,9 +90,9 @@ class SMAStrategy(IndicatorStrategy):
         if pd.isna(SMA_short) or pd.isna(SMA_long):
             return "HOLD"
 
-        if SMA_short > SMA_long and SMA_short_previous <= SMA_long_previous:
+        if SMA_short > SMA_long: # and SMA_short_previous <= SMA_long_previous:
             return "BUY"
-        elif SMA_short < SMA_long and SMA_short_previous >= SMA_long_previous:
+        elif SMA_short < SMA_long: # and SMA_short_previous >= SMA_long_previous:
             return "SELL"
         else:
             return "HOLD"
