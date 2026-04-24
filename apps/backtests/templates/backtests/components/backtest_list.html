@@ -22,11 +22,11 @@
                 {% if backtest.result %}
                     {% if backtest.result.profit_loss >= 0 %}
                         <span class="text-green-600 font-semibold text-sm">
-                            +{{ backtest.result.profit_loss }}
+                            +{{ backtest.result_in_currency }}
                         </span>
                     {% else %}
                         <span class="text-red-500 font-semibold text-sm">
-                            {{ backtest.result.profit_loss }}
+                            {{ backtest.result_in_currency }}
                         </span>
                     {% endif %}
                 {% else %}

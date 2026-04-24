@@ -65,7 +65,7 @@ export default class BacktestGraph {
             position: t.trade_type === '1' ? "belowBar" : "aboveBar",
             color: t.trade_type === '1' ? "green" : "red",
             shape: t.trade_type === '1' ? "arrowUp" : "arrowDown",
-            text: t.trade_type
+            text: t.trade_type === '1' ? "BUY" : "SELL",
         }));
 
         this.markers = createSeriesMarkers(this.candlestickSeries, markers);
@@ -78,15 +78,15 @@ export default class BacktestGraph {
                 return;
             }
 
-            console.log("Crosshair moved:", param);
+            // console.log("Crosshair moved:", param);
 
             const trade = this.trades.find(t =>
                 Math.floor(new Date(t.entry_time).getTime() / 1000) === param.time
             );
 
             for (const t of this.trades) {
-                console.log("Checking trade:", t, "against time:", param.time);
-                console.log(Math.floor(new Date(t.entry_time).getTime() / 1000), "vs", param.time);
+             //   console.log("Checking trade:", t, "against time:", param.time);
+               // console.log(Math.floor(new Date(t.entry_time).getTime() / 1000), "vs", param.time);
             }
 
             if (!trade) {
@@ -99,8 +99,8 @@ export default class BacktestGraph {
             tooltip.innerHTML = `
                 <div><b>${trade.trade_type === '1' ? 'LONG' : 'SHORT'}</b></div>
                 <div>Entry: ${trade.entry_price}</div>
-                <div>Exit: ${trade.exit_price || '-'}</div>
-                <div>PnL: ${trade.pnl || '-'}</div>
+                <div>Exit: ${trade.exit_price || 'not closed'}</div>
+                <div>PnL: ${Math.round(trade.result * 100) / 100 || '-'}</div>
             `;
 
             tooltip.style.left = param.point.x + "px";
@@ -128,7 +128,8 @@ export default class BacktestGraph {
                 throw new Error(data.message);
             }
             this.candles = data.candles;
-            console.log(this.candles[0]);
+            console.log(this.candles[24]);
+            console.log(this.trades[0]);
         });
     }
 

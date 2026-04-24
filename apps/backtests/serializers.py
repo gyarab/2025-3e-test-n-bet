@@ -29,17 +29,20 @@ def serialize_trade(trade: Trade) -> dict[str, Any]:
 
 
 def serialize_backtest(backtest: Backtest) -> dict[str, Any]:
+    print(backtest.result)
     return {
         "id": backtest.id,
         "user_id": backtest.user_id,
         "strategy": serialize_strategy(backtest.strategy),
         "asset": serialize_asset(backtest.asset) if backtest.asset else None,
-        "timeframe": backtest.timeframe,
+        "timeframe": backtest.timeframe if backtest.timeframe else None,
         "start_date": backtest.start_date.isoformat() if backtest.start_date else None,
         "end_date": backtest.end_date.isoformat() if backtest.end_date else None,
-        "initial_capital": float(backtest.initial_capital),
+        "initial_capital": float(backtest.initial_capital) if backtest.initial_capital else None,
         "created_at": backtest.created_at.isoformat() if backtest.created_at else None,
         "candles_amount": backtest.candles_amount,
-        "result": backtest.result,
+        "result": backtest.result if backtest.result else None,
+        "result_in_pct": backtest.result["profit_loss"] / float(backtest.initial_capital) * 100 if backtest.initial_capital and backtest.result else None,
+        "result_in_currency": round(backtest.result["profit_loss"], 2) if backtest.result else None,
         "trades": [serialize_trade(t) for t in backtest.trades.all()],
     }

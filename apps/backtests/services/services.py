@@ -41,7 +41,8 @@ def run_backtest(
         raise ValueError(
             "Initial balance must be a float and candle amount must be an integer."
         )
-
+    print(f"Running backtest for strategy '{strategy.name}' with parameters:")
+    print(strategy.parameters)
     srategy_engine = StrategyEngine._from_parameters(strategy.parameters)
     try:
         candles = get_binance_ohlcv_and_timestamp(token, timeframe, candle_amount)

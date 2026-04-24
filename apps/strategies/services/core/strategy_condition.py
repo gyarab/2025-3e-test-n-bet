@@ -40,8 +40,15 @@ class StrategyCondition:
 
         failed_number = 0
 
-        if not signal_sources:  # No indicators or models to evaluate
+        if not signal_sources or signal_sources == [None]:  # No indicators or models to evaluate
             return "HOLD"
+        
+        print("Evaluating StrategyCondition with the following strategies:")
+        for src in signal_sources:
+            print(f"- {src.__class__.__name__}")
+
+        print("Candles data for evaluation:", signal_sources)
+
 
         signals = [src.get_signal_from_candles(candles) for src in signal_sources]
 

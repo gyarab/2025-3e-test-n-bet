@@ -38,14 +38,19 @@
         <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition">
             <div class="text-gray-500 text-sm mb-1">Profit / Loss</div>
 
-            <div class="text-2xl font-bold
+            <div class="flex items-baseline gap-2
                 {% if backtest.result.profit_loss >= 0 %}
                     text-green-600
                 {% else %}
                     text-red-500
                 {% endif %}
             ">
-                {{ backtest.result.profit_loss|default:0|floatformat:2 }}
+                <div class="text-2xl font-bold">
+                    {{ backtest.result.profit_loss|default:0|floatformat:2 }}
+                </div>
+                <div class="text-xl">
+                    (~{{ backtest.result_in_pct|default:0|floatformat:2 }}%)
+                </div>
             </div>
         </div>
     </div>

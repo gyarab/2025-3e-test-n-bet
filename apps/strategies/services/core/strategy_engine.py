@@ -19,7 +19,7 @@ class StrategyEngine(BaseStrategy):
         do_action_if_buy: bool = 1,
         do_action_if_sell: bool = 1,
     ) -> None:
-
+        print(f"Adding strategy to StrategyEngine: {strategy}")
         if strategy:
             condition = StrategyCondition(
                 strategy_list=list[strategy],
@@ -62,6 +62,7 @@ class StrategyEngine(BaseStrategy):
         Create a StrategyEngine instance from JSON data.
         Expected json data structure:
         """
+        print("Creating StrategyEngine from parameters:", parameters)
         conditions = [
             StrategyCondition._from_json(condition) for condition in parameters
         ]
