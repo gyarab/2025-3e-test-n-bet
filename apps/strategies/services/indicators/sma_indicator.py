@@ -64,7 +64,7 @@ class SMAIndicator(BaseIndicator):
                 sma_list.append(self.calculate_sma(temp_candles, window))
             temp_candles = temp_candles[:-1]
 
-        return sma_list[::-1]  # Reverzní seznam, aby odpovídal původnímu pořadí
+        return sma_list[::-1]  # Reverse the list to have the latest value at the end
 
     def get_list_from_coin(
         self, coin: str, interval: str, candle_amount: int = 20, window: int = None

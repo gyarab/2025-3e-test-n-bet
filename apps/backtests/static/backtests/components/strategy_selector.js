@@ -279,13 +279,16 @@ export default class StrategySelector {
         actionNode.querySelector(".action-title").textContent = title;
         
         actionNode.querySelector(".stop-loss-type").textContent = action.stop_loss.type;
-        actionNode.querySelector(".stop-loss-percentage").textContent = action.stop_loss.percentage ? action.stop_loss.percentage + "%" : "-";
+        actionNode.querySelector(".stop-loss-percentage").textContent 
+                    = action.stop_loss.type === "fixed" ? (" - " + action.stop_loss.percentage + "%") : "";
 
         actionNode.querySelector(".take-profit-type").textContent = action.take_profit.type;
-        actionNode.querySelector(".take-profit-percentage").textContent = action.take_profit.percentage ? action.take_profit.percentage + "%" : "-";
+        actionNode.querySelector(".take-profit-percentage").textContent 
+                    = " - " + (action.take_profit.type === "fixed" ? 
+                        (action.take_profit.percentage + "%") : ("SL Multiplier: " + action.take_profit.percentage));
 
         actionNode.querySelector(".position-size-type").textContent = action.position_size.type;
-        actionNode.querySelector(".position-size-percentage").textContent = action.position_size.percentage ? action.position_size.percentage + "%" : "-";
+        actionNode.querySelector(".position-size-percentage").textContent = " - " + action.position_size.percentage + "%";
         
         return actionNode;
     }

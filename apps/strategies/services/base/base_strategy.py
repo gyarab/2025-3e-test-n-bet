@@ -3,18 +3,14 @@ import ccxt
 import pandas as pd
 
 from apps.strategies.services.base.base_indicator import BaseIndicator
-from apps.strategies.services.base.base_signal import BaseSignal
 from apps.strategies.services.core.trade_risk_model import TradeRiskModel
 
 
-class BaseStrategy(BaseSignal, ABC):
+class BaseStrategy(ABC):
     """
     Abstract base class for all trading strategies.
     Each strategy should inherit from this class and implement its methods.
     """
-
-    # Inicializace Binance
-    exchange = ccxt.binance({"enableRateLimit": True})
 
     @abstractmethod
     def get_signal_from_coin(self, coin: str, interval: str) -> str:
@@ -33,7 +29,7 @@ class BaseStrategy(BaseSignal, ABC):
     @abstractmethod
     def get_signal_from_candles(
         self, candles: list[dict[str, float]] | pd.DataFrame
-    ) -> str | tuple[str, TradeRiskModel]:
+    ) -> tuple[str, TradeRiskModel]:
         """
         Return the latest signal based on the strategy for given candles.
 
@@ -41,7 +37,7 @@ class BaseStrategy(BaseSignal, ABC):
             candles (list[dict] | pd.DataFrame): OHLCV candles data.
 
         Returns:
-            str: 'BUY', 'SELL', or 'HOLD'.
+            tuple[str, TradeRiskModel]: A tuple containing the signal ('BUY', 'SELL', or 'HOLD') and the associated TradeRiskModel.
         """
         pass
 

@@ -118,10 +118,10 @@ export default class BacktestRunner {
 
         if (selectedStrategy) {
             const strategy_id = selectedStrategy.id;
-            const initial_balance = this.initialBalanceInput.value || 1000;
+            const initial_balance = this.initialBalanceInput.value || 100000;
             const token = this.tokenSelect.value;
             const timeframe = this.timeframeSelect.value;
-            const candle_amount = this.candleAmountInput.value || 500;
+            const candle_amount = this.candleAmountInput.value || 5000;
             
             // Store params for saving later
             this.lastUsedParams = {

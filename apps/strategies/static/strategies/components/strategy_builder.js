@@ -69,6 +69,8 @@ class StrategyBuilder {
             const parameters = this.conditionBuilder.getConditionsData();
             const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
+            console.log("Saving strategy with parameters:", parameters);
+
             try {
                 const response = await fetch('/api/strategies/save/', {
                     method: 'POST',

@@ -7,8 +7,6 @@ class StrategyList {
         this.container = this.root.querySelector('.strategy-container');
         this.noStrategiesTitle = this.root.querySelector('.no-strategies-title');
 
-        // this.cards = [];
-
         this.buildUI();
 
         window.addEventListener("strategy:added", () => {
@@ -29,7 +27,6 @@ class StrategyList {
 
             this.strategies.forEach(strategy => {
                 const card = new StrategyCard(this.container, strategy);
-                // this.cards.push(card);
             });
         }
     }

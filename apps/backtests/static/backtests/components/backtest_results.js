@@ -20,7 +20,16 @@ export default class BacktestResults {
 
         card.querySelector(".initial-balance").textContent = `$${this.backtestData.initial_balance}`;
         card.querySelector(".final-balance").textContent = `$${Math.round(Number(this.backtestData.final_balance))}`;
+
+
+        const profit_loss_pct = Math.round(Number(this.backtestData.profit_loss) / Number(this.backtestData.initial_balance) * 10000) / 100;
+        const is_positive = profit_loss_pct >= 0;
+
         card.querySelector(".profit-loss").textContent = `$${Math.round(Number(this.backtestData.profit_loss))}`;
+        card.querySelector(".profit-loss-percentage").textContent = `(${profit_loss_pct}%)`;
+        card.querySelector(".profit-loss-container").classList.add(is_positive ? "text-green-600" : "text-red-600");
+
+
         card.querySelector(".total-trades").textContent = this.backtestData.total_trades;
         card.querySelector(".total-wins").textContent = this.backtestData.total_wins;
         card.querySelector(".total-losses").textContent = this.backtestData.total_losses;

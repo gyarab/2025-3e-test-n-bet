@@ -67,7 +67,7 @@ class RSIIndicator(BaseIndicator):
                 rsi_list.append(self.calculate_rsi(temp_candles))
             temp_candles = temp_candles[:-1]
 
-        return rsi_list[::-1]  # Reverzní seznam, aby odpovídal původnímu pořadí
+        return rsi_list[::-1]  # Reverse the list to have the latest value at the end
 
     def get_list_from_coin(self, coin: str, interval: str, candle_amount: int = 20):
         """

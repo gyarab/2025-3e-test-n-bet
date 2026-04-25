@@ -13,7 +13,7 @@
         <div class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Initial Balance</label>
-                <input type="number" step="100" min="0" max="100000" class="initial-balance-input mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="1000">
+                <input type="number" step="100" min="1000" max="1000000000" class="initial-balance-input mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="100000">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Token</label>
@@ -30,13 +30,13 @@
                     <option value="30m">30m</option>
                     <option value="1h">1h</option>
                     <option value="2h">2h</option>
-                    <option value="4h">4h</option>
+                    <option value="4h" selected>4h</option>
                     <option value="1d">1d</option>
                 </select>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Candle Amount</label>
-                <input type="text" class="candle-amount-input mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="500">
+                <input type="text" class="candle-amount-input mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="5000">
             </div>
         </div>
     </div>

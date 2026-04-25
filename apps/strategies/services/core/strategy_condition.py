@@ -12,9 +12,7 @@ class StrategyCondition:
         self,
         strategy_list: list[AtomicStrategy],
         buy_risk_model: TradeRiskModel = None,
-        sell_risk_model: TradeRiskModel = None,
-        do_action_if_buy: bool = 1,
-        do_action_if_sell: bool = 1,
+        sell_risk_model: TradeRiskModel = None
     ):
         """
         A condition within a trading strategy that combines indicators and prediction models to generate buy/sell signals.
@@ -22,23 +20,17 @@ class StrategyCondition:
         All indicators and models must signal the same action to trigger a buy or sell.
 
         Args:
-            strategy_list (list[AtomicStrategy]): List of strategies (indicator-based and/or prediction-model-based) to evaluate.
+            strategy_list (list[AtomicStrategy]): List of atomic strategies (indicator-based and/or prediction-model-based) to evaluate.
             buy_risk_model (TradeRiskModel): Risk model to apply when a buy signal is generated.
             sell_risk_model (TradeRiskModel): Risk model to apply when a sell signal is generated.
-            do_action_if_buy (bool): Whether to perform an action if the condition signals a buy (default True).
-            do_action_if_sell (bool): Whether to perform an action if the condition signals a sell (default True).
         """
         self.strategy_list = strategy_list
-        self.do_action_if_buy = do_action_if_buy
-        self.do_action_if_sell = do_action_if_sell
         self.buy_risk_model = buy_risk_model or TradeRiskModel()
         self.sell_risk_model = sell_risk_model or TradeRiskModel()
 
     def evaluate(self, candles: list[dict[str, float]]) -> str:
 
         signal_sources = self.strategy_list
-
-        failed_number = 0
 
         if not signal_sources:  # No indicators or models to evaluate
             return "HOLD"
@@ -47,37 +39,30 @@ class StrategyCondition:
 
         # All signals must agree to trigger an action
 
-        if self.do_action_if_buy:
-            if not self.buy_risk_model:
-                raise ValueError(
-                    "Buy risk model must be provided if do_action_if_buy is True."
-                )
-
-            if any(signal == "NOT ENOUGH DATA" for signal in signals):
-                failed_number += 1
-
-            if all(signal == "BUY" for signal in signals):
-                return "BUY"
-
-        if self.do_action_if_sell:
-            if not self.sell_risk_model:
-                raise ValueError(
-                    "Sell risk model must be provided if do_action_if_sell is True."
-                )
-
-            if any(signal == "NOT ENOUGH DATA" for signal in signals):
-                failed_number += 1
-
-            if all(signal == "SELL" for signal in signals):
-                return "SELL"
+        if all(signal == "BUY" for signal in signals):
+            return "BUY"
+        
+        if all(signal == "SELL" for signal in signals):
+            return "SELL"
 
         return "HOLD"
+    
+    def get_trade_risk_model(self, signal_type: str) -> TradeRiskModel:
+        """
+        Get the appropriate TradeRiskModel based on the signal type.
 
-    def set_buy_risk_model(self, risk_model: TradeRiskModel):
-        self.buy_risk_model = risk_model
-
-    def set_sell_risk_model(self, risk_model: TradeRiskModel):
-        self.sell_risk_model = risk_model
+        Args:
+            signal_type (str): The type of signal ('BUY' or 'SELL').
+            
+        Returns:
+            TradeRiskModel: The corresponding risk model for the signal type.
+        """
+        if signal_type == "BUY":
+            return self.buy_risk_model
+        elif signal_type == "SELL":
+            return self.sell_risk_model
+        else:
+            raise ValueError("Invalid signal type. Must be 'BUY' or 'SELL'.")
 
     def get_json(self) -> dict:
         indicators: list[IndicatorStrategy] = []
@@ -121,11 +106,21 @@ class StrategyCondition:
             "action": {
                 "buy_signal": { ... },
                 "short_signal": { ... }
-            },
-            "do_action_if_buy": 1,
-            "do_action_if_sell": 1
+            }
         }
         """
+        if not isinstance(json_data, dict):
+            raise ValueError("Invalid JSON data for StrategyCondition. Expected a dictionary.")
+        
+        if "signal_models" not in json_data:
+            raise ValueError("Missing 'signal_models' key in JSON data for StrategyCondition.")
+        
+        if "indicators" not in json_data["signal_models"] or "prediction_models" not in json_data["signal_models"]:
+            raise ValueError("Missing 'indicators' or 'prediction_models' key in 'signal_models' of JSON data for StrategyCondition.")
+        
+        if "action" not in json_data:
+            raise ValueError("Missing 'action' key in JSON data for StrategyCondition.")
+
         # Load indicator strategies
         indicators_json = json_data.get("signal_models", {}).get("indicators", [])
         indicators = [
@@ -148,7 +143,7 @@ class StrategyCondition:
             else TradeRiskModel()
         )
 
-        sell_risk_model_json = json_data.get("action", {}).get("short_signal", None)
+        sell_risk_model_json = json_data.get("action", {}).get("sell_signal", None)
         sell_risk_model = (
             TradeRiskModel._from_json(sell_risk_model_json)
             if sell_risk_model_json
@@ -158,7 +153,5 @@ class StrategyCondition:
         return cls(
             strategy_list=strategy_list,
             buy_risk_model=buy_risk_model,
-            sell_risk_model=sell_risk_model,
-            do_action_if_buy=json_data.get("do_action_if_buy", 1),
-            do_action_if_sell=json_data.get("do_action_if_sell", 1),
+            sell_risk_model=sell_risk_model
         )

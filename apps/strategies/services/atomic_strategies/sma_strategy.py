@@ -1,15 +1,18 @@
 # apps/strategies/strategies/sma.py
 import pandas as pd
 
-from apps.strategies.services.base.base_strategy import BaseStrategy
 from apps.strategies.services.base.base_indicator import BaseIndicator
 from apps.market.services import get_binance_ohlcv
 from apps.strategies.services.indicators.sma_indicator import SMAIndicator
-from apps.strategies.services.base.atomic_strategy import AtomicStrategy
 from apps.strategies.services.base.indicator_strategy import IndicatorStrategy
 
 
 class SMAStrategy(IndicatorStrategy):
+    """
+    Atomic strategy based on the SMA indicator. Generates buy/sell signals based on SMA crossovers.
+    The strategy evaluates the latest SMA values to determine if a crossover has occurred, signaling a potential buy or sell opportunity. 
+    If the short-term SMA is above the long-term SMA, it signals a 'BUY'. If the short-term SMA is below the long-term SMA, it signals a 'SELL'. If they are equal, it signals 'HOLD'.
+    """
     def __init__(
         self,
         sma_indicator: SMAIndicator = None,

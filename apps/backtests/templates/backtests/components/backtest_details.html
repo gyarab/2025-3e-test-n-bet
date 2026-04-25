@@ -99,15 +99,19 @@
                             <li>
                                 Stop Loss:
                                 {{ param.action.buy_signal.stop_loss.type }}
-                                -
-                                {{ param.action.buy_signal.stop_loss.percentage }}%
+                                {% if param.action.buy_signal.stop_loss.type == "fixed" %}
+                                    - {{ param.action.buy_signal.stop_loss.percentage }}%
+                                {% endif %}
                             </li>
 
                             <li>
                                 Take Profit:
                                 {{ param.action.buy_signal.take_profit.type }}
-                                -
-                                {{ param.action.buy_signal.take_profit.percentage }}%
+                                {% if param.action.buy_signal.take_profit.type == "fixed" %}
+                                    - {{ param.action.buy_signal.take_profit.percentage }}%
+                                {% else %}
+                                    (SL Multiplier: {{ param.action.buy_signal.take_profit.percentage }})
+                                {% endif %}
                             </li>
 
                             <li>
@@ -131,15 +135,20 @@
                             <li>
                                 Stop Loss:
                                 {{ param.action.sell_signal.stop_loss.type }}
-                                -
-                                {{ param.action.sell_signal.stop_loss.percentage }}%
+                                {% if param.action.sell_signal.stop_loss.type == "fixed" %}
+                                    -
+                                    {{ param.action.sell_signal.stop_loss.percentage }}%
+                                {% endif %}
                             </li>
 
                             <li>
                                 Take Profit:
                                 {{ param.action.sell_signal.take_profit.type }}
-                                -
-                                {{ param.action.sell_signal.take_profit.percentage }}%
+                                {% if param.action.sell_signal.take_profit.type == "fixed" %}
+                                    - {{ param.action.sell_signal.take_profit.percentage }}%
+                                {% else %}
+                                    (SL Multiplier: {{ param.action.sell_signal.take_profit.percentage }})
+                                {% endif %}
                             </li>
 
                             <li>

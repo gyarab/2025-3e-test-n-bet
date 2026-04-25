@@ -113,14 +113,20 @@ python manage.py runserver
 
 ## Tech Stack
 
+### Backend
 | Layer       | Technology |
 |-------------|-----------|
 | Backend     | Django (Python) |
-| API         | Custom Django JSON API with manual serialization |
+| API         | Custom Django JSON API |
 | Database    | PostgreSQL |
-| Frontend    | HTML, CSS, JavaScript, Tailwind CSS |
-| Data Source | Binance API |
+| Data Source | ccxt (Binance API) |
 
+### Frontend
+| Layer       | Technology |
+|-------------|-----------|
+| UI          | HTML, CSS, JavaScript |
+| Styling     | Tailwind CSS |
+| Charts      | TradingView, Lightweight Charts |
 
 ---
 

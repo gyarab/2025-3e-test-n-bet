@@ -102,8 +102,8 @@ class StrategyCard {
         if (param && param.action) {
             if (param.action.buy_signal) {
                 const buySignal = param.action.buy_signal;
-                buySignalContainer.querySelector(".stop-loss-percentage").textContent = buySignal.stop_loss.type + ", " + buySignal.stop_loss.percentage + "%";
-                buySignalContainer.querySelector(".take-profit-percentage").textContent = buySignal.take_profit.type + ", " + buySignal.take_profit.percentage + "%";
+                buySignalContainer.querySelector(".stop-loss-percentage").textContent = buySignal.stop_loss.type + (buySignal.stop_loss.type === "fixed" ? (", " + buySignal.stop_loss.percentage + "%") : "");
+                buySignalContainer.querySelector(".take-profit-percentage").textContent = buySignal.take_profit.type + ", " + (buySignal.take_profit.type === "fixed" ? (buySignal.take_profit.percentage + "%") : ("SL Multiplier: " + buySignal.take_profit.percentage));
                 buySignalContainer.querySelector(".position-size-percentage").textContent = buySignal.position_size.type + ", " + buySignal.position_size.percentage + "%";
             }
             else {
@@ -111,8 +111,8 @@ class StrategyCard {
             }
             if (param.action.sell_signal) {
                 const shortSignal = param.action.sell_signal;
-                shortSignalContainer.querySelector(".stop-loss-percentage").textContent = shortSignal.stop_loss.type + ", " + shortSignal.stop_loss.percentage + "%";
-                shortSignalContainer.querySelector(".take-profit-percentage").textContent = shortSignal.take_profit.type + ", " + shortSignal.take_profit.percentage + "%";
+                shortSignalContainer.querySelector(".stop-loss-percentage").textContent = shortSignal.stop_loss.type + (shortSignal.stop_loss.type === "fixed" ? (", " + shortSignal.stop_loss.percentage + "%") : "");
+                shortSignalContainer.querySelector(".take-profit-percentage").textContent = shortSignal.take_profit.type + ", " + (shortSignal.take_profit.type === "fixed" ? (shortSignal.take_profit.percentage + "%") : ("SL Multiplier: " + shortSignal.take_profit.percentage));
                 shortSignalContainer.querySelector(".position-size-percentage").textContent = shortSignal.position_size.type + ", " + shortSignal.position_size.percentage + "%";
             }
             else {

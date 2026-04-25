@@ -1,14 +1,15 @@
-import pandas as pd
-
-from apps.strategies.services.base.base_strategy import BaseStrategy
 from apps.strategies.services.base.base_indicator import BaseIndicator
 from apps.market.services import get_binance_ohlcv
 from apps.strategies.services.indicators.macd_indicator import MACDIndicator
-from apps.strategies.services.base.atomic_strategy import AtomicStrategy
 from apps.strategies.services.base.indicator_strategy import IndicatorStrategy
 
 
 class MACDStrategy(IndicatorStrategy):
+    """
+    Atomic strategy based on the MACD indicator. Generates buy/sell signals based on MACD line and signal line crossovers.
+    The strategy evaluates the latest MACD values to determine if a crossover has occurred, signaling a potential buy or sell opportunity. 
+    If the MACD line is above the signal line, it signals a 'BUY'. If the MACD line is below the signal line, it signals a 'SELL'.
+    """
     def __init__(
         self,
         macd_indicator: MACDIndicator = None,
@@ -97,11 +98,11 @@ class MACDStrategy(IndicatorStrategy):
             return "NOT ENOUGH DATA"
 
         if macd_line_1 <= signal_line_1: # and macd_line_2 > signal_line_2: - if we want to detect only crossovers, but for more signals we can check only current values
-            return "BUY"
+            return ("BUY", None)
         elif macd_line_1 >= signal_line_1: # and macd_line_2 < signal_line_2: - again, for more signals we can check only current values
-            return "SELL"
+            return ("SELL", None)
         else:
-            return "HOLD"
+            return ("HOLD", None)
 
     def get_signal_from_coin(self, coin: str, interval: str):
         """

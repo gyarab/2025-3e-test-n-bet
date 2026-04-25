@@ -12,7 +12,7 @@ class ConditionBuilder {
 
         this.defaultTakeProfitPct = 5;
         this.defaultStopLossPct = 2.5;
-        this.defaultPositionSizePct = 1;
+        this.defaultPositionSizePct = 2;
     }
 
     buildUI() {
@@ -116,23 +116,30 @@ class ConditionBuilder {
     setupRiskModel(card) {
         const stopLossElements = card.querySelectorAll('[data-role="stop-loss"]');
         const takeProfitElements = card.querySelectorAll('[data-role="take-profit"]');
-        const positionSizeElements = card.querySelectorAll('[data-role="position-size"]');
 
         // Helper function to attach toggle behavior
-        function setupToggle(container) {
+        function setupToggle(container, stopLoss = true) {
             const selectEl = container.querySelector('select');
             const inputEl = container.querySelector('input');
 
-            inputEl.parentElement.style.display = selectEl.value === 'relative' ? 'none' : 'block';
-
-            selectEl.addEventListener('change', () => {
+            if (stopLoss) {
                 inputEl.parentElement.style.display = selectEl.value === 'relative' ? 'none' : 'block';
-            });
+
+                selectEl.addEventListener('change', () => {
+                    inputEl.parentElement.style.display = selectEl.value === 'relative' ? 'none' : 'block';
+                });
+            }
+            else {
+                const takeProfitLabel = container.querySelector('label.take_profit_label');
+
+                selectEl.addEventListener('change', () => {
+                    takeProfitLabel.textContent = selectEl.value === 'relative' ? 'SL Multipliter:' : 'Take Profit %:';
+                });
+            }
         }
 
-        stopLossElements.forEach(setupToggle);
-        takeProfitElements.forEach(setupToggle);
-        positionSizeElements.forEach(setupToggle);
+        stopLossElements.forEach(setupToggle, true);
+        takeProfitElements.forEach(setupToggle, false);
 
         this.setupRiskModelExpanding(card);
     }

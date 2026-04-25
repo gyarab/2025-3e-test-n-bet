@@ -8,6 +8,11 @@ from apps.strategies.services.base.indicator_strategy import IndicatorStrategy
 
 
 class RSIStrategy(IndicatorStrategy):
+    """
+    Atomic strategy based on the RSI indicator. Generates buy/sell signals based on RSI thresholds.
+    The strategy evaluates the latest RSI value to determine if it falls below the oversold threshold (signaling a potential buy opportunity) or above the overbought threshold (signaling a potential sell opportunity). 
+    If the RSI value is between the oversold and overbought thresholds, it signals 'HOLD'.
+    """
     def __init__(
         self,
         rsi_indicator: RSIIndicator = None,
