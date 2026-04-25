@@ -27,7 +27,9 @@
                     Email address
                 </label>
 
-                {{ form.email }}
+                <!--{{ form.email }}-->
+
+                <input type="text" name="email" value="{{ form.email.value|default:'' }}" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
 
                 {% if form.email.errors %}
                     <p class="text-sm text-red-600 mt-2">

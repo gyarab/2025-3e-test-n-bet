@@ -90,9 +90,9 @@ class SMAStrategy(IndicatorStrategy):
         if pd.isna(SMA_short) or pd.isna(SMA_long):
             return "HOLD"
 
-        if SMA_short > SMA_long: # and SMA_short_previous <= SMA_long_previous:
+        if SMA_short > SMA_long: # and SMA_short_previous <= SMA_long_previous: - if we want to detect only crossovers, but for more signals we can check only current values
             return "BUY"
-        elif SMA_short < SMA_long: # and SMA_short_previous >= SMA_long_previous:
+        elif SMA_short < SMA_long: # and SMA_short_previous >= SMA_long_previous: - again, for more signals we can check only current values
             return "SELL"
         else:
             return "HOLD"

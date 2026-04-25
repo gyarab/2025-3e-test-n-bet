@@ -43,10 +43,7 @@ class StrategyCondition:
         if not signal_sources:  # No indicators or models to evaluate
             return "HOLD"
 
-
         signals = [src.get_signal_from_candles(candles) for src in signal_sources]
-
-        print(f"Evaluating StrategyCondition with signals: {signals}")
 
         # All signals must agree to trigger an action
 

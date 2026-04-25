@@ -1,17 +1,48 @@
+# =========================
 # Python
+# =========================
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyd
+.Python
+
+# virtual environments
 venv/
 .venv/
+env/
+ENV/
 
+# =========================
 # Django
+# =========================
 *.sqlite3
-/staticfiles/
+db.sqlite3
+
+staticfiles/
 media/
 
-# Environment variables
-.env
-.env_copy
+# Django stuff
+*.log
+local_settings.py
 
-node_modules
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# IDEs and editors
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db

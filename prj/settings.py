@@ -41,25 +41,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "core",
     "apps.strategies",
     "apps.market",
-    "channels",
-    "rest_framework",
-    "apps.backtests",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "core",
-    "allauth.socialaccount.providers.google",
     "apps.registration",
+    "apps.backtests",
     "livereload",
 ]
-REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": (
-        "rest_framework.renderers.JSONRenderer",
-        # 'rest_framework.renderers.BrowsableAPIRenderer',
-    )
-}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -69,7 +57,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
     "livereload.middleware.LiveReloadScript",
 ]
 
@@ -92,7 +79,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "prj.wsgi.application"
-ASGI_APPLICATION = "prj.asgi.application"
 
 LOGIN_URL = "/registration/login/"
 
@@ -104,7 +90,7 @@ DATABASES = {
         "NAME": env("DB_NAME", default="defaultdb"),
         "USER": env("DB_USER", default="avnadmin"),
         "PASSWORD": env("DB_PASSWORD", default=""),
-        "HOST": env("DB_HOST", default="testnbet-testnbet.j.aivencloud.com"),
+        "HOST": env("DB_HOST", default="localhost"),
         "PORT": env("DB_PORT", default="12601"),
         "OPTIONS": {
             "sslmode": "require" if DB_SSL else "disable",
@@ -158,11 +144,5 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-    },
-}
 
 APPEND_SLASH = True

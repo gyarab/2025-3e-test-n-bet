@@ -29,7 +29,6 @@ def serialize_trade(trade: Trade) -> dict[str, Any]:
 
 
 def serialize_backtest(backtest: Backtest) -> dict[str, Any]:
-    print(backtest.result)
     return {
         "id": backtest.id,
         "user_id": backtest.user_id,

@@ -19,7 +19,6 @@ class CustomUserRegisterForm(UserCreationForm):
             "first_name",
             "last_name",
         )
-        # fields = ("username", "password1", "password2")
 
 
 class CustomUserLoginForm(AuthenticationForm):

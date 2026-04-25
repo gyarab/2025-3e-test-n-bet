@@ -96,9 +96,9 @@ class MACDStrategy(IndicatorStrategy):
         if macd_line_1 is None or macd_line_2 is None:
             return "NOT ENOUGH DATA"
 
-        if macd_line_1 <= signal_line_1: # and macd_line_2 > signal_line_2:
+        if macd_line_1 <= signal_line_1: # and macd_line_2 > signal_line_2: - if we want to detect only crossovers, but for more signals we can check only current values
             return "BUY"
-        elif macd_line_1 >= signal_line_1: # and macd_line_2 < signal_line_2:
+        elif macd_line_1 >= signal_line_1: # and macd_line_2 < signal_line_2: - again, for more signals we can check only current values
             return "SELL"
         else:
             return "HOLD"

@@ -2,8 +2,9 @@ from django.shortcuts import render
 
 from apps.strategies.services.strategy_service import get_available_strategies_for_user
 from apps.strategies.serializers import serialize_strategy
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def strategy(request):
     strategies = get_available_strategies_for_user(request.user)
     serialized_strategies = [serialize_strategy(s) for s in strategies]
