@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import Union
-import ccxt
 import pandas as pd
 
 

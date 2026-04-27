@@ -5,6 +5,7 @@ class PredictionModelStrategy(AtomicStrategy):
     """
     Class to define Prediction Model based Strategies that can be used to craft a bigger one's, e.g. ARIMAStrategy, ..etc.
     Made to distinguish between Indicator based strategies and Prediction Model based ones.
+    Each Prediction Model Strategy should inherit from this class and implement its methods.
     """
 
     @classmethod

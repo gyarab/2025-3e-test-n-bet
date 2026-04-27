@@ -5,6 +5,7 @@ class IndicatorStrategy(AtomicStrategy):
     """
     Class to define Indicator based Strategies that can be used to craft a bigger one's, e.g. SMAStrategy, ..etc.
     Made to distinguish between Indicator based strategies and Prediction Model based ones.
+    Each Indicator Strategy should inherit from this class and implement its methods.
     """
 
     @classmethod

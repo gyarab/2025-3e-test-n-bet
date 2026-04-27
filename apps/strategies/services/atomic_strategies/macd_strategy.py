@@ -70,13 +70,14 @@ class MACDStrategy(IndicatorStrategy):
         fast_period = json_data.get("fast_period", 12)
         slow_period = json_data.get("slow_period", 26)
         signal_period = json_data.get("signal_period", 9)
+        
         return cls.from_parametrs(
             fast_period=fast_period,
             slow_period=slow_period,
             signal_period=signal_period,
         )
 
-    def get_signal_from_candles(self, candles):
+    def get_signal_from_candles(self, candles) -> str:
         """
         Calculate MACD signals from a list of OHLCV candles with timestamps.
 
@@ -98,13 +99,13 @@ class MACDStrategy(IndicatorStrategy):
             return "NOT ENOUGH DATA"
 
         if macd_line_1 <= signal_line_1: # and macd_line_2 > signal_line_2: - if we want to detect only crossovers, but for more signals we can check only current values
-            return ("BUY", None)
+            return "BUY"
         elif macd_line_1 >= signal_line_1: # and macd_line_2 < signal_line_2: - again, for more signals we can check only current values
-            return ("SELL", None)
+            return "SELL"
         else:
-            return ("HOLD", None)
+            return "HOLD"
 
-    def get_signal_from_coin(self, coin: str, interval: str):
+    def get_signal_from_coin(self, coin: str, interval: str) -> str:
         """
         Calculate MACD crossover signals from a list of OHLCV candles with timestamps.
 

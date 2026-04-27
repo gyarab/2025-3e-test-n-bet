@@ -65,7 +65,7 @@ class RSIStrategy(IndicatorStrategy):
             period=period, oversold=oversold, overbought=overbought
         )
 
-    def get_signal_from_candles(self, candles):
+    def get_signal_from_candles(self, candles) -> str:
         """
         Calculate RSI signals from a list of OHLCV candles with timestamps.
 
@@ -93,7 +93,7 @@ class RSIStrategy(IndicatorStrategy):
         else:
             return "HOLD"
 
-    def get_signal_from_coin(self, coin: str, interval: str):
+    def get_signal_from_coin(self, coin: str, interval: str) -> str:
         """
         Calculate RSI signal from a list of OHLCV candles with timestamps.
 
