@@ -21,7 +21,7 @@ A Django-based web application for designing, testing, and evaluating custom cry
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/first-test-then-bet.git
+git clone https://github.com/gyarab/2025-3e-test-n-bet.git
 cd first-test-then-bet
 ```
 
