@@ -23,7 +23,7 @@ class StrategyEngine():
     ) -> None:
         if strategy:
             condition = StrategyCondition(
-                strategy_list=list[strategy],
+                strategy_list=[strategy],
                 buy_risk_model=buy_risk_model,
                 sell_risk_model=sell_risk_model,
             )
@@ -81,4 +81,5 @@ class StrategyEngine():
         conditions = [
             StrategyCondition._from_json(condition) for condition in json
         ]
+
         return cls(conditions=conditions)

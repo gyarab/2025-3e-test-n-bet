@@ -63,15 +63,14 @@ class BacktestEngine:
 
             if self.active_trade is None and signal in ("BUY", "SELL"):
                 # Get stop loss and take profit from risk model
-                stop_loss = trade_risk_model.get_stop_loss(candles=past_candles)
+                trade_risk_model.reload_values(candles=past_candles)  # Ensure risk model values are updated based on the latest candles
+                stop_loss = trade_risk_model.get_stop_loss()
                 take_profit = (
-                    trade_risk_model.get_take_profit(candles=past_candles)
+                    trade_risk_model.get_take_profit()
                 )  # TODO: make take_profit dynamic based on strategy calling "CLOSE" and not only the risk model
 
                 # Calculate position quantity
-                quantity = trade_risk_model.get_position_quantity(
-                    self.current_balance, candles=past_candles
-                )
+                quantity = trade_risk_model.get_position_quantity(self.current_balance)
 
                 # Create and execute trade
                 trade = TradeEngine(
@@ -79,7 +78,7 @@ class BacktestEngine:
                     stop_loss_pct=stop_loss,
                     take_profit_pct=take_profit,
                     quantity=quantity,
-                    trade_type=(signal == "BUY" or signal == 1),  # Assuming signal can be "BUY"/"SELL" or 1/0
+                    trade_type=(signal == "BUY"),  
                 )
 
                 self.active_trade = trade
@@ -99,7 +98,7 @@ class BacktestEngine:
                         self.current_balance = 0
                         break
                     else: 
-                        self.current_candles += result
+                        self.current_balance += result
                 '''
 
             # If we want to wait for the trade to close before opening a new one, we need to update the active trade with each new candle and check if it has closed.

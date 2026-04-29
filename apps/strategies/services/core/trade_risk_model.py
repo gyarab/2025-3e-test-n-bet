@@ -24,6 +24,8 @@ class TradeRiskModel:
             position_size_pct (float): Used as a fixed percentage of the balance to calculate the quantity if 'fixed'. Used as max loss percentage to calculate the quantity if 'relative'.
             position_size_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage of account balance, relative adjusts based on loss percentage.
         """
+        if stop_loss_pct <= 0 or stop_loss_pct >= 100 or take_profit_pct <= 0 or position_size_pct <= 0 or position_size_pct > 100:
+            raise ValueError("Percentages must be greater than 0 and less than or equal to 100.")
 
         if stop_loss_type not in ["fixed", "relative"]:
             raise ValueError("Invalid stop_loss_type. Use 'fixed' or 'relative'.")
@@ -35,13 +37,16 @@ class TradeRiskModel:
             raise ValueError("Invalid take_profit_type. Use 'fixed' or 'relative'.")
         
         self.take_profit_type = take_profit_type
-        self.take_profit_pct = float(take_profit_pct) # When using relative take-profit, this is treated as a multiplier of the stop-loss percentage (e.g., 2 means take-profit is set at 2 times the stop-loss distance).
+        self.take_profit_pct = float(take_profit_pct)
+        self.multiplier = self.take_profit_pct # When using relative take profit, the take_profit_pct is treated as the multiplier of the stop-loss percentage
 
         if position_size_type not in ["fixed", "relative"]:
             raise ValueError("Invalid position_size_type. Use 'fixed' or 'relative'")
         
         self.position_size_type = position_size_type
-        self.position_size_pct = float(position_size_pct) # When using relative position sizing, this is treated as the risk per trade percentage of the account balance.
+        self.position_size_pct = float(position_size_pct)
+        self.risk_per_trade = self.position_size_pct # When using relative position sizing, the position_size_pct is treated as the risk per trade percentage of the account balance.
+
 
 
     def set_position_size(self) -> float:
@@ -53,13 +58,14 @@ class TradeRiskModel:
             float: The position size percentage.
         """
 
-        risk_per_trade = self.position_size_pct # When using relative position sizing, the position_size_pct is treated as the risk per trade percentage of the account balance.
-
         if self.position_size_type == "relative":
-            if not hasattr(self, "stop_loss_pct"):
+            if self.stop_loss_pct <= 0:
                 raise ValueError("Set stop_loss before setting position_size.")
 
-            return risk_per_trade / self.stop_loss_pct
+            self.position_size_pct = self.risk_per_trade * 100 / self.stop_loss_pct
+
+            if self.position_size_pct > 100:
+                self.position_size_pct = 100  # Cap position size at 100% of account balance
 
         return self.position_size_pct
 
@@ -97,14 +103,12 @@ class TradeRiskModel:
             float: The stop-loss percentage.
         """
 
-        multiplier = self.take_profit_pct # When using relative take-profit, the take_profit_pct is treated as a multiplier of the stop-loss percentage (e.g., 2 means take-profit is set at 2 times the stop-loss distance).
-
-        if self.stop_loss_type == "relative":
-            if not hasattr(self, "stop_loss_pct"):
+        if self.take_profit_type == "relative":
+            if self.stop_loss_pct <= 0:
                 raise ValueError(
                     "Set stop_loss before setting take_profit with relative type."
                 )
-            return self.stop_loss_pct * multiplier
+            self.take_profit_pct = self.stop_loss_pct * self.multiplier
 
         return self.take_profit_pct
     
@@ -121,15 +125,19 @@ class TradeRiskModel:
         self.set_position_size()
 
 
-    def get_stop_loss(self, candles) -> float:
-        self.reload_values(candles)
+    def get_stop_loss(self, candles: list[dict] = None) -> float:
+        if candles is not None:
+            self.reload_values(candles)
+
         return self.stop_loss_pct
 
-    def get_take_profit(self, candles) -> float:
-        self.reload_values(candles)
+    def get_take_profit(self, candles: list[dict] = None) -> float:
+        if candles is not None:
+            self.reload_values(candles)
+
         return self.take_profit_pct
     
-    def get_position_quantity(self, account_balance: float, candles: list[dict]) -> float:
+    def get_position_quantity(self, account_balance: float, candles: list[dict] = None) -> float:
         """
         Calculate position quantity based on account balance and position size settings.
 
@@ -139,7 +147,8 @@ class TradeRiskModel:
         Returns:
             float: Calculated position quantity in dollars.
         """
-        self.reload_values(candles)
+        if candles is not None:
+            self.reload_values(candles)
 
         quantity = (self.position_size_pct / 100) * account_balance
 
@@ -208,7 +217,7 @@ class TradeRiskModel:
 
     @staticmethod
     def calculate_stop_loss_price(
-        entry_price: float, percentage: float
+        entry_price: float, percentage: float, is_long: bool = True
     ) -> float:
         """
         Calculate the stop-loss price based on entry price and a percentage.
@@ -216,6 +225,7 @@ class TradeRiskModel:
         Args:
             entry_price (float): The price at which the position was entered.
             percentage (float): The stop-loss percentage (e.g., 0.05 for 5%).
+            is_long (bool): True if it's a long position, False for short. Determines if stop-loss is below or above entry price.
 
         Returns:
             float: The calculated stop-loss price.
@@ -223,13 +233,17 @@ class TradeRiskModel:
         if entry_price <= 0 or percentage <= 0:
             raise ValueError("Entry price and percentage must be positive values.")
 
-        stop_loss_price = entry_price * (1 - percentage)
+        if is_long:
+            stop_loss_price = entry_price * (1 - percentage / 100)
+        else:
+            stop_loss_price = entry_price * (1 + percentage / 100)
+
         return round(stop_loss_price, 2)
 
 
     @staticmethod
     def calculate_take_profit_price(
-        entry_price: float, percentage: float
+        entry_price: float, percentage: float, is_long: bool = True
     ) -> float:
         """
         Calculate the take-profit price based on entry price and a percentage.
@@ -237,6 +251,7 @@ class TradeRiskModel:
         Args:
             entry_price (float): The price at which the position was entered.
             percentage (float): The take-profit percentage (e.g., 0.10 for 10%).
+            is_long (bool): True if it's a long position, False for short. Determines if take-profit is above or below entry price.
 
         Returns:
             float: The calculated take-profit price.
@@ -244,7 +259,11 @@ class TradeRiskModel:
         if entry_price <= 0 or percentage <= 0:
             raise ValueError("Entry price and percentage must be positive values.")
 
-        take_profit_price = entry_price * (1 + percentage)
+        if is_long:
+            take_profit_price = entry_price * (1 + percentage / 100)
+        else:
+            take_profit_price = entry_price * (1 - percentage / 100)
+
         return round(take_profit_price, 2)
 
 

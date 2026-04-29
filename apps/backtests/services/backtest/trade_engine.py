@@ -48,6 +48,16 @@ class TradeEngine:
         )
 
 
+    def get_open_time(self) -> int:
+        """
+        Get the open time of the trade.
+
+        Returns:
+            int: The open time of the trade (timestamp).
+        """
+        return self.open_time
+
+
     def get_result(self) -> float | None:
         """
         Calculate the result of the trade.
@@ -57,6 +67,9 @@ class TradeEngine:
         """
         if self.status == True:
             return None  # Trade not closed yet
+        
+        if self.entry_price == 0:
+            raise ValueError("Entry price is zero, cannot calculate trade result.")
 
         if self.trade_type:  # Buy trade
             return (self.exit_price / self.entry_price) * self.quantity - self.quantity

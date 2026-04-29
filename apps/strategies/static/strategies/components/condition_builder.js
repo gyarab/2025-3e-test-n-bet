@@ -138,8 +138,8 @@ class ConditionBuilder {
             }
         }
 
-        stopLossElements.forEach(setupToggle, true);
-        takeProfitElements.forEach(setupToggle, false);
+        stopLossElements.forEach(el => setupToggle(el, true));
+        takeProfitElements.forEach(el => setupToggle(el, false));
 
         this.setupRiskModelExpanding(card);
     }
