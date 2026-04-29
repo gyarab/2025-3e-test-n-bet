@@ -22,7 +22,7 @@ A Django-based web application for designing, testing, and evaluating custom cry
 
 ```bash
 git clone https://github.com/gyarab/2025-3e-test-n-bet.git
-cd first-test-then-bet
+cd 2025-3e-test-n-bet
 ```
 
 ---
