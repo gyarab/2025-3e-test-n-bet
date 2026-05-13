@@ -24,6 +24,10 @@ class TradeRiskModel:
             position_size_pct (float): Used as a fixed percentage of the balance to calculate the quantity if 'fixed'. Used as max loss percentage to calculate the quantity if 'relative'.
             position_size_type (str): 'fixed' or 'relative'. Fixed uses a constant percentage of account balance, relative adjusts based on loss percentage.
         """
+        stop_loss_pct = float(stop_loss_pct)
+        take_profit_pct = float(take_profit_pct)
+        position_size_pct = float(position_size_pct)
+
         if stop_loss_pct <= 0 or stop_loss_pct >= 100 or take_profit_pct <= 0 or position_size_pct <= 0 or position_size_pct > 100:
             raise ValueError("Percentages must be greater than 0 and less than or equal to 100.")
 
@@ -31,20 +35,20 @@ class TradeRiskModel:
             raise ValueError("Invalid stop_loss_type. Use 'fixed' or 'relative'.")
         
         self.stop_loss_type = stop_loss_type
-        self.stop_loss_pct = float(stop_loss_pct)
+        self.stop_loss_pct = stop_loss_pct
 
         if take_profit_type not in ["fixed", "relative"]:
             raise ValueError("Invalid take_profit_type. Use 'fixed' or 'relative'.")
         
         self.take_profit_type = take_profit_type
-        self.take_profit_pct = float(take_profit_pct)
+        self.take_profit_pct = take_profit_pct
         self.multiplier = self.take_profit_pct # When using relative take profit, the take_profit_pct is treated as the multiplier of the stop-loss percentage
 
         if position_size_type not in ["fixed", "relative"]:
             raise ValueError("Invalid position_size_type. Use 'fixed' or 'relative'")
         
         self.position_size_type = position_size_type
-        self.position_size_pct = float(position_size_pct)
+        self.position_size_pct = position_size_pct
         self.risk_per_trade = self.position_size_pct # When using relative position sizing, the position_size_pct is treated as the risk per trade percentage of the account balance.
 
 
