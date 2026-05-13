@@ -98,7 +98,7 @@ python manage.py migrate
 Loaded default strategies like this:
 
 ```bash
-python manage.py laoddata apps/strategies/fixtures/strategies.json
+python manage.py loaddata apps/strategies/fixtures/strategies.json
 ```
 
 ---
